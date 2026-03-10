@@ -69,7 +69,7 @@ export function CtaSection({ variant = "career" }: { variant?: CtaVariant }) {
             </div>
 
             <a
-              href="https://www.linkedin.com/in/"
+              href="https://www.linkedin.com/in/raqper/"
               target="_blank"
               rel="noopener noreferrer"
               className="group shrink-0 inline-flex items-center gap-3 bg-[#ede0a8] text-[#0c0024] px-8 py-4 rounded-full border border-[#ede0a8] hover:bg-transparent hover:text-[#ede0a8] transition-all duration-300 hover:shadow-[0_0_30px_rgba(237,224,168,0.15)]"

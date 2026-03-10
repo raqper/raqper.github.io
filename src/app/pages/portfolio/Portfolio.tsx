@@ -28,11 +28,11 @@ export default function Portfolio() {
         />
         <div className="px-4 sm:px-6 md:px-10 py-4 md:py-6">
           <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between gap-3">
-            {/* Left — Back arrow + Portfolio title */}
+            {/* Left — Back arrow (hidden for now) + Portfolio title */}
             <div className="flex items-center gap-3 shrink-0">
               <Link
                 to="/career"
-                className="relative flex items-center justify-center rounded-full p-[7px] text-white hover:text-[#edeaf5] transition-colors duration-300"
+                className="hidden relative flex items-center justify-center rounded-full p-[7px] text-white hover:text-[#edeaf5] transition-colors duration-300"
                 style={{
                   background: "rgba(46,26,106,0.25)",
                   border: "1px solid rgba(46,26,106,0.4)",
