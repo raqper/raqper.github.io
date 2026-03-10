@@ -5,7 +5,7 @@ const Home = lazy(() => import("./pages/career/Home"));
 const Portfolio = lazy(() => import("./pages/portfolio/Portfolio"));
 const HobbiesHome = lazy(() => import("./pages/hobbies/HobbiesHome"));
 
-export const PORTFOLIO_PATH = "/catlady";
+export const PORTFOLIO_PATH = "/portfolio/catlady";
 
 export const router = createBrowserRouter(
   [

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "vite build && cp dist/index.html dist/404.html",
     "dev": "vite",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist",
+    "deploy:site": "npm run build && mkdir -p .pages-deploy/docs && cp -r dist/* .pages-deploy/docs/ && npx gh-pages -d .pages-deploy -r https://github.com/raqper/raqper.github.io.git -b main && rm -rf .pages-deploy"
   },
   "dependencies": {
     "clsx": "2.1.1",
