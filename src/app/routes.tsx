@@ -5,22 +5,21 @@ const Home = lazy(() => import("./pages/career/Home"));
 const Portfolio = lazy(() => import("./pages/portfolio/Portfolio"));
 const HobbiesHome = lazy(() => import("./pages/hobbies/HobbiesHome"));
 
-export const PORTFOLIO_PATH = "/portfolio/catlady";
-
-export const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      Component: Portfolio,
-    },
-    {
-      path: "/career",
-      Component: Home,
-    },
-    {
-      path: "/hobbies",
-      Component: HobbiesHome,
-    },
-  ],
-  { basename: "/portfolio/catlady" }
-);
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate to="/career" replace />,
+  },
+  {
+    path: "/career",
+    Component: Home,
+  },
+  {
+    path: "/hobbies",
+    Component: HobbiesHome,
+  },
+  {
+    path: "/portfolio/catlady",
+    Component: Portfolio,
+  },
+]);
