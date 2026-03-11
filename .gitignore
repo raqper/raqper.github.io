@@ -1,6 +1,7 @@
 node_modules
 dist
 .pages-deploy
+.site
 .DS_Store
 *.log
 .env
