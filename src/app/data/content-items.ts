@@ -535,7 +535,7 @@ export const contentItems: ContentItem[] = [
 
 // ─── Updated highlights stat (auto-count) ────────────────────────────────────
 export const highlights = [
-  { value: "8", label: "Years in Design" },
+  { value: "9", label: "Years in Design" },
   { value: "4", label: "Industries" },
   { value: "30+", label: "Design events" },
   { value: "3", label: "Cats (Proud cat lady 😻)" },
