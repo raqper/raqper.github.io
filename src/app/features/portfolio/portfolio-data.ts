@@ -194,7 +194,7 @@ export const allUseCases: UseCase[] = [
         caption: "Me + 9 designers (juniors to seniors)",
       },
       role: {
-        summary: "Founded a 10-person team to solve a persistent design system migration problem, shiping a production Figma plugin in 48 hours and pitching it live to 200+ attendees.",
+        summary: "Founded a 10-person team to solve a persistent design system migration problem, shipping a production Figma plugin in 48 hours and pitching it live to 200+ attendees.",
       },
       stats: [
         { value: "48", label: "hours" },
@@ -219,7 +219,7 @@ export const allUseCases: UseCase[] = [
           rationale: "Backlog, kanban, feature voting, all in one place, with decisions documented while we talked via Discord.",
         },
         {
-          decision: "Structured testings rounds before launch",
+          decision: "Structured testing rounds before launch",
           rationale: "Controlled test files surfaced edge cases early: issues with nested components, cross-library mismatches, etc.",
         },
       ],
@@ -270,7 +270,7 @@ export const allUseCases: UseCase[] = [
           phases: [
             {
               mode: "Plan Mode",
-              description: "Aked for all UI refinements needed before starting implementation.",
+              description: "Asked for all UI refinements needed before starting implementation.",
             },
             {
               mode: "Agent Mode",
@@ -333,7 +333,7 @@ export const allUseCases: UseCase[] = [
         },
         {
           decision: "New Figma libraries",
-          rationale: "We rebuild our 3 main libraries, using approriate Figma component specs, Figma Variables, Modes, Code Connect, etc., respecting our current code as much as possible.",
+          rationale: "We rebuild our 3 main libraries, using appropriate Figma component specs, Figma Variables, Modes, Code Connect, etc., respecting our current code as much as possible.",
         },
         {
           decision: "New documentation",
@@ -456,7 +456,7 @@ export const allUseCases: UseCase[] = [
         caption: "Me as product designer",
       },
       role: {
-        summary: "Maintainted and led the evolution of a multi-brand design system while developing features, owning the full design process end-to-end, from research through final UI, integrating and creating components.",
+        summary: "Maintained and led the evolution of a multi-brand design system while developing features, owning the full design process end-to-end, from research through final UI, integrating and creating components.",
       },
       stats: [
         { value: "5", label: "products" },
