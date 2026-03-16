@@ -22,7 +22,7 @@ function MilestoneCard({ milestone }: { milestone: Milestone }) {
           }`}
           style={{ fontFamily: "var(--font-sans)", fontSize: "11px", fontWeight: 500, lineHeight: "1" }}
         >
-          {milestone.type}
+          {milestone.type === "education" ? "Education" : "Work"}
         </span>
       </div>
       <h3

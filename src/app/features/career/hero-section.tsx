@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router";
-import raquelPortrait from "@/assets/raquel-portrait-2_v2.png";
+
+import raquelPortraitImg from "@/assets/raquel-portrait-2_v2.png";
+const raquelPortrait = raquelPortraitImg;
 
 const NAV_ITEMS = ["Experience", "Content", "Skills", "Contact"];
 
