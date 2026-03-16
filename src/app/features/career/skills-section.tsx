@@ -13,7 +13,7 @@ export function SkillsSection() {
     <section
       ref={sectionRef}
       id="skills"
-      className="relative py-20 md:py-32 overflow-hidden"
+      className="relative pt-12 pb-20 md:py-32 overflow-hidden"
       style={{ background: "linear-gradient(180deg, rgb(5 0 14) 0%, #0a001c 20%, #0f0028 60%, #0f0028 100%)" }}
     >
       {/* Subtle gradient accent glow */}

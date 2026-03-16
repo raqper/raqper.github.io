@@ -1,10 +1,10 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 export function HobbiesNav() {
   const navigate = useNavigate();
 
   return (
-    <nav className="absolute top-0 left-0 right-0 z-20 px-6 md:px-10 py-6">
+    <nav className="fixed top-0 left-0 right-0 z-20 px-6 md:px-10 py-4 lg:absolute bg-white lg:bg-transparent">
       <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between">
         {/* Career / Hobbies toggle — same pill style as Career page */}
         <div
@@ -44,14 +44,6 @@ export function HobbiesNav() {
             Hobbies
           </button>
         </div>
-
-        <Link
-          to="/career#contact"
-          className="text-[#0a0a0a]/70 hover:text-[#0a0a0a] transition-colors tracking-[-0.03em]"
-          style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
-        >
-          Contact
-        </Link>
       </div>
     </nav>
   );

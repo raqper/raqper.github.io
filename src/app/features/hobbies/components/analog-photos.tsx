@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "motion/react";
 import { Lightbox } from "@/app/components/shared/lightbox";
 
@@ -61,12 +61,22 @@ const PHOTOS: Photo[] = SEED_PHOTOS.map((p, i) => ({
   rotate: POSITIONS[i].rotate,
 }));
 
+const MOBILE_SCALE = 0.52;
+
 export function AnalogPhotos() {
   const [active, setActive] = useState<Photo | null>(null);
   const [zStack, setZStack] = useState<number[]>(PHOTOS.map((p) => p.id));
   const [locationFilter, setLocationFilter] = useState<string>("All");
+  const [isMobile, setIsMobile] = useState(false);
   const constraintsRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const bringToFront = useCallback((id: number) => {
     setZStack((prev) => [...prev.filter((z) => z !== id), id]);
@@ -88,15 +98,15 @@ export function AnalogPhotos() {
   }, []);
 
   return (
-    <section id="film" className="relative w-full min-h-screen overflow-hidden flex flex-col" style={{ background: "#f7f7f7" }}>
+    <section id="film" className="relative w-full min-h-[120vh] md:min-h-screen overflow-hidden flex flex-col" style={{ background: "#f7f7f7" }}>
       {/* Location filters */}
-      <div className="flex flex-wrap items-center justify-center gap-2 px-6 py-5 shrink-0" style={{ fontFamily: "var(--font-sans)" }}>
+      <div className="flex overflow-x-auto no-scrollbar gap-2 flex-nowrap md:flex-wrap items-center justify-start md:justify-center px-6 py-5 shrink-0" style={{ fontFamily: "var(--font-sans)" }}>
         {LOCATIONS.map((loc) => (
           <button
             key={loc}
             type="button"
             onClick={() => setLocationFilter(loc)}
-            className="px-4 py-2 rounded-full border text-sm font-medium transition-colors"
+            className="shrink-0 px-4 py-2 rounded-full border text-sm font-medium transition-colors"
             style={{
               backgroundColor: locationFilter === loc ? "#0a0a0a" : "transparent",
               borderColor: locationFilter === loc ? "#0a0a0a" : "rgba(10,10,10,0.2)",
@@ -167,7 +177,7 @@ export function AnalogPhotos() {
                     top: `${photo.y}%`,
                     zIndex: zIndex + 1,
                     rotate: photo.rotate,
-                    width: photo.w,
+                    width: isMobile ? photo.w * MOBILE_SCALE : photo.w,
                     opacity: visible ? 1 : 0,
                     pointerEvents: visible ? "auto" : "none",
                     transition: "opacity 0.25s ease",
@@ -181,7 +191,7 @@ export function AnalogPhotos() {
                   <div
                     style={{
                       background: "#fefcf9",
-                      padding: "12px 12px 48px 12px",
+                      padding: isMobile ? "8px 8px 32px 8px" : "12px 12px 48px 12px",
                       boxShadow:
                         "0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)",
                       boxSizing: "border-box",
@@ -193,7 +203,7 @@ export function AnalogPhotos() {
                       loading="lazy"
                       style={{
                         width: "100%",
-                        height: photo.h,
+                        height: isMobile ? photo.h * MOBILE_SCALE : photo.h,
                         objectFit: "cover",
                         display: "block",
                         pointerEvents: "none",

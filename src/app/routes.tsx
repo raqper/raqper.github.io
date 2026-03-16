@@ -26,5 +26,5 @@ export const router = createBrowserRouter(
       Component: Portfolio,
     },
   ],
-  { basename: "/" }
+  { basename: import.meta.env.BASE_URL }
 );

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import raquelPortraitImg from "@/assets/raquel-portrait-2_v2.png";
 const raquelPortrait = raquelPortraitImg;
 
-const NAV_ITEMS = ["Experience", "Content", "Skills", "Contact"];
+const NAV_ITEMS = ["Experience", "Content", "Skills"];
 
 export function HeroSection() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -28,16 +28,13 @@ export function HeroSection() {
   };
 
   return (
-    <motion.section
+    <section
       id="about"
       className="relative min-h-screen flex flex-col overflow-hidden"
       style={{ background: "rgb(5 0 14)" }}
-      initial={{ opacity: 0, filter: "blur(18px)" }}
-      animate={{ opacity: 1, filter: "blur(0px)" }}
-      transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      {/* Navigation */}
-      <nav className="absolute top-0 left-0 right-0 z-20 px-6 md:px-10 py-6">
+      {/* Navigation — fixed on mobile (outside any filter/transform so it sticks to viewport), absolute on desktop */}
+      <nav className="fixed top-0 left-0 right-0 z-20 px-6 md:px-10 py-4 lg:absolute bg-[rgb(5,0,14)] lg:bg-transparent">
         <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between">
         {/* Career / Hobbies segmented toggle */}
         <div
@@ -94,56 +91,82 @@ export function HeroSection() {
           ))}
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          className="lg:hidden flex flex-col gap-[5px] p-2 z-30"
-          onClick={() => setDrawerOpen(true)}
-          aria-label="Open menu"
-        >
-          <span className="block w-5 h-px bg-[#9e96be]" />
-          <span className="block w-5 h-px bg-[#9e96be]" />
-          <span className="block w-3.5 h-px bg-[#9e96be]" />
-        </button>
+        {/* Mobile hamburger — hidden when drawer is open so only the drawer's close button is shown */}
+        {!drawerOpen && (
+          <button
+            type="button"
+            className="lg:hidden flex flex-col justify-center gap-1.5 w-10 h-10 -mr-1 z-30 touch-manipulation active:opacity-80 transition-opacity"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Open menu"
+            aria-expanded={false}
+          >
+            <span className="block w-5 h-0.5 rounded-full bg-[#c4bade]" />
+            <span className="block w-5 h-0.5 rounded-full bg-[#c4bade]" />
+            <span className="block w-5 h-0.5 rounded-full bg-[#c4bade]" />
+          </button>
+        )}
         </div>
       </nav>
-
+      {/* Spacer on mobile so hero content is not hidden under fixed nav */}
+      <div className="h-[56px] shrink-0 lg:hidden" aria-hidden="true" />
+      {/* Animated inner content — filter lives here so the section has no filter and fixed nav works */}
+      <motion.div
+        className="flex-1 flex flex-col min-h-0"
+        initial={{ opacity: 0, filter: "blur(18px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
+        transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
+      >
       {/* Mobile slide-in drawer */}
       <AnimatePresence>
         {drawerOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop — tap to close */}
             <motion.div
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-md"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setDrawerOpen(false)}
+              aria-hidden="true"
             />
             {/* Drawer panel */}
             <motion.div
-              className="fixed top-0 right-0 bottom-0 z-50 w-72 flex flex-col px-8 py-10 gap-8"
+              className="fixed top-0 right-0 bottom-0 z-50 w-[min(280px,85vw)] flex flex-col shadow-2xl"
               style={{
-                background: "#1c0048",
-                borderLeft: "1px solid rgba(46,26,106,0.4)",
+                background: "linear-gradient(180deg, #1a0038 0%, #1c0048 30%, #150030 100%)",
+                borderLeft: "1px solid rgba(46,26,106,0.5)",
+                boxShadow: "-8px 0 32px rgba(0,0,0,0.4)",
               }}
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ type: "tween", duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
             >
-              {/* Close button */}
-              <button
-                className="self-end text-[#a89cc8] hover:text-[#edeaf5] transition-colors"
-                onClick={() => setDrawerOpen(false)}
-                aria-label="Close menu"
+              {/* Header — aligns with main nav bar */}
+              <div
+                className="flex items-center justify-between shrink-0 px-6 py-4"
+                style={{ borderBottom: "1px solid rgba(46,26,106,0.4)" }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 6 6 18M6 6l12 12" />
-                </svg>
-              </button>
-              {/* Nav links */}
-              <nav className="flex flex-col gap-6 mt-4">
+                <span
+                  className="text-[#a89cc8] tracking-[-0.02em]"
+                  style={{ fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 500 }}
+                >
+                  Menu
+                </span>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-9 h-9 rounded-lg text-[#a89cc8] hover:text-[#edeaf5] hover:bg-white/5 transition-colors touch-manipulation"
+                  onClick={() => setDrawerOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              {/* Nav links — comfortable tap targets */}
+              <nav className="flex flex-col px-4 pt-6 pb-8" aria-label="Main">
                 {NAV_ITEMS.map((item) => (
                   <a
                     key={item}
@@ -152,8 +175,8 @@ export function HeroSection() {
                       e.preventDefault();
                       scrollTo(item.toLowerCase());
                     }}
-                    className="text-white hover:text-[#edeaf5] transition-colors tracking-[-0.03em]"
-                    style={{ fontFamily: "var(--font-sans)", fontSize: "18px", fontWeight: 400 }}
+                    className="py-3.5 px-4 rounded-lg text-white hover:text-[#edeaf5] hover:bg-white/5 active:bg-white/10 transition-colors tracking-[-0.03em] touch-manipulation"
+                    style={{ fontFamily: "var(--font-sans)", fontSize: "17px", fontWeight: 500 }}
                   >
                     {item}
                   </a>
@@ -284,7 +307,7 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-
-    </motion.section>
+      </motion.div>
+    </section>
   );
 }

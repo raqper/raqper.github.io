@@ -46,7 +46,7 @@ function CardItem({ item }: { item: ContentItem }) {
       rel="noopener noreferrer"
       className="group bg-[#1c0048] rounded-xl overflow-hidden border border-[#2e1a6a] hover:border-[#2e1a6a]/60 transition-all duration-300 hover:shadow-[0_8px_40px_rgba(46,26,106,0.15)] flex flex-col"
     >
-      <div className="relative h-[120px] md:h-[160px] overflow-hidden shrink-0">
+      <div className="relative h-[96px] md:h-[160px] overflow-hidden shrink-0">
         <ImageWithFallback
           src={item.image}
           alt={item.title}
@@ -54,7 +54,7 @@ function CardItem({ item }: { item: ContentItem }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1c0048]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
-      <div className="p-4 md:p-5 flex flex-col flex-1">
+      <div className="p-3 md:p-5 flex flex-col flex-1">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-white tracking-[-0.02em]" style={{ fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 500 }}>
             {item.platform}
@@ -77,7 +77,7 @@ function CardItem({ item }: { item: ContentItem }) {
         >
           {item.description}
         </p>
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-2 md:mt-4 flex items-center gap-2">
           <span
             className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold border capitalize ${typeColors[item.type]?.bg ?? "bg-[#2e1a6a]/20"} ${typeColors[item.type]?.text ?? "text-[#9b82e0]"} ${typeColors[item.type]?.border ?? "border-[#2e1a6a]/40"}`}
             style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}
@@ -153,7 +153,7 @@ export function ContentSection() {
         background: "linear-gradient(180deg, rgb(5 0 14) 0%, #0a001c 15%, #0f0028 40%, #0a001c 80%, rgb(5 0 14) 100%)",
         height: !isMobile && extraScroll > 0 ? `calc(100vh + ${extraScroll}px)` : undefined,
         paddingTop: isMobile || extraScroll <= 0 ? "80px" : undefined,
-        paddingBottom: isMobile || extraScroll <= 0 ? "180px" : undefined,
+        paddingBottom: isMobile ? "70px" : extraScroll <= 0 ? "180px" : undefined,
       }}
     >
       {/* Ambient glows */}

@@ -4,7 +4,7 @@ import { milestones, type Milestone } from "@/app/data/timeline-data";
 
 function MilestoneCard({ milestone }: { milestone: Milestone }) {
   return (
-    <div className="bg-[#1c0048] rounded-xl p-5 border border-[#2e1a6a] hover:shadow-[0_4px_24px_rgba(46,26,106,0.12)] transition-all duration-300">
+    <div className="bg-[#1c0048] rounded-xl p-4 md:p-5 border border-[#2e1a6a] hover:shadow-[0_4px_24px_rgba(46,26,106,0.12)] transition-all duration-300">
       <div className="flex items-center gap-3 mb-3">
         <span
           className="text-[#edeaf5] tracking-[-0.05em]"

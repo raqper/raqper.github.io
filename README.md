@@ -29,4 +29,7 @@ npm run build
 npm run deploy:site
 ```
 
-`deploy:site` builds and pushes the `dist` output to the root of the `raqper.github.io` repository (main branch).
+- **`deploy:site`** – Builds and pushes `dist` to the **root** of the `raqper.github.io` repo (main). Use when the site is at **https://raqper.github.io/**.
+- **`deploy:project`** – Builds with base `/raqper/` and pushes to the **current repo’s** gh-pages branch. Use when the site is at **https://raqper.github.io/raqper/**.
+
+If the live page is blank, the usual cause is a wrong base path: the site URL must match how you deploy. User site (root) → `deploy:site`. Project site (`/raqper/`) → `deploy:project`.
