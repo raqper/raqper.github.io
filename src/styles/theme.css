@@ -1,0 +1,94 @@
+:root {
+  /* Portfolio palette */
+  --p-bg-base: rgb(5 0 14);
+  --p-bg-mid: #130032;
+  --p-bg-deep: #1c0048;
+  --p-bg-card: #1c0048;
+  --p-text-primary: #edeaf5;
+  --p-text-secondary: #9e96be;
+  --p-text-muted: #635c8c;
+  --p-text-dim: #4c4878;
+  --p-accent-purple: #2e1a6a;
+  --p-accent-gold: #b08828;
+  --p-accent-gold-light: #ede0a8;
+  --p-accent-gold-mid: #d4a848;
+  --p-accent-purple-light: #9b82e0;
+  --p-bg-floor: rgb(5 0 14);
+  --p-accent-amber: #c87020;
+  --p-accent-rose: #7a2858;
+
+  /* Font families */
+  --font-sans: 'TikTok Sans', sans-serif;
+  --font-expanded: 'Space Grotesk', sans-serif;
+  --font-handwriting: 'Caveat', cursive;
+
+  /* Spacing / radius */
+  --radius: 0.625rem;
+
+  /* Hobbies (light) palette */
+  --h-bg-cream: #f5f0e8;
+  --h-text-primary: #0a0a0a;
+  --h-text-muted: rgba(10, 10, 10, 0.55);
+  --h-text-dim: rgba(10, 10, 10, 0.35);
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-expanded: var(--font-expanded);
+
+  --color-p-bg-base: var(--p-bg-base);
+  --color-p-bg-mid: var(--p-bg-mid);
+  --color-p-bg-deep: var(--p-bg-deep);
+  --color-p-bg-card: var(--p-bg-card);
+  --color-p-text-primary: var(--p-text-primary);
+  --color-p-text-secondary: var(--p-text-secondary);
+  --color-p-text-muted: var(--p-text-muted);
+  --color-p-text-dim: var(--p-text-dim);
+  --color-p-accent-purple: var(--p-accent-purple);
+  --color-p-accent-gold: var(--p-accent-gold);
+  --color-p-accent-gold-light: var(--p-accent-gold-light);
+  --color-p-accent-gold-mid: var(--p-accent-gold-mid);
+  --color-p-accent-purple-light: var(--p-accent-purple-light);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--p-bg-base);
+    color: var(--p-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-expanded);
+    line-height: 1.1;
+  }
+}
+
+@keyframes marquee-tools {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-tools-track {
+  animation: marquee-tools 35s linear infinite;
+}
+
+.marquee-tools-wrap:hover .marquee-tools-track {
+  animation-play-state: paused;
+}
