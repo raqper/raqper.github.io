@@ -26,5 +26,5 @@ export const router = createBrowserRouter(
       Component: Portfolio,
     },
   ],
-  { basename: "/raqper/" }
+  { basename: "/" }
 );
