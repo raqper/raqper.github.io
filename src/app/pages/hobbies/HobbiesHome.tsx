@@ -6,12 +6,12 @@ import { HobbiesFooter } from "@/app/features/hobbies/components/hobbies-footer"
 
 export default function HobbiesHome() {
   return (
-    <div className="w-full min-h-screen" style={{ background: "#f5f0e8" }}>
+    <main id="main-content" className="w-full min-h-screen" style={{ background: "#f5f0e8" }}>
       <HobbiesHero />
       <AnalogPhotos />
       <Tattoos />
       <SeriesCarousel />
       <HobbiesFooter />
-    </div>
+    </main>
   );
 }

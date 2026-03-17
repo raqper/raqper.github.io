@@ -23,7 +23,10 @@ export function HeroSection() {
   const scrollTo = (id: string) => {
     setDrawerOpen(false);
     setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      document
+        .getElementById(id)
+        ?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
     }, drawerOpen ? 300 : 0);
   };
 
@@ -48,6 +51,7 @@ export function HeroSection() {
           }}
         >
           <button
+            type="button"
             className="relative z-10 rounded-full px-3.5 py-[4px] transition-colors"
             style={{
               background: "rgba(176,136,40,0.18)",
@@ -58,10 +62,12 @@ export function HeroSection() {
               color: "#ede0a8",
             }}
             onClick={() => navigate("/career")}
+            aria-current="page"
           >
             Career
           </button>
           <button
+            type="button"
             className="relative z-10 rounded-full px-3.5 py-[4px] transition-colors"
             style={{
               fontFamily: "var(--font-sans)",
@@ -86,7 +92,7 @@ export function HeroSection() {
                 e.preventDefault();
                 scrollTo(item.toLowerCase());
               }}
-              className="text-white tracking-[-0.03em] hover:text-[#edeaf5] transition-colors"
+              className="text-white/90 tracking-[-0.03em] hover:text-[#edeaf5] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0028] rounded-sm"
               style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
             >
               {item}
@@ -96,7 +102,7 @@ export function HeroSection() {
 
         {/* Mobile hamburger */}
         <button
-          className="lg:hidden flex flex-col gap-[5px] p-2 z-30"
+          className="lg:hidden flex flex-col gap-[5px] p-2 z-30 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0028]"
           onClick={() => setDrawerOpen(true)}
           aria-label="Open menu"
         >
@@ -134,7 +140,7 @@ export function HeroSection() {
             >
               {/* Close button */}
               <button
-                className="self-end text-[#a89cc8] hover:text-[#edeaf5] transition-colors"
+                className="self-end text-[#a89cc8] hover:text-[#edeaf5] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c0048]"
                 onClick={() => setDrawerOpen(false)}
                 aria-label="Close menu"
               >
@@ -152,7 +158,7 @@ export function HeroSection() {
                       e.preventDefault();
                       scrollTo(item.toLowerCase());
                     }}
-                    className="text-white hover:text-[#edeaf5] transition-colors tracking-[-0.03em]"
+                    className="text-white/90 hover:text-[#edeaf5] transition-colors tracking-[-0.03em] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c0048]"
                     style={{ fontFamily: "var(--font-sans)", fontSize: "18px", fontWeight: 400 }}
                   >
                     {item}

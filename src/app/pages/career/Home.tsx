@@ -8,7 +8,7 @@ import { Footer } from "@/app/components/footer";
 
 export default function Home() {
   return (
-    <div className="w-full min-h-screen" style={{ background: "var(--p-bg-base)" }}>
+    <main id="main-content" className="w-full min-h-screen" style={{ background: "var(--p-bg-base)" }}>
       <HeroSection />
       <Suspense fallback={null}>
         <TimelineSection />
@@ -17,6 +17,6 @@ export default function Home() {
         <CtaSection />
       </Suspense>
       <Footer />
-    </div>
+    </main>
   );
 }

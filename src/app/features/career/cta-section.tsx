@@ -72,7 +72,7 @@ export function CtaSection({ variant = "career" }: { variant?: CtaVariant }) {
               href="https://www.linkedin.com/in/raqper/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group shrink-0 inline-flex items-center gap-3 bg-[#ede0a8] text-[#0c0024] px-8 py-4 rounded-full border border-[#ede0a8] hover:bg-transparent hover:text-[#ede0a8] transition-all duration-300 hover:shadow-[0_0_30px_rgba(237,224,168,0.15)]"
+              className="group shrink-0 inline-flex items-center gap-3 bg-[#ede0a8] text-[#0c0024] px-8 py-4 rounded-full border border-[#ede0a8] hover:bg-transparent hover:text-[#ede0a8] transition-all duration-300 hover:shadow-[0_0_30px_rgba(237,224,168,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a001c]"
             >
               <span
                 className="tracking-[-0.02em]"

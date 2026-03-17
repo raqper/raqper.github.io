@@ -16,7 +16,7 @@ export function HobbiesNav() {
         >
           <button
             type="button"
-            className="relative z-10 rounded-full px-3.5 py-[4px] transition-colors"
+            className="relative z-10 rounded-full px-3.5 py-[4px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f5f0e8]"
             style={{
               fontFamily: "var(--font-sans)",
               fontSize: "12px",
@@ -30,7 +30,7 @@ export function HobbiesNav() {
           </button>
           <button
             type="button"
-            className="relative z-10 rounded-full px-3.5 py-[4px] transition-colors"
+            className="relative z-10 rounded-full px-3.5 py-[4px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f5f0e8]"
             style={{
               background: "#0a0a0a",
               fontFamily: "var(--font-sans)",
@@ -47,7 +47,7 @@ export function HobbiesNav() {
 
         <Link
           to="/career#contact"
-          className="text-[#0a0a0a]/70 hover:text-[#0a0a0a] transition-colors tracking-[-0.03em]"
+          className="text-[#0a0a0a]/70 hover:text-[#0a0a0a] transition-colors tracking-[-0.03em] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f5f0e8]"
           style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
         >
           Contact

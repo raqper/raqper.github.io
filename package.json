@@ -4,10 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare:root-entry": "node scripts/prepare-root-entry.mjs",
+    "predev": "npm run prepare:root-entry",
     "dev": "vite --port 5173 --host",
     "preview": "vite preview --port 5173 --host",
-    "build": "vite build && cp index.html 404.html",
-    "deploy": "npm run build"
+    "clean:build": "node scripts/clean-root-build.mjs",
+    "prebuild": "npm run prepare:root-entry && npm run clean:build",
+    "build": "vite build && node scripts/publish-root-build.mjs",
+    "check:deploy": "node scripts/validate-root-build.mjs",
+    "build:verify": "npm run build && npm run check:deploy",
+    "deploy": "npm run build:verify"
   },
   "dependencies": {
     "clsx": "2.1.1",

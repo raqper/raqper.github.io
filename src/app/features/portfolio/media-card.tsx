@@ -11,6 +11,12 @@ const NOKIA_COMPARISON_IMAGES: Record<string, Record<"new" | "old", string | und
   "3": { new: undefined, old: undefined },
 };
 
+function formatMediaLabel(cardId: string): string {
+  return cardId
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 export function SegmentedControl<T extends string | number>({
   options,
   value,
@@ -94,7 +100,7 @@ export function NokiaBeforeAfterCard() {
         {imageSrc ? (
           <img
             src={imageSrc}
-            alt=""
+            alt={`Nokia comparison screen ${screen}, ${version} tokens`}
             className="absolute inset-0 w-full h-full object-contain"
             draggable={false}
           />
@@ -122,11 +128,13 @@ export function NokiaBeforeAfterCard() {
 export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef }) {
   const accent = accents[uc.id];
   const media = MEDIA_CONTENT[card.id];
+  const mediaLabel = `${uc.title} ${formatMediaLabel(card.id)}`;
 
   if (media?.type === "video") {
     return (
       <video
         src={media.src}
+        aria-label={mediaLabel}
         className="block max-w-full max-h-full w-auto h-auto"
         style={{ maxHeight: "clamp(480px, 72vh, 720px)" }}
         controls
@@ -147,7 +155,7 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
       >
         <iframe
           src={media.src}
-          title="YouTube video player"
+          title={mediaLabel}
           className="absolute inset-0 w-full h-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerPolicy="strict-origin-when-cross-origin"
@@ -161,7 +169,7 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
     return (
       <img
         src={media.src}
-        alt=""
+        alt={mediaLabel}
         loading="lazy"
         className="block max-w-full max-h-full w-auto h-auto"
         style={{ maxHeight: "clamp(480px, 72vh, 720px)" }}

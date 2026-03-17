@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: "/",
   root: ".",
+  publicDir: false,
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -12,9 +13,9 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: ".",
+    outDir: ".site",
     assetsDir: "static",
-    emptyOutDir: false,
+    emptyOutDir: true,
   },
   assetsInclude: ["**/*.svg", "**/*.csv"],
   preview: {

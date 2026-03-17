@@ -9,8 +9,10 @@ import { ALL_CARDS, type CardDef } from "./card-builder";
 
 export { ALL_CARDS };
 
+const useCaseById = new Map(allUseCases.map((useCase) => [useCase.id, useCase]));
+
 export function CardRenderer({ card }: { card: CardDef }) {
-  const uc = allUseCases.find((u) => u.id === card.useCaseId)!;
+  const uc = useCaseById.get(card.useCaseId)!;
   switch (card.type) {
     case "overview":
       return <OverviewCard uc={uc} />;

@@ -8,6 +8,9 @@ export function SkillsSection() {
     string | null
   >(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const toggleSkill = (skillId: string) => {
+    setExpandedSkill(expandedSkill === skillId ? null : skillId);
+  };
 
   return (
     <section
@@ -88,12 +91,18 @@ export function SkillsSection() {
                 delay: index * 0.08,
                 ease: [0.25, 0.1, 0.25, 1],
               }}
-              className="border-b border-[#2e1a6a] group cursor-pointer hover:bg-[#1c0048]/50 transition-colors"
-              onClick={() =>
-                setExpandedSkill(
-                  expandedSkill === skill.id ? null : skill.id,
-                )
-              }
+              className="border-b border-[#2e1a6a] group cursor-pointer hover:bg-[#1c0048]/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0028]"
+              onClick={() => toggleSkill(skill.id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  toggleSkill(skill.id);
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-expanded={expandedSkill === skill.id}
+              aria-controls={`skill-panel-${skill.id}`}
             >
               <div className="flex items-center justify-between py-5 md:py-7">
                 <div className="flex items-center gap-6 md:gap-10">
@@ -112,7 +121,6 @@ export function SkillsSection() {
                 </div>
                 <div className="flex items-center gap-4">
                   <span
-                    role="tag"
                     aria-label={`Category: ${skill.category}`}
                     className={`capitalize tracking-[-0.03em] px-2.5 py-1 rounded-full border ${
                       skill.category === "hard"
@@ -139,7 +147,7 @@ export function SkillsSection() {
                 </div>
               </div>
               {expandedSkill === skill.id && (
-                <div className="pb-6 md:pb-8 pl-6 md:pl-16 pr-6">
+                <div id={`skill-panel-${skill.id}`} className="pb-6 md:pb-8 pl-6 md:pl-16 pr-6">
                   <p
                     className="text-white max-w-full tracking-[-0.02em]"
                     style={{ fontFamily: "var(--font-sans)", fontSize: "16px", fontWeight: 400, lineHeight: "26px" }}

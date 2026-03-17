@@ -2,9 +2,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { ScrollReveal } from "@/app/components/scroll-reveal";
 import {
   type UseCaseId,
-  chipActiveStyles,
   accents,
-  useCaseChips,
   allUseCases,
 } from "./portfolio-data";
 import { ALL_CARDS, CardRenderer } from "./card-renderer";
@@ -12,6 +10,35 @@ import { ALL_CARDS, CardRenderer } from "./card-renderer";
 export interface PortfolioChipState {
   activeChip: UseCaseId | null;
   handleChipClick: (id: UseCaseId) => void;
+}
+
+const cardsByUseCase = new Map<UseCaseId, typeof ALL_CARDS>();
+for (const useCase of allUseCases) {
+  cardsByUseCase.set(
+    useCase.id,
+    ALL_CARDS.filter((card) => card.useCaseId === useCase.id)
+  );
+}
+
+function getTrackOverflow(
+  trackElement: HTMLDivElement,
+  viewportWidth: number
+): number {
+  const children = trackElement.children;
+  let contentRight = 0;
+
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i] as HTMLElement;
+    const right = child.offsetLeft + child.offsetWidth;
+    if (right > contentRight) {
+      contentRight = right;
+    }
+  }
+
+  const paddingRight =
+    parseFloat(getComputedStyle(trackElement).paddingRight) || 0;
+  const totalWidth = contentRight + paddingRight;
+  return Math.max(0, totalWidth - viewportWidth);
 }
 
 export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onChipStateChange?: (state: PortfolioChipState) => void; navProgressBarRef?: React.RefObject<HTMLDivElement | null> }) {
@@ -33,20 +60,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
 
   const recalculate = useCallback(() => {
     if (!trackRef.current || isMobile) return;
-    const viewportWidth = window.innerWidth;
-
-    // Compute total width from children's layout positions (unaffected by transforms)
-    const children = trackRef.current.children;
-    let contentRight = 0;
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i] as HTMLElement;
-      const right = child.offsetLeft + child.offsetWidth;
-      if (right > contentRight) contentRight = right;
-    }
-    const paddingRight = parseFloat(getComputedStyle(trackRef.current).paddingRight) || 0;
-    const totalWidth = contentRight + paddingRight;
-
-    const overflow = Math.max(0, totalWidth - viewportWidth);
+    const overflow = getTrackOverflow(trackRef.current, window.innerWidth);
     extraScrollRef.current = overflow;
     setExtraScroll(overflow);
   }, [isMobile]);
@@ -72,7 +86,10 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
 
   useEffect(() => {
     if (isMobile) return;
-    const onScroll = () => {
+    let rafId: number | null = null;
+
+    const updateOnScroll = () => {
+      rafId = null;
       const es = extraScrollRef.current;
       if (!sectionRef.current || !trackRef.current || es <= 0) return;
       const { top } = sectionRef.current.getBoundingClientRect();
@@ -116,9 +133,21 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
         setActiveChip(null);
       }
     };
+
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(updateOnScroll);
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    updateOnScroll();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
   }, [isMobile]);
 
   const handleChipClick = useCallback((id: UseCaseId) => {
@@ -132,18 +161,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
 
     if (!sectionRef.current || !trackRef.current) return;
 
-    // Compute current extraScroll from layout (same logic as recalculate)
-    const children = trackRef.current.children;
-    let contentRight = 0;
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i] as HTMLElement;
-      const right = child.offsetLeft + child.offsetWidth;
-      if (right > contentRight) contentRight = right;
-    }
-    const paddingRight = parseFloat(getComputedStyle(trackRef.current).paddingRight) || 0;
-    const totalWidth = contentRight + paddingRight;
-    const viewportWidth = window.innerWidth;
-    const currentExtraScroll = Math.max(0, totalWidth - viewportWidth);
+    const currentExtraScroll = getTrackOverflow(trackRef.current, window.innerWidth);
     if (currentExtraScroll <= 0) return;
 
     // Sync ref and state, and force section height so the page is tall enough to scroll
@@ -152,7 +170,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
     sectionRef.current.style.height = `${window.innerHeight + currentExtraScroll}px`;
 
     // Find the first card element for this use case
-    const cardElements = Array.from(children) as HTMLElement[];
+    const cardElements = Array.from(trackRef.current.children) as HTMLElement[];
     const targetCard = cardElements.find((el) => el.dataset.usecaseId === id);
     if (!targetCard) return;
 
@@ -163,7 +181,8 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
     const sectionTop = sectionRef.current.offsetTop;
     const targetScroll = sectionTop + targetProgress * currentExtraScroll;
 
-    window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: targetScroll, behavior: prefersReducedMotion ? "auto" : "smooth" });
   }, [isMobile]);
 
   // Expose chip state to parent (nav bar) — always provide fresh callback
@@ -195,7 +214,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
           <div className="px-4 pt-6 pb-16 flex flex-col gap-10 relative z-10">
             {allUseCases.map((uc) => {
               const accent = accents[uc.id];
-              const cards = ALL_CARDS.filter((c) => c.useCaseId === uc.id);
+              const cards = cardsByUseCase.get(uc.id) ?? [];
               return (
                 <div key={uc.id} id={`uc-${uc.id}`}>
                   <div className="flex items-center gap-3 mb-4 px-2">

@@ -23,7 +23,7 @@ export default function Portfolio() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen" style={{ background: "var(--p-bg-base)" }}>
+    <main id="main-content" className="w-full min-h-screen" style={{ background: "var(--p-bg-base)" }}>
       {/* Navigation — matches hero-section nav style */}
       <nav className="fixed top-0 left-0 right-0 z-50">
         {/* Backdrop blur */}
@@ -78,17 +78,19 @@ export default function Portfolio() {
                 const styles = chipActiveStyles[chip.id];
                 return (
                   <button
+                    type="button"
                     key={chip.id}
                     onClick={() => chipState?.handleChipClick(chip.id)}
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 cursor-pointer shrink-0 whitespace-nowrap"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 cursor-pointer shrink-0 whitespace-nowrap hover:text-[#edeaf5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#130032]"
                     style={{
                       fontFamily: "var(--font-sans)",
                       fontSize: "12px",
                       fontWeight: 500,
                       backgroundColor: isActive ? styles.bg : "transparent",
-                      borderColor: isActive ? styles.border : "rgba(168,156,200,0.35)",
-                      color: isActive ? styles.text : "#c4bade",
+                      borderColor: isActive ? styles.border : "rgba(168,156,200,0.42)",
+                      color: isActive ? styles.text : "#d0c7e7",
                     }}
+                    aria-pressed={isActive}
                   >
                     {chip.label}
                   </button>
@@ -133,6 +135,6 @@ export default function Portfolio() {
       <PortfolioSection onChipStateChange={handleChipStateChange} navProgressBarRef={progressBarNavRef} />
       <CtaSection variant="portfolio" />
       <Footer />
-    </div>
+    </main>
   );
 }
