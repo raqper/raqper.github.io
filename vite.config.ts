@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  base: "/",
+  base: "/raqper/",
   root: ".",
   plugins: [react(), tailwindcss()],
   resolve: {
@@ -13,7 +13,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "dist",
+    outDir: "docs",
     assetsDir: "assets",
   },
   assetsInclude: ["**/*.svg", "**/*.csv"],
