@@ -3,12 +3,15 @@ import { accents } from "./portfolio-data";
 import type { UseCase } from "./portfolio-data";
 import type { CardDef } from "./card-builder";
 import { MEDIA_CONTENT } from "./media-content";
+import nokiaScreen1Old from "@/assets/1-FF.png";
+import nokiaScreen1New from "@/assets/1-Connect.png";
+import nokiaScreen2Old from "@/assets/2-FF.png";
+import nokiaScreen2New from "@/assets/2-Connect.png";
 
 const NOKIA_ACCENT = "#A6CDFF";
-const NOKIA_COMPARISON_IMAGES: Record<string, Record<"new" | "old", string | undefined>> = {
-  "1": { new: undefined, old: undefined },
-  "2": { new: undefined, old: undefined },
-  "3": { new: undefined, old: undefined },
+const NOKIA_COMPARISON_IMAGES: Record<"1" | "2", Record<"new" | "old", string>> = {
+  "1": { new: nokiaScreen1New, old: nokiaScreen1Old },
+  "2": { new: nokiaScreen2New, old: nokiaScreen2Old },
 };
 
 function formatMediaLabel(cardId: string): string {
@@ -62,14 +65,14 @@ export function SegmentedControl<T extends string | number>({
 }
 
 export function NokiaBeforeAfterCard() {
-  const [screen, setScreen] = useState<1 | 2 | 3>(1);
+  const [screen, setScreen] = useState<1 | 2>(1);
   const [version, setVersion] = useState<"new" | "old">("new");
   const imageSrc = NOKIA_COMPARISON_IMAGES[String(screen)]?.[version];
 
   return (
     <div className="h-full w-full min-h-0 relative flex flex-col bg-black/40">
       <div
-        className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between gap-3 p-3"
+        className="z-10 flex shrink-0 items-center justify-between gap-3 p-3"
         style={{
           background: "rgba(12,0,36,0.6)",
           backdropFilter: "blur(8px)",
@@ -78,8 +81,8 @@ export function NokiaBeforeAfterCard() {
       >
         <SegmentedControl
           options={[
-            { value: "new", label: "New tokens" },
             { value: "old", label: "Old tokens" },
+            { value: "new", label: "New tokens" },
           ]}
           value={version}
           onChange={(v) => setVersion(v)}
@@ -89,14 +92,13 @@ export function NokiaBeforeAfterCard() {
           options={[
             { value: 1, label: "Screen 1" },
             { value: 2, label: "Screen 2" },
-            { value: 3, label: "Screen 3" },
           ]}
           value={screen}
           onChange={(v) => setScreen(v)}
           accentColor={NOKIA_ACCENT}
         />
       </div>
-      <div className="flex-1 min-h-0 relative mt-[52px]">
+      <div className="flex-1 min-h-0 relative">
         {imageSrc ? (
           <img
             src={imageSrc}
