@@ -70,71 +70,74 @@ export function TimelineSection() {
 
       <div className="relative flex flex-col">
         <ScrollReveal className="shrink-0" offsetY={30} duration={1.4}>
-          <div className="px-6 md:px-10 pt-16 md:pt-24">
-            <div className="max-w-[1400px] mx-auto w-full">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                  <p
-                    className="text-[#a89cc8] tracking-[-0.05em] mb-4"
-                    style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
-                  >
-                    Experience
-                  </p>
-                  <h2
-                    className="text-[#edeaf5] tracking-[-0.04em]"
-                    style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
-                  >
-                    Scaling impact over time
-                  </h2>
-                  <p
-                    className="text-white tracking-[-0.02em] mt-6 md:mt-8"
-                    style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.2vw, 17px)", lineHeight: 1.55 }}
-                  >
-                    Since 2017, I've progressively expanded my scope, from designing interfaces to shaping how teams build, scale, and integrate AI into their workflows.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0 basis-auto" aria-label="Carousel navigation">
-                  <CarouselArrow
-                    direction="left"
-                    disabled={atStart}
-                    onClick={scrollBy}
-                    className={CAROUSEL_ARROW_CLASS}
-                    style={CAROUSEL_ARROW_STYLE}
-                  />
-                  <CarouselArrow
-                    direction="right"
-                    disabled={atEnd}
-                    onClick={scrollByRight}
-                    className={CAROUSEL_ARROW_CLASS}
-                    style={CAROUSEL_ARROW_STYLE}
-                  />
-                </div>
-              </div>
-
-              <div className="pt-6">
-                <div
-                  ref={stripRef}
-                  className="flex gap-4 overflow-x-auto overflow-y-hidden pb-4 -mb-4 no-scrollbar snap-x snap-proximity scroll-px-4"
-                  style={{
-                    scrollbarWidth: "none",
-                    msOverflowStyle: "none",
-                    paddingLeft: "1rem",
-                    paddingRight: "1rem",
-                    cursor: isDragging ? "grabbing" : "grab",
-                    userSelect: "none",
-                  }}
-                  {...dragHandlers}
-                  onMouseLeave={dragHandlers.onMouseUp}
-                >
-                  {milestones.map((milestone) => (
-                    <div
-                      key={milestone.id}
-                      className="shrink-0 snap-start"
-                      style={{ width: "clamp(240px, 60vw, 380px)" }}
+          <div className="pt-16 md:pt-24">
+            <div className="px-6 md:px-10">
+              <div className="max-w-[1400px] mx-auto w-full">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className="text-[#a89cc8] tracking-[-0.05em] mb-4"
+                      style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
                     >
-                      <MilestoneCard milestone={milestone} />
-                    </div>
-                  ))}
+                      Experience
+                    </p>
+                    <h2
+                      className="text-[#edeaf5] tracking-[-0.04em]"
+                      style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
+                    >
+                      Scaling impact over time
+                    </h2>
+                    <p
+                      className="text-white tracking-[-0.02em] mt-6 md:mt-8"
+                      style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.2vw, 17px)", lineHeight: 1.55 }}
+                    >
+                      Since 2017, I've progressively expanded my scope, from designing interfaces to shaping how teams build, scale, and integrate AI into their workflows.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0 basis-auto" aria-label="Carousel navigation">
+                    <CarouselArrow
+                      direction="left"
+                      disabled={atStart}
+                      onClick={scrollBy}
+                      className={CAROUSEL_ARROW_CLASS}
+                      style={CAROUSEL_ARROW_STYLE}
+                    />
+                    <CarouselArrow
+                      direction="right"
+                      disabled={atEnd}
+                      onClick={scrollByRight}
+                      className={CAROUSEL_ARROW_CLASS}
+                      style={CAROUSEL_ARROW_STYLE}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-6" style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }}>
+                  <div
+                    ref={stripRef}
+                    className="flex gap-4 overflow-x-auto overflow-y-hidden pb-4 -mb-4 no-scrollbar snap-x snap-proximity"
+                    style={{
+                      scrollbarWidth: "none",
+                      msOverflowStyle: "none",
+                      paddingLeft: "max(24px, min(40px, 5.2vw), -660px + 48vw)",
+                      paddingRight: "max(24px, min(40px, 5.2vw), calc((100vw - 1400px) / 2 + 40px))",
+                      scrollPaddingInlineStart: "max(24px, min(40px, 5.2vw), -660px + 48vw)",
+                      cursor: isDragging ? "grabbing" : "grab",
+                      userSelect: "none",
+                    }}
+                    {...dragHandlers}
+                    onMouseLeave={dragHandlers.onMouseUp}
+                  >
+                    {milestones.map((milestone) => (
+                      <div
+                        key={milestone.id}
+                        className="shrink-0 snap-start"
+                        style={{ width: "clamp(240px, 60vw, 380px)" }}
+                      >
+                        <MilestoneCard milestone={milestone} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

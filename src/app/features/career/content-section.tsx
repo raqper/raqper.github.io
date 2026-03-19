@@ -116,64 +116,67 @@ export function ContentSection() {
 
       <div className="relative flex flex-col">
         <ScrollReveal className="shrink-0" offsetY={30} duration={1.4}>
-          <div className="px-6 md:px-10 pt-16 md:pt-24 pb-6">
-            <div className="max-w-[1400px] mx-auto w-full">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                  <p className="text-[#a89cc8] tracking-[-0.05em] mb-4" style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}>
-                    Content
-                  </p>
-                  <h2
-                    className="text-[#edeaf5] tracking-[-0.04em]"
-                    style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
-                  >
-                    Contributing to the design community
-                  </h2>
-                  <p
-                    className="text-white tracking-[-0.02em] mt-6 md:mt-8 mb-6"
-                    style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.2vw, 17px)", lineHeight: 1.55 }}
-                  >
-                    I speak and teach through talks, livestreams, and online courses, believing knowledge-sharing is most valuable when it's a two-way exchange.
-                  </p>
+          <div className="pt-16 md:pt-24">
+            <div className="px-6 md:px-10 pb-6">
+              <div className="max-w-[1400px] mx-auto w-full">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[#a89cc8] tracking-[-0.05em] mb-4" style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}>
+                      Content
+                    </p>
+                    <h2
+                      className="text-[#edeaf5] tracking-[-0.04em]"
+                      style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
+                    >
+                      Contributing to the design community
+                    </h2>
+                    <p
+                      className="text-white tracking-[-0.02em] mt-6 md:mt-8 mb-6"
+                      style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.2vw, 17px)", lineHeight: 1.55 }}
+                    >
+                      I speak and teach through talks, livestreams, and online courses, believing knowledge-sharing is most valuable when it's a two-way exchange.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0 basis-auto" aria-label="Carousel navigation">
+                    <CarouselArrow
+                      direction="left"
+                      disabled={atStart}
+                      onClick={scrollBy}
+                      className={CAROUSEL_ARROW_CLASS}
+                      style={CAROUSEL_ARROW_STYLE}
+                    />
+                    <CarouselArrow
+                      direction="right"
+                      disabled={atEnd}
+                      onClick={scrollByRight}
+                      className={CAROUSEL_ARROW_CLASS}
+                      style={CAROUSEL_ARROW_STYLE}
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0 basis-auto" aria-label="Carousel navigation">
-                  <CarouselArrow
-                    direction="left"
-                    disabled={atStart}
-                    onClick={scrollBy}
-                    className={CAROUSEL_ARROW_CLASS}
-                    style={CAROUSEL_ARROW_STYLE}
-                  />
-                  <CarouselArrow
-                    direction="right"
-                    disabled={atEnd}
-                    onClick={scrollByRight}
-                    className={CAROUSEL_ARROW_CLASS}
-                    style={CAROUSEL_ARROW_STYLE}
-                  />
-                </div>
-              </div>
 
-              <div>
-                <div
-                  ref={stripRef}
-                  className="flex gap-4 overflow-x-auto overflow-y-hidden pb-4 -mb-4 no-scrollbar snap-x snap-proximity scroll-px-4"
-                  style={{
-                    scrollbarWidth: "none",
-                    msOverflowStyle: "none",
-                    paddingLeft: "1rem",
-                    paddingRight: "1rem",
-                    cursor: isDragging ? "grabbing" : "grab",
-                    userSelect: "none",
-                  }}
-                  {...dragHandlers}
-                  onMouseLeave={dragHandlers.onMouseUp}
-                >
-                  {contentItems.map((item) => (
-                    <div key={item.id} className="shrink-0 snap-start" style={{ width: "clamp(240px, 58vw, 340px)" }}>
-                      <CardItem item={item} />
-                    </div>
-                  ))}
+                <div style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }}>
+                  <div
+                    ref={stripRef}
+                    className="flex gap-4 overflow-x-auto overflow-y-hidden pb-4 -mb-4 no-scrollbar snap-x snap-proximity"
+                    style={{
+                      scrollbarWidth: "none",
+                      msOverflowStyle: "none",
+                      paddingLeft: "max(24px, min(40px, 5.2vw), -660px + 48vw)",
+                      paddingRight: "max(24px, min(40px, 5.2vw), calc((100vw - 1400px) / 2 + 40px))",
+                      scrollPaddingInlineStart: "max(24px, min(40px, 5.2vw), -660px + 48vw)",
+                      cursor: isDragging ? "grabbing" : "grab",
+                      userSelect: "none",
+                    }}
+                    {...dragHandlers}
+                    onMouseLeave={dragHandlers.onMouseUp}
+                  >
+                    {contentItems.map((item) => (
+                      <div key={item.id} className="shrink-0 snap-start" style={{ width: "clamp(240px, 58vw, 340px)" }}>
+                        <CardItem item={item} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

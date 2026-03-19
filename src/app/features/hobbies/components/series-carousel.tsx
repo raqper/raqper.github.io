@@ -50,7 +50,7 @@ export function SeriesCarousel() {
   const { stripRef, atStart, atEnd, isDragging, scrollBy, scrollByRight, dragHandlers } = useCarouselScroll();
 
   return (
-    <section id="series" className="py-20 overflow-hidden" style={{ background: "#ffffff" }}>
+    <section id="series" className="py-20" style={{ background: "#ffffff" }}>
       <div className="px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto">
           <SectionHeader title="Top series">
@@ -60,14 +60,15 @@ export function SeriesCarousel() {
             </div>
           </SectionHeader>
 
-          <div>
+          <div style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }}>
             <div
               ref={stripRef}
-              className="flex gap-3 overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-proximity scroll-px-4"
+              className="flex gap-3 overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-proximity"
               style={{
                 paddingBottom: 16,
-                paddingLeft: "1rem",
-                paddingRight: "1rem",
+                paddingLeft: "max(24px, min(40px, 5.2vw), -660px + 48vw)",
+                paddingRight: "max(24px, min(40px, 5.2vw), calc((100vw - 1400px) / 2 + 40px))",
+                scrollPaddingInlineStart: "max(24px, min(40px, 5.2vw), -660px + 48vw)",
                 cursor: isDragging ? "grabbing" : "grab",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
@@ -77,55 +78,52 @@ export function SeriesCarousel() {
               onMouseLeave={dragHandlers.onMouseUp}
             >
               {SERIES.map((s, i) => (
-                  <motion.div
-                    key={s.id}
-                    className="flex-shrink-0 snap-start"
-                    style={{ width: "clamp(140px, 12vw, 200px)" }}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 0.5, delay: i * 0.06 }}
+                <motion.div
+                  key={s.id}
+                  className="flex-shrink-0 snap-start"
+                  style={{ width: "clamp(140px, 12vw, 200px)" }}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.5, delay: i * 0.06 }}
+                >
+                  <div
+                    className="relative overflow-hidden bg-neutral-200"
+                    style={{ width: "100%", aspectRatio: "3/4" }}
                   >
-                    <div
-                      className="relative overflow-hidden bg-neutral-200"
+                    <img
+                      src={s.image}
+                      alt={s.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div style={{ marginTop: 6 }}>
+                    <p
                       style={{
-                        width: "100%",
-                        aspectRatio: "3/4",
+                        fontFamily: "var(--font-expanded)",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        letterSpacing: "-0.02em",
+                        color: "#0a0a0a",
+                        lineHeight: 1.2,
                       }}
                     >
-                      <img
-                        src={s.image}
-                        alt={s.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div style={{ marginTop: 6 }}>
-                      <p
-                        style={{
-                          fontFamily: "var(--font-expanded)",
-                          fontSize: "12px",
-                          fontWeight: 400,
-                          letterSpacing: "-0.02em",
-                          color: "#0a0a0a",
-                          lineHeight: 1.2,
-                        }}
-                      >
-                        {s.title}
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: "var(--font-sans)",
-                          fontSize: "10px",
-                          color: "rgba(10,10,10,0.4)",
-                          letterSpacing: "0.02em",
-                          marginTop: 2,
-                        }}
-                      >
-                        {s.genre}
-                      </p>
-                    </div>
-                  </motion.div>
+                      {s.title}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "var(--font-sans)",
+                        fontSize: "10px",
+                        color: "rgba(10,10,10,0.4)",
+                        letterSpacing: "0.02em",
+                        marginTop: 2,
+                      }}
+                    >
+                      {s.genre}
+                    </p>
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>

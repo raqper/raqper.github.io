@@ -33,7 +33,7 @@ export function Tattoos() {
   const { stripRef, atStart, atEnd, isDragging, scrollBy, scrollByRight, dragHandlers } = useCarouselScroll();
 
   return (
-    <section id="tattoos" className="py-20 overflow-hidden" style={{ background: "#ffffff" }}>
+    <section id="tattoos" className="py-20" style={{ background: "#ffffff" }}>
       <div className="px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto">
           <SectionHeader title="Tattoos">
@@ -43,14 +43,15 @@ export function Tattoos() {
             </div>
           </SectionHeader>
 
-          <div>
+          <div style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }}>
             <div
               ref={stripRef}
-              className="flex gap-4 overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-proximity scroll-px-4"
+              className="flex gap-4 overflow-x-auto overflow-y-hidden no-scrollbar snap-x snap-proximity"
               style={{
                 paddingBottom: 16,
-                paddingLeft: "1rem",
-                paddingRight: "1rem",
+                paddingLeft: "max(24px, min(40px, 5.2vw), -660px + 48vw)",
+                paddingRight: "max(24px, min(40px, 5.2vw), calc((100vw - 1400px) / 2 + 40px))",
+                scrollPaddingInlineStart: "max(24px, min(40px, 5.2vw), -660px + 48vw)",
                 cursor: isDragging ? "grabbing" : "grab",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
