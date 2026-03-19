@@ -272,6 +272,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
               {ALL_CARDS.map((card, index) => {
                 const isFirstInGroup = index === 0 || ALL_CARDS[index - 1].useCaseId !== card.useCaseId;
                 const isMedia = card.type === "media";
+                const isNokiaCompareCard = card.id === "nokia-media-pre-impact-2";
                 const nonMediaHeight = "clamp(480px, 72vh, 720px)";
 
                 return (
@@ -290,10 +291,12 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                     <div
                       className="shrink-0 rounded-2xl transition-all duration-300 overflow-hidden"
                       style={{
-                        width: (isMedia && card.id !== "nokia-media-pre-impact-2") ? "auto" : "clamp(569px, 57vw, 853px)",
-                        height: (isMedia && card.id !== "nokia-media-pre-impact-2") ? "auto" : nonMediaHeight,
+                        width: isMedia ? "auto" : "clamp(569px, 57vw, 853px)",
+                        height: isMedia ? (isNokiaCompareCard ? nonMediaHeight : "auto") : nonMediaHeight,
                         maxHeight: "clamp(480px, 72vh, 720px)",
-                        aspectRatio: (isMedia && card.id !== "nokia-media-pre-impact-2") ? undefined : "1280 / 1080",
+                        aspectRatio: isMedia
+                          ? (isNokiaCompareCard ? "16 / 9" : undefined)
+                          : "1280 / 1080",
                         background:
                           card.type === "overview" || card.type === "impact"
                             ? "#130030"

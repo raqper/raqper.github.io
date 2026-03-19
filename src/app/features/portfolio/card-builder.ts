@@ -18,7 +18,6 @@ const HIDDEN_MEDIA_IDS = new Set([
   "swap-wizard-media-fidRound1",
   "nokia-media-approach",
   "nokia-media-approach-3",
-  "nokia-media-pre-impact-2", // Nokia before/after tokens (Screen 1/2/3) — hidden for now
   "man-media-approach-3",
   "man-media-approach-5",
   "nos-media-approach-2",
@@ -38,7 +37,7 @@ export function buildCards(): CardDef[] {
   for (const uc of allUseCases) {
     const deferImpactLearnings = uc.id === "swap-wizard" || uc.id === "nos";
     for (const t of mainTypes) {
-      if (t === "impact" && uc.id !== "swap-wizard" && uc.id !== "man" && uc.id !== "nos") {
+      if (t === "impact" && uc.id !== "swap-wizard" && uc.id !== "man" && uc.id !== "nos" && uc.id !== "nokia") {
         pushMedia(cards, uc.id, `${uc.id}-media-pre-impact-2`);
       }
       if (deferImpactLearnings && t === "impact") continue;
@@ -50,6 +49,9 @@ export function buildCards(): CardDef[] {
         }
         if (t === "approach") {
           pushMedia(cards, uc.id, `${uc.id}-media-approach-2`);
+          if (uc.id === "nokia") {
+            pushMedia(cards, uc.id, `${uc.id}-media-pre-impact-2`);
+          }
           if (uc.id === "nokia" || uc.id === "man") {
             pushMedia(cards, uc.id, `${uc.id}-media-approach-3`);
             pushMedia(cards, uc.id, `${uc.id}-media-approach-4`);
