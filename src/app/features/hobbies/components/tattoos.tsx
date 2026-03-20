@@ -1,35 +1,52 @@
-import { useState } from "react";
 import { motion } from "motion/react";
 import { CarouselArrow } from "@/app/components/shared/carousel-arrow";
 import { SectionHeader } from "@/app/components/shared/section-header";
-import { Lightbox } from "@/app/components/shared/lightbox";
 import { useCarouselScroll } from "@/app/hooks/use-carousel-scroll";
+
+import tattoo1 from "@/assets/tattoo/tattoo1.jpg";
+import tattoo2 from "@/assets/tattoo/tattoo2.jpg";
+import tattoo3 from "@/assets/tattoo/tattoo3.jpg";
+import tattoo4 from "@/assets/tattoo/tattoo4.jpg";
+import tattoo5 from "@/assets/tattoo/tattoo5.jpg";
+import tattoo6 from "@/assets/tattoo/tattoo6.jpg";
+import tattoo7 from "@/assets/tattoo/tattoo7.jpg";
+import tattoo8 from "@/assets/tattoo/tattoo8.jpg";
+import tattoo9 from "@/assets/tattoo/tattoo9.jpg";
+import tattoo10 from "@/assets/tattoo/tattoo10.jpg";
+import tattoo11 from "@/assets/tattoo/tattoo11.jpg";
+import tattoo12 from "@/assets/tattoo/tattoo12.jpg";
+import tattoo13 from "@/assets/tattoo/tattoo13.jpg";
+import tattoo14 from "@/assets/tattoo/tattoo14.jpg";
+import tattoo15 from "@/assets/tattoo/tattoo15.jpg";
+import tattoo16 from "@/assets/tattoo/tattoo16.jpg";
 
 interface TattooItem {
   id: number;
-  type: "skin" | "flash";
   title: string;
-  detail: string;
-  artist?: string;
-  year?: string;
+  src: string;
 }
 
+// Ordered newest → oldest (tattoo16 is newest, tattoo1 is oldest)
 const TATTOOS: TattooItem[] = [
-  { id: 1, type: "skin", title: "Sleeve fragment", detail: "Upper arm", artist: "Studio Ghibli Ink", year: "2021" },
-  { id: 2, type: "flash", title: "Snake flash", detail: "Flash design" },
-  { id: 3, type: "flash", title: "Botanical study", detail: "Flash design" },
-  { id: 4, type: "skin", title: "Ribcage piece", detail: "Side rib", artist: "Blackwork Collective", year: "2022" },
-  { id: 5, type: "flash", title: "Moth study", detail: "Flash design" },
-  { id: 6, type: "skin", title: "Ankle wrap", detail: "Left ankle", artist: "Fine Line Studio", year: "2023" },
-  { id: 7, type: "flash", title: "Koi draft", detail: "Flash design" },
-  { id: 8, type: "skin", title: "Shoulder blade", detail: "Back shoulder", artist: "Blackwork Collective", year: "2024" },
+  { id: 16, title: "Rock on", src: tattoo16 },
+  { id: 15, title: "Swallow & flower", src: tattoo15 },
+  { id: 14, title: "Bunny", src: tattoo14 },
+  { id: 13, title: "Lightning bolt", src: tattoo13 },
+  { id: 12, title: "Skull & rays", src: tattoo12 },
+  { id: 11, title: "Botanical stamp", src: tattoo11 },
+  { id: 10, title: "Orchid shoulder", src: tattoo10 },
+  { id: 9, title: "Laurel wreath", src: tattoo9 },
+  { id: 8, title: "Ouroboros", src: tattoo8 },
+  { id: 7, title: "Starbursts", src: tattoo7 },
+  { id: 6, title: "Four-leaf clover", src: tattoo6 },
+  { id: 5, title: "Dagger", src: tattoo5 },
+  { id: 4, title: "Tribal scorpion", src: tattoo4 },
+  { id: 3, title: "Stick figure angel", src: tattoo3 },
+  { id: 2, title: "Oni mask", src: tattoo2 },
+  { id: 1, title: "Strength", src: tattoo1 },
 ];
 
-const PALETTE_SKIN = ["#c4b8a8", "#b0a090"];
-const PALETTE_FLASH = ["#e8e0d4", "#d4c8b8"];
-
 export function Tattoos() {
-  const [active, setActive] = useState<TattooItem | null>(null);
   const { stripRef, atStart, atEnd, isDragging, scrollBy, scrollByRight, dragHandlers } = useCarouselScroll();
 
   return (
@@ -60,93 +77,34 @@ export function Tattoos() {
               {...dragHandlers}
               onMouseLeave={dragHandlers.onMouseUp}
             >
-              {TATTOOS.map((tattoo, i) => {
-                const isSkin = tattoo.type === "skin";
-                const [c1, c2] = isSkin ? PALETTE_SKIN : PALETTE_FLASH;
-                return (
-                  <motion.div
-                    key={tattoo.id}
-                    className="relative overflow-hidden cursor-pointer flex-shrink-0 snap-start group"
-                    style={{
-                      width: "clamp(260px, 22vw, 360px)",
-                      aspectRatio: "3/4",
-                      background: `linear-gradient(145deg, ${c1} 0%, ${c2} 100%)`,
-                      border: isSkin ? "none" : "1.5px solid rgba(10,10,10,0.15)",
-                    }}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 0.5, delay: i * 0.06 }}
-                    onClick={() => setActive(tattoo)}
-                  >
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 12,
-                        right: 12,
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "9px",
-                        fontWeight: 600,
-                        letterSpacing: "0.1em",
-                        textTransform: "uppercase",
-                        color: "rgba(10,10,10,0.35)",
-                        border: "1px solid rgba(10,10,10,0.2)",
-                        padding: "2px 6px",
-                      }}
-                    >
-                      {isSkin ? "On skin" : "Flash"}
-                    </div>
+              {TATTOOS.map((tattoo, i) => (
+                <motion.div
+                  key={tattoo.id}
+                  className="relative overflow-hidden flex-shrink-0 snap-start group"
+                  style={{
+                    width: "clamp(260px, 22vw, 360px)",
+                    aspectRatio: "3/4",
+                  }}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.25, delay: i * 0.02 }}
+                >
+                  <img
+                    src={tattoo.src}
+                    alt={tattoo.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                  />
 
-                    <motion.div
-                      className="absolute inset-0 flex flex-col justify-end p-4"
-                      style={{ background: "rgba(10,10,10,0)" }}
-                      whileHover={{ background: "rgba(10,10,10,0.55)" }}
-                      transition={{ duration: 0.25 }}
-                    >
-                      <motion.div
-                        initial={{ opacity: 0, y: 8 }}
-                        whileHover={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <p style={{ fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 500, color: "#f5f0e8", letterSpacing: "-0.01em" }}>
-                          {tattoo.title}
-                        </p>
-                        <p style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: "rgba(245,240,232,0.6)", letterSpacing: "0.02em", marginTop: 2 }}>
-                          {tattoo.detail}{tattoo.year ? ` · ${tattoo.year}` : ""}
-                        </p>
-                      </motion.div>
-                    </motion.div>
-                  </motion.div>
-                );
-              })}
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
       </div>
-
-      <Lightbox
-        open={!!active}
-        onClose={() => setActive(null)}
-        title={active?.title ?? ""}
-        subtitle={active ? `${active.detail}${active.artist ? ` · ${active.artist}` : ""}${active.year ? ` · ${active.year}` : ""}` : undefined}
-      >
-        {active && (
-          <div
-            style={{
-              width: "100%",
-              aspectRatio: "4/3",
-              background: `linear-gradient(145deg, ${active.type === "skin" ? "#c4b8a8, #b0a090" : "#e8e0d4, #d4c8b8"})`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span style={{ fontFamily: "var(--font-sans)", fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(10,10,10,0.3)" }}>
-              photo placeholder
-            </span>
-          </div>
-        )}
-      </Lightbox>
     </section>
   );
 }

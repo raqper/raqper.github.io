@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 export function HobbiesNav() {
   const navigate = useNavigate();
@@ -44,14 +44,6 @@ export function HobbiesNav() {
             Hobbies
           </button>
         </div>
-
-        <Link
-          to="/career#contact"
-          className="text-[#0a0a0a]/70 hover:text-[#0a0a0a] transition-colors tracking-[-0.03em] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f5f0e8]"
-          style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
-        >
-          Contact
-        </Link>
       </div>
     </nav>
   );
