@@ -31,13 +31,10 @@ export function HeroSection() {
   };
 
   return (
-    <motion.section
+    <section
       id="about"
-      className="relative min-h-screen flex flex-col overflow-hidden"
+      className="relative min-h-screen overflow-hidden"
       style={{ background: "rgb(5 0 14)" }}
-      initial={{ opacity: 0, filter: "blur(18px)" }}
-      animate={{ opacity: 1, filter: "blur(0px)" }}
-      transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 z-20 px-6 md:px-10 py-6">
@@ -170,6 +167,13 @@ export function HeroSection() {
         )}
       </AnimatePresence>
 
+      <motion.div
+        className="relative min-h-screen flex flex-col"
+        initial={{ opacity: 0, filter: "blur(18px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
+        transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+
       {/* Mobile background glow (replaces portrait) */}
       <div
         className="absolute inset-0 z-[1] pointer-events-none md:hidden"
@@ -291,6 +295,7 @@ export function HeroSection() {
         </div>
       </div>
 
-    </motion.section>
+      </motion.div>
+    </section>
   );
 }

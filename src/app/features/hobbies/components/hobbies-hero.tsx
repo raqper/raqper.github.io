@@ -15,14 +15,18 @@ const HERO_IMAGES_LOOP = [...HERO_IMAGES, ...HERO_IMAGES];
 
 export function HobbiesHero() {
   return (
-    <motion.section
+    <section
       className="relative min-h-screen flex flex-col overflow-hidden"
       style={{ background: "#ffffff" }}
-      initial={{ opacity: 0, filter: "blur(18px)" }}
-      animate={{ opacity: 1, filter: "blur(0px)" }}
-      transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <HobbiesNav />
+
+      <motion.div
+        className="relative min-h-screen flex flex-col"
+        initial={{ opacity: 0, filter: "blur(18px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
+        transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
+      >
 
       {/* Brutalist grid lines (vertical only) */}
       <div className="absolute inset-0 z-[0] pointer-events-none" aria-hidden>
@@ -168,6 +172,7 @@ export function HobbiesHero() {
         </div>
       </div>
 
-    </motion.section>
+      </motion.div>
+    </section>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "motion/react";
 import { Lightbox } from "@/app/components/shared/lightbox";
 import { ANALOG_PHOTOS, LOCATIONS, type AnalogPhoto } from "@/app/features/hobbies/data/analog-data";
@@ -7,8 +7,16 @@ export function AnalogPhotos() {
   const [active, setActive] = useState<AnalogPhoto | null>(null);
   const [zStack, setZStack] = useState<number[]>(ANALOG_PHOTOS.map((p) => p.id));
   const [locationFilter, setLocationFilter] = useState<string>("All");
+  const [isMobile, setIsMobile] = useState(false);
   const constraintsRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const bringToFront = useCallback((id: number) => {
     setZStack((prev) => [...prev.filter((z) => z !== id), id]);
@@ -30,10 +38,10 @@ export function AnalogPhotos() {
   }, []);
 
   return (
-    <section id="film" className="relative w-full min-h-screen overflow-hidden flex flex-col" style={{ background: "#f7f7f7" }}>
+    <section id="film" className="relative w-full min-h-[78vh] md:min-h-screen overflow-hidden flex flex-col" style={{ background: "#f7f7f7" }}>
       {/* Location filters */}
       <div
-        className="flex items-center gap-2 px-6 py-4 shrink-0 overflow-x-auto no-scrollbar"
+        className="flex items-center gap-2 px-6 py-3 md:py-4 shrink-0 overflow-x-auto no-scrollbar"
         style={{ fontFamily: "var(--font-sans)", WebkitOverflowScrolling: "touch" }}
       >
         <div className="flex items-center gap-1.5 mx-auto">
@@ -57,7 +65,7 @@ export function AnalogPhotos() {
       {/* Full-viewport drag zone */}
       <div
         ref={constraintsRef}
-        className="relative w-full flex-1 min-h-0"
+        className="relative w-full flex-1 min-h-[52vh] md:min-h-0"
         style={{
           overflow: "hidden",
         }}
@@ -70,7 +78,7 @@ export function AnalogPhotos() {
           <p
             style={{
               fontFamily: "var(--font-expanded)",
-              fontSize: "clamp(28px, 5vw, 72px)",
+              fontSize: "clamp(20px, 5vw, 72px)",
               fontWeight: 300,
               lineHeight: 1.25,
               letterSpacing: "-0.04em",
@@ -100,13 +108,13 @@ export function AnalogPhotos() {
               return (
                 <motion.div
                   key={photo.id}
-                  drag={visible}
+                  drag={visible ? (isMobile ? "x" : true) : false}
                   dragConstraints={constraintsRef}
                   dragElastic={0.08}
                   dragMomentum={false}
                   onDragStart={() => handleDragStart(photo.id)}
                   onDragEnd={handleDragEnd}
-                  whileDrag={{ scale: 1.05, cursor: "grabbing" }}
+                  whileDrag={{ scale: isMobile ? 1.02 : 1.05, cursor: "grabbing" }}
                   onClick={() => handlePhotoClick(photo)}
                   className="absolute cursor-grab active:cursor-grabbing"
                   style={{
@@ -114,10 +122,11 @@ export function AnalogPhotos() {
                     top: `${photo.y}%`,
                     zIndex: zIndex + 1,
                     rotate: photo.rotate,
-                    width: `clamp(130px, 18vw, ${photo.w}px)`,
+                    width: `clamp(96px, 21vw, ${photo.w}px)`,
                     opacity: visible ? 1 : 0,
                     pointerEvents: visible ? "auto" : "none",
                     transition: "opacity 0.25s ease",
+                    touchAction: isMobile ? "pan-y" : "none",
                   }}
                   initial={{ opacity: 0, scale: 0.85 }}
                   whileInView={{ opacity: visible ? 1 : 0, scale: 1 }}
@@ -128,32 +137,40 @@ export function AnalogPhotos() {
                   <div
                     style={{
                       background: "#fefcf9",
-                      padding: "8px 8px 12px",
+                      padding: "clamp(5px, 1.6vw, 8px) clamp(5px, 1.6vw, 8px) clamp(8px, 2.4vw, 12px)",
                       boxShadow:
                         "0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)",
                       boxSizing: "border-box",
                     }}
                   >
-                    <img
-                      src={photo.src}
-                      alt={photo.label}
-                      loading="lazy"
-                      decoding="async"
+                    <div
                       style={{
                         width: "100%",
-                        height: photo.h,
-                        objectFit: "cover",
-                        display: "block",
-                        pointerEvents: "none",
-                        userSelect: "none",
+                        aspectRatio: `${photo.w} / ${photo.h}`,
+                        overflow: "hidden",
                       }}
-                      draggable={false}
-                    />
+                    >
+                      <img
+                        src={photo.src}
+                        alt={photo.label}
+                        loading="lazy"
+                        decoding="async"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                          pointerEvents: "none",
+                          userSelect: "none",
+                        }}
+                        draggable={false}
+                      />
+                    </div>
                     <div style={{ marginTop: 4, paddingLeft: 2 }}>
                       <p
                         style={{
                           fontFamily: "var(--font-handwriting)",
-                          fontSize: "12px",
+                          fontSize: "clamp(10px, 2.4vw, 12px)",
                           fontWeight: 500,
                           letterSpacing: "0.02em",
                           color: "#1a2744",
