@@ -126,12 +126,12 @@ interface SeedPhoto {
 
 const SEED: SeedPhoto[] = [
   // England (6)
-  { label: "England", filterGroup: "England", src: england1, o: "P" },
-  { label: "England", filterGroup: "England", src: england2, o: "P" },
-  { label: "England", filterGroup: "England", src: england3, o: "P" },
-  { label: "England", filterGroup: "England", src: england4, o: "P" },
-  { label: "England", filterGroup: "England", src: england5, o: "P" },
-  { label: "England", filterGroup: "England", src: england6, o: "P" },
+  { label: "London", filterGroup: "England", src: england1, o: "P" },
+  { label: "London", filterGroup: "England", src: england2, o: "P" },
+  { label: "London", filterGroup: "England", src: england3, o: "P" },
+  { label: "London", filterGroup: "England", src: england4, o: "P" },
+  { label: "London", filterGroup: "England", src: england5, o: "P" },
+  { label: "London", filterGroup: "England", src: england6, o: "P" },
 
   // France (5)
   { label: "Paris", filterGroup: "France", src: paris1, o: "P" },
@@ -141,20 +141,20 @@ const SEED: SeedPhoto[] = [
   { label: "Paris", filterGroup: "France", src: paris5, o: "P" },
 
   // Greece (8)
-  { label: "Greece", filterGroup: "Greece", src: greece1, o: "L" },
-  { label: "Greece", filterGroup: "Greece", src: greece2, o: "P" },
-  { label: "Greece", filterGroup: "Greece", src: greece3, o: "P" },
-  { label: "Greece", filterGroup: "Greece", src: greece4, o: "P" },
-  { label: "Greece", filterGroup: "Greece", src: greece5, o: "L" },
-  { label: "Greece", filterGroup: "Greece", src: greece6, o: "L" },
-  { label: "Greece", filterGroup: "Greece", src: greece7, o: "L" },
-  { label: "Greece", filterGroup: "Greece", src: greece8, o: "L" },
+  { label: "Athens", filterGroup: "Greece", src: greece1, o: "L" },
+  { label: "Athens", filterGroup: "Greece", src: greece2, o: "P" },
+  { label: "Athens", filterGroup: "Greece", src: greece3, o: "P" },
+  { label: "Athens", filterGroup: "Greece", src: greece4, o: "P" },
+  { label: "Athens", filterGroup: "Greece", src: greece5, o: "L" },
+  { label: "Athens", filterGroup: "Greece", src: greece6, o: "L" },
+  { label: "Athens", filterGroup: "Greece", src: greece7, o: "L" },
+  { label: "Athens", filterGroup: "Greece", src: greece8, o: "L" },
 
   // Ireland (4)
-  { label: "Ireland", filterGroup: "Ireland", src: ireland1, o: "L" },
-  { label: "Ireland", filterGroup: "Ireland", src: ireland2, o: "L" },
-  { label: "Ireland", filterGroup: "Ireland", src: ireland3, o: "P" },
-  { label: "Ireland", filterGroup: "Ireland", src: ireland4, o: "P" },
+  { label: "Dublin", filterGroup: "Ireland", src: ireland1, o: "L" },
+  { label: "Dublin", filterGroup: "Ireland", src: ireland2, o: "L" },
+  { label: "Dublin", filterGroup: "Ireland", src: ireland3, o: "P" },
+  { label: "Dublin", filterGroup: "Ireland", src: ireland4, o: "P" },
 
   // Italy (5)
   { label: "Rome", filterGroup: "Italy", src: rome1, o: "L" },
@@ -163,13 +163,13 @@ const SEED: SeedPhoto[] = [
   { label: "Rome", filterGroup: "Italy", src: rome4, o: "P" },
   { label: "Rome", filterGroup: "Italy", src: rome5, o: "P" },
 
-  // Marrakesh (6)
-  { label: "Marrakesh", filterGroup: "Marrakesh", src: marroco2, o: "P" },
-  { label: "Marrakesh", filterGroup: "Marrakesh", src: marroco3, o: "P" },
-  { label: "Marrakesh", filterGroup: "Marrakesh", src: marroco4, o: "P" },
-  { label: "Marrakesh", filterGroup: "Marrakesh", src: marroco5, o: "P" },
-  { label: "Marrakesh", filterGroup: "Marrakesh", src: marroco6, o: "P" },
-  { label: "Marrakesh", filterGroup: "Marrakesh", src: marroco8, o: "P" },
+  // Morocco (Marrakesh, 6)
+  { label: "Marrakesh", filterGroup: "Morocco", src: marroco2, o: "P" },
+  { label: "Marrakesh", filterGroup: "Morocco", src: marroco3, o: "P" },
+  { label: "Marrakesh", filterGroup: "Morocco", src: marroco4, o: "P" },
+  { label: "Marrakesh", filterGroup: "Morocco", src: marroco5, o: "P" },
+  { label: "Marrakesh", filterGroup: "Morocco", src: marroco6, o: "P" },
+  { label: "Marrakesh", filterGroup: "Morocco", src: marroco8, o: "P" },
 
   // Netherlands (3)
   { label: "Amsterdam", filterGroup: "Netherlands", src: amsterdam2, o: "P" },
@@ -180,9 +180,9 @@ const SEED: SeedPhoto[] = [
   { label: "Abrantes", filterGroup: "Portugal", src: abrantes1, o: "P" },
   { label: "Abrantes", filterGroup: "Portugal", src: abrantes2, o: "P" },
   { label: "Abrantes", filterGroup: "Portugal", src: abrantes3, o: "P" },
-  { label: "Acores", filterGroup: "Portugal", src: acores1, o: "P" },
-  { label: "Acores", filterGroup: "Portugal", src: acores2, o: "P" },
-  { label: "Acores", filterGroup: "Portugal", src: acores3, o: "P" },
+  { label: "Açores", filterGroup: "Portugal", src: acores1, o: "P" },
+  { label: "Açores", filterGroup: "Portugal", src: acores2, o: "P" },
+  { label: "Açores", filterGroup: "Portugal", src: acores3, o: "P" },
   { label: "Alentejo", filterGroup: "Portugal", src: alentejo1, o: "P" },
   { label: "Alentejo", filterGroup: "Portugal", src: alentejo2, o: "P" },
   { label: "Alentejo", filterGroup: "Portugal", src: alentejo3, o: "P" },
@@ -191,7 +191,7 @@ const SEED: SeedPhoto[] = [
   { label: "Algarve", filterGroup: "Portugal", src: algarve2, o: "P" },
   { label: "Lisbon", filterGroup: "Portugal", src: lisbon1, o: "P" },
   { label: "Lisbon", filterGroup: "Portugal", src: lisbon2, o: "P" },
-  { label: "Obidos", filterGroup: "Portugal", src: obidos1, o: "P" },
+  { label: "Óbidos", filterGroup: "Portugal", src: obidos1, o: "P" },
   { label: "Porto", filterGroup: "Portugal", src: porto1, o: "P" },
   { label: "Porto", filterGroup: "Portugal", src: porto3, o: "P" },
   { label: "Porto", filterGroup: "Portugal", src: porto4, o: "P" },
@@ -206,7 +206,7 @@ const SEED: SeedPhoto[] = [
   { label: "New York", filterGroup: "United States", src: newyork4, o: "P" },
 
   // Misc (23)
-  { label: "Catia", filterGroup: "Misc 😻", src: catia1, o: "L" },
+  { label: "Cátia", filterGroup: "Misc 😻", src: catia1, o: "L" },
   { label: "Cats", filterGroup: "Misc 😻", src: cats1, o: "P" },
   { label: "Cats", filterGroup: "Misc 😻", src: cats2, o: "L" },
   { label: "Cats", filterGroup: "Misc 😻", src: cats3, o: "P" },
@@ -216,13 +216,13 @@ const SEED: SeedPhoto[] = [
   { label: "Dad", filterGroup: "Misc 😻", src: dad1, o: "P" },
   { label: "Francisco + Helena", filterGroup: "Misc 😻", src: franciscoHelena1, o: "L" },
   { label: "Francisco + Helena", filterGroup: "Misc 😻", src: franciscoHelena2, o: "L" },
-  { label: "Joao", filterGroup: "Misc 😻", src: joao1, o: "P" },
-  { label: "Joao", filterGroup: "Misc 😻", src: joao2, o: "P" },
-  { label: "Marcia", filterGroup: "Misc 😻", src: marcia1, o: "P" },
-  { label: "Marcia", filterGroup: "Misc 😻", src: marcia2, o: "P" },
+  { label: "João", filterGroup: "Misc 😻", src: joao1, o: "P" },
+  { label: "João", filterGroup: "Misc 😻", src: joao2, o: "P" },
+  { label: "Márcia", filterGroup: "Misc 😻", src: marcia1, o: "P" },
+  { label: "Márcia", filterGroup: "Misc 😻", src: marcia2, o: "P" },
   { label: "Me", filterGroup: "Misc 😻", src: me1, o: "P" },
   { label: "Mom + Dad", filterGroup: "Misc 😻", src: momDad1, o: "L" },
-  { label: "Nadia", filterGroup: "Misc 😻", src: nadia1, o: "P" },
+  { label: "Nádia", filterGroup: "Misc 😻", src: nadia1, o: "P" },
   { label: "Wedding", filterGroup: "Misc 😻", src: wedding2, o: "L" },
   { label: "Wedding", filterGroup: "Misc 😻", src: wedding4, o: "L" },
   { label: "Wedding", filterGroup: "Misc 😻", src: wedding5, o: "L" },
