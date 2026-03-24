@@ -20,33 +20,42 @@ for (const useCase of allUseCases) {
   );
 }
 
-function getTrackOverflow(
+/* ── Measure how many px the track overflows the viewport ── */
+function measureTrackOverflow(
   trackElement: HTMLDivElement,
   viewportWidth: number
 ): number {
   const children = trackElement.children;
   let contentRight = 0;
-
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as HTMLElement;
     const right = child.offsetLeft + child.offsetWidth;
-    if (right > contentRight) {
-      contentRight = right;
-    }
+    if (right > contentRight) contentRight = right;
   }
-
   const paddingRight =
     parseFloat(getComputedStyle(trackElement).paddingRight) || 0;
-  const totalWidth = contentRight + paddingRight;
-  return Math.max(0, totalWidth - viewportWidth);
+  return Math.max(0, contentRight + paddingRight - viewportWidth);
+}
+
+/* ── Lock / unlock body vertical scroll ── */
+function lockBodyScroll() {
+  document.documentElement.style.overflow = "hidden";
+}
+function unlockBodyScroll() {
+  document.documentElement.style.overflow = "";
 }
 
 export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onChipStateChange?: (state: PortfolioChipState) => void; navProgressBarRef?: React.RefObject<HTMLDivElement | null> }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
-  const [extraScroll, setExtraScroll] = useState(0);
-  const extraScrollRef = useRef(0);
+
+  // Current horizontal offset (accumulated from wheel deltas)
+  const offsetRef = useRef(0);
+  // Maximum horizontal offset (track overflow)
+  const maxOffsetRef = useRef(0);
+  // Whether this section currently owns scroll (body locked)
+  const lockedRef = useRef(false);
+
   const [activeChip, setActiveChip] = useState<UseCaseId | null>(null);
   const scrollActiveRef = useRef<UseCaseId | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -58,98 +67,269 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  /* ── Apply current offset to track + progress bar + active chip ── */
+  const applyOffset = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const max = maxOffsetRef.current;
+    const offset = offsetRef.current;
+    const progress = max > 0 ? offset / max : 0;
+
+    track.style.transform = `translateX(${-offset}px)`;
+
+    if (navProgressBarRef?.current) {
+      navProgressBarRef.current.style.transform = `scaleX(${progress})`;
+    }
+
+    // Determine which use-case chip is closest to the 30% viewport mark
+    if (progress > 0) {
+      const targetX = window.innerWidth * 0.3;
+      let closestUseCaseId: UseCaseId | null = null;
+      let closestDistance = Infinity;
+
+      for (let i = 0; i < track.children.length; i++) {
+        const cardEl = track.children[i] as HTMLElement;
+        const useCaseId = cardEl.dataset.usecaseId as UseCaseId;
+        if (!useCaseId) continue;
+        const rect = cardEl.getBoundingClientRect();
+        if (rect.right < 0 || rect.left > window.innerWidth) continue;
+        const distance = Math.abs(rect.left - targetX);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestUseCaseId = useCaseId;
+        }
+      }
+
+      if (closestUseCaseId && closestUseCaseId !== scrollActiveRef.current) {
+        scrollActiveRef.current = closestUseCaseId;
+        setActiveChip(closestUseCaseId);
+      }
+    } else if (scrollActiveRef.current !== null) {
+      scrollActiveRef.current = null;
+      setActiveChip(null);
+    }
+  }, [navProgressBarRef]);
+
+  /* ── Recalculate track overflow on resize / media load ── */
   const recalculate = useCallback(() => {
     if (!trackRef.current || isMobile) return;
-    const overflow = getTrackOverflow(trackRef.current, window.innerWidth);
-    extraScrollRef.current = overflow;
-    setExtraScroll(overflow);
-  }, [isMobile]);
+    const overflow = measureTrackOverflow(trackRef.current, window.innerWidth);
+    maxOffsetRef.current = overflow;
+    // Clamp current offset if content shrank
+    if (offsetRef.current > overflow) {
+      offsetRef.current = overflow;
+      applyOffset();
+    }
+  }, [isMobile, applyOffset]);
 
   useEffect(() => {
-    if (isMobile) { setExtraScroll(0); return; }
+    if (isMobile) {
+      // Reset everything on mobile
+      maxOffsetRef.current = 0;
+      offsetRef.current = 0;
+      scrollActiveRef.current = null;
+      setActiveChip(null);
+      if (lockedRef.current) {
+        unlockBodyScroll();
+        lockedRef.current = false;
+      }
+      if (navProgressBarRef?.current) {
+        navProgressBarRef.current.style.transform = "scaleX(0)";
+      }
+      return;
+    }
+
     recalculate();
     window.addEventListener("resize", recalculate);
 
-    // Observe each child for size changes (media loading causes expansion).
-    // The track's own box-model size doesn't change — only its overflow does.
     let ro: ResizeObserver | undefined;
     if (trackRef.current) {
       ro = new ResizeObserver(recalculate);
+      ro.observe(trackRef.current);
       Array.from(trackRef.current.children).forEach(child => ro!.observe(child));
     }
 
     return () => {
       window.removeEventListener("resize", recalculate);
       ro?.disconnect();
+      if (lockedRef.current) {
+        unlockBodyScroll();
+        lockedRef.current = false;
+      }
     };
-  }, [recalculate, isMobile]);
+  }, [recalculate, isMobile, navProgressBarRef]);
 
+  /* ── Wheel handler: intercept scroll, drive horizontal offset ── */
   useEffect(() => {
     if (isMobile) return;
-    let rafId: number | null = null;
+    const section = sectionRef.current;
+    if (!section) return;
 
-    const updateOnScroll = () => {
-      rafId = null;
-      const es = extraScrollRef.current;
-      if (!sectionRef.current || !trackRef.current || es <= 0) return;
-      const { top } = sectionRef.current.getBoundingClientRect();
-      const progress = Math.min(1, Math.max(0, -top / es));
-      trackRef.current.style.transform = `translateX(${-progress * es}px)`;
+    // Track whether the user has scrolled past the section (exited downward)
+    let exitedDown = false;
 
-      if (progressBarRef.current) {
-        progressBarRef.current.style.transform = `scaleX(${progress})`;
-      }
-      if (navProgressBarRef?.current) {
-        navProgressBarRef.current.style.transform = `scaleX(${progress})`;
-      }
+    const onWheel = (e: WheelEvent) => {
+      const max = maxOffsetRef.current;
+      if (max <= 0) return;
 
-      if (progress > 0) {
-        const targetX = window.innerWidth * 0.3;
-        const cardElements = trackRef.current.children;
-        let closestUseCaseId: UseCaseId | null = null;
-        let closestDistance = Infinity;
+      const rect = section.getBoundingClientRect();
 
-        for (let i = 0; i < cardElements.length; i++) {
-          const cardEl = cardElements[i] as HTMLElement;
-          const useCaseId = cardEl.dataset.usecaseId as UseCaseId;
-          if (!useCaseId) continue;
+      // Section top must be at or above viewport top, and section must still be visible
+      const sectionCoversViewport = rect.top <= 1 && rect.bottom > 0;
+      // Also activate when the section is approaching the top (within 10px)
+      const sectionAtTop = rect.top >= 0 && rect.top <= 10;
+      const sectionActive = sectionCoversViewport || sectionAtTop;
 
-          const rect = cardEl.getBoundingClientRect();
-          if (rect.right < 0 || rect.left > window.innerWidth) continue;
-
-          const distance = Math.abs(rect.left - targetX);
-          if (distance < closestDistance) {
-            closestDistance = distance;
-            closestUseCaseId = useCaseId;
-          }
+      // If the user scrolled past the section downward, mark it
+      if (rect.bottom <= 0) {
+        exitedDown = true;
+        if (lockedRef.current) {
+          unlockBodyScroll();
+          lockedRef.current = false;
         }
+        return;
+      }
 
-        if (closestUseCaseId && closestUseCaseId !== scrollActiveRef.current) {
-          scrollActiveRef.current = closestUseCaseId;
-          setActiveChip(closestUseCaseId);
+      // If user exited down and is scrolling back up, only re-engage
+      // when the section bottom is near the viewport bottom (scrolling back into it)
+      // and offset is at max (meaning they need to reverse through horizontal content)
+      if (exitedDown) {
+        if (sectionCoversViewport && offsetRef.current >= max) {
+          // User scrolled back up into the section — re-engage
+          exitedDown = false;
+        } else {
+          // Still past the section or not ready to re-engage
+          return;
         }
-      } else if (scrollActiveRef.current !== null) {
-        scrollActiveRef.current = null;
-        setActiveChip(null);
+      }
+
+      if (!sectionActive) {
+        if (lockedRef.current) {
+          unlockBodyScroll();
+          lockedRef.current = false;
+        }
+        return;
+      }
+
+      // Use whichever axis has larger delta (vertical wheel → horizontal)
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (delta === 0) return;
+
+      const current = offsetRef.current;
+
+      // Scrolling down/right → increase offset
+      if (delta > 0 && current < max) {
+        e.preventDefault();
+        offsetRef.current = Math.min(max, current + delta);
+        applyOffset();
+        if (!lockedRef.current) {
+          lockBodyScroll();
+          lockedRef.current = true;
+        }
+        return;
+      }
+
+      // Scrolling up/left → decrease offset
+      if (delta < 0 && current > 0) {
+        e.preventDefault();
+        offsetRef.current = Math.max(0, current + delta);
+        applyOffset();
+        if (!lockedRef.current) {
+          lockBodyScroll();
+          lockedRef.current = true;
+        }
+        return;
+      }
+
+      // At boundary (offset=0 scrolling up, or offset=max scrolling down) → release
+      if (lockedRef.current) {
+        unlockBodyScroll();
+        lockedRef.current = false;
+      }
+      // Mark exit direction
+      if (delta > 0 && current >= max) {
+        exitedDown = true;
       }
     };
 
-    const onScroll = () => {
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(updateOnScroll);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    updateOnScroll();
+    // Must be non-passive to allow preventDefault
+    window.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafId !== null) {
-        window.cancelAnimationFrame(rafId);
+      window.removeEventListener("wheel", onWheel);
+      if (lockedRef.current) {
+        unlockBodyScroll();
+        lockedRef.current = false;
       }
     };
-  }, [isMobile]);
+  }, [isMobile, applyOffset]);
 
+  /* ── Touch handler: same logic for mobile-like swipe on desktop ── */
+  useEffect(() => {
+    if (isMobile) return;
+    const section = sectionRef.current;
+    if (!section) return;
+
+    let touchStartY = 0;
+    let touchStartOffset = 0;
+
+    const onTouchStart = (e: TouchEvent) => {
+      const max = maxOffsetRef.current;
+      if (max <= 0) return;
+      const rect = section.getBoundingClientRect();
+      if (rect.top > window.innerHeight * 0.5 || rect.bottom <= 0) return;
+      touchStartY = e.touches[0].clientY;
+      touchStartOffset = offsetRef.current;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      const max = maxOffsetRef.current;
+      if (max <= 0) return;
+      const rect = section.getBoundingClientRect();
+      if (rect.top > window.innerHeight * 0.5 || rect.bottom <= 0) return;
+
+      const deltaY = touchStartY - e.touches[0].clientY;
+      const newOffset = Math.min(max, Math.max(0, touchStartOffset + deltaY));
+
+      if (newOffset !== offsetRef.current) {
+        if (newOffset > 0 && newOffset < max) {
+          e.preventDefault();
+        }
+        offsetRef.current = newOffset;
+        applyOffset();
+        if (!lockedRef.current && newOffset > 0 && newOffset < max) {
+          lockBodyScroll();
+          lockedRef.current = true;
+        }
+      }
+
+      // At boundaries, release
+      if ((newOffset === 0 && deltaY < 0) || (newOffset === max && deltaY > 0)) {
+        if (lockedRef.current) {
+          unlockBodyScroll();
+          lockedRef.current = false;
+        }
+      }
+    };
+
+    const onTouchEnd = () => {
+      // Keep lock state — it will be released on next scroll boundary
+    };
+
+    section.addEventListener("touchstart", onTouchStart, { passive: true });
+    section.addEventListener("touchmove", onTouchMove, { passive: false });
+    section.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    return () => {
+      section.removeEventListener("touchstart", onTouchStart);
+      section.removeEventListener("touchmove", onTouchMove);
+      section.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [isMobile, applyOffset]);
+
+
+  /* ── Chip click → animate horizontal offset ── */
   const handleChipClick = useCallback((id: UseCaseId) => {
     setActiveChip(id);
     scrollActiveRef.current = id;
@@ -159,15 +339,17 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
       return;
     }
 
-    if (!sectionRef.current || !trackRef.current) return;
+    if (!trackRef.current || !sectionRef.current) return;
 
-    const currentExtraScroll = getTrackOverflow(trackRef.current, window.innerWidth);
-    if (currentExtraScroll <= 0) return;
+    const max = measureTrackOverflow(trackRef.current, window.innerWidth);
+    if (max <= 0) return;
+    maxOffsetRef.current = max;
 
-    // Sync ref and state, and force section height so the page is tall enough to scroll
-    extraScrollRef.current = currentExtraScroll;
-    setExtraScroll(currentExtraScroll);
-    sectionRef.current.style.height = `${window.innerHeight + currentExtraScroll}px`;
+    // First scroll the page so the section is at the top
+    const rect = sectionRef.current.getBoundingClientRect();
+    if (rect.top > 1) {
+      window.scrollTo({ top: sectionRef.current.offsetTop, behavior: "smooth" });
+    }
 
     // Find the first card element for this use case
     const cardElements = Array.from(trackRef.current.children) as HTMLElement[];
@@ -175,24 +357,35 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
     if (!targetCard) return;
 
     const desiredScreenX = parseFloat(getComputedStyle(trackRef.current).paddingLeft) || 40;
-    const translateX = Math.max(0, targetCard.offsetLeft - desiredScreenX);
-    const targetProgress = Math.min(1, translateX / currentExtraScroll);
+    const targetOffset = Math.min(max, Math.max(0, targetCard.offsetLeft - desiredScreenX));
 
-    const sectionTop = sectionRef.current.offsetTop;
-    const targetScroll = sectionTop + targetProgress * currentExtraScroll;
+    // Animate to target offset
+    const start = offsetRef.current;
+    const distance = targetOffset - start;
+    const duration = Math.min(800, Math.abs(distance) * 0.5 + 200);
+    const startTime = performance.now();
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: targetScroll, behavior: prefersReducedMotion ? "auto" : "smooth" });
-  }, [isMobile]);
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / duration);
+      offsetRef.current = start + distance * easeOutCubic(t);
+      applyOffset();
+      if (t < 1) requestAnimationFrame(animate);
+    };
+
+    if (!lockedRef.current) {
+      lockBodyScroll();
+      lockedRef.current = true;
+    }
+    requestAnimationFrame(animate);
+  }, [isMobile, applyOffset]);
 
   // Expose chip state to parent (nav bar) — always provide fresh callback
   useEffect(() => {
     onChipStateChange?.({ activeChip, handleChipClick });
   }, [activeChip, handleChipClick, onChipStateChange]);
-
-  const sectionHeight = !isMobile && extraScroll > 0
-    ? `${window.innerHeight + extraScroll}px`
-    : "auto";
 
   return (
     <section
@@ -202,11 +395,10 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
       style={{
         background:
           "linear-gradient(180deg, #0c0024 0%, #0f0028 20%, #130032 38%, #1a0040 52%, #130032 68%, #0f0028 85%, #0f0028 100%)",
-        height: sectionHeight,
+        height: isMobile ? undefined : "100vh",
       }}
     >
-
-      <div className={`${!isMobile && extraScroll > 0 ? "sticky top-0 h-screen" : ""} overflow-hidden flex flex-col`}>
+      <div className="overflow-hidden flex flex-col h-full">
         {/* Spacer for fixed nav (includes NDA banner in nav) */}
         <div className="pt-28 md:pt-32 shrink-0" />
 
@@ -229,7 +421,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                   </div>
                   <div className="flex flex-col gap-4">
                     {cards.map((card) => (
-                      <ScrollReveal key={card.id} delay={0.03} duration={0.8} offsetY={20} blur={4}>
+                      <ScrollReveal key={card.id}>
                         <div
                           className="rounded-2xl overflow-hidden"
                           style={{
@@ -254,13 +446,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
         )}
 
         {!isMobile && (
-          <ScrollReveal
-            className="flex-1 flex flex-col justify-center overflow-hidden relative z-10"
-            delay={0.25}
-            offsetY={0}
-            blur={12}
-            duration={1.6}
-          >
+          <div className="flex-1 flex flex-col justify-center overflow-hidden relative z-10">
             <div
               ref={trackRef}
               className="flex gap-5 will-change-transform relative py-4"
@@ -273,7 +459,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                 const isFirstInGroup = index === 0 || ALL_CARDS[index - 1].useCaseId !== card.useCaseId;
                 const isMedia = card.type === "media";
                 const isNokiaCompareCard = card.id === "nokia-media-pre-impact-2";
-                const nonMediaHeight = "clamp(480px, 72vh, 720px)";
+                const nonMediaHeight = "clamp(420px, calc(100vh - 11rem), 720px)";
 
                 return (
                   <div
@@ -293,7 +479,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                       style={{
                         width: isMedia ? "auto" : "clamp(569px, 57vw, 853px)",
                         height: isMedia ? (isNokiaCompareCard ? nonMediaHeight : "auto") : nonMediaHeight,
-                        maxHeight: "clamp(480px, 72vh, 720px)",
+                        maxHeight: nonMediaHeight,
                         aspectRatio: isMedia
                           ? (isNokiaCompareCard ? "16 / 9" : undefined)
                           : "1280 / 1080",
@@ -311,7 +497,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                 );
               })}
             </div>
-          </ScrollReveal>
+          </div>
         )}
       </div>
     </section>

@@ -4,12 +4,7 @@ import path from "node:path";
 const ROOT = process.cwd();
 const STATIC_DIR = path.join(ROOT, "static");
 
-const GENERATED_PATTERNS = [
-  /^index-.*\.(js|css)$/,
-  /^Home-.*\.js$/,
-  /^Portfolio-.*\.js$/,
-  /^HobbiesHome-.*\.js$/,
-];
+const GENERATED_ASSET_PATTERN = /-[A-Za-z0-9_-]{6,}\.[A-Za-z0-9]+$/;
 
 async function cleanGeneratedStaticFiles() {
   let entries = [];
@@ -23,7 +18,7 @@ async function cleanGeneratedStaticFiles() {
   const removable = entries
     .filter((entry) => entry.isFile())
     .map((entry) => entry.name)
-    .filter((name) => GENERATED_PATTERNS.some((pattern) => pattern.test(name)));
+    .filter((name) => GENERATED_ASSET_PATTERN.test(name));
 
   await Promise.all(
     removable.map((name) => rm(path.join(STATIC_DIR, name), { force: true }))

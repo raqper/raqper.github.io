@@ -3,6 +3,7 @@ dist
 .pages-deploy
 .site
 .vite
+.windsurf
 /assets
 .DS_Store
 *.log

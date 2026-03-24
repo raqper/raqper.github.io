@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+
+echo "[pre-push] Running root deploy validation..."
+npm run check:deploy
+echo "[pre-push] Validation passed. Continuing push."

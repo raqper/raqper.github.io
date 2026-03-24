@@ -138,7 +138,7 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
         src={media.src}
         aria-label={mediaLabel}
         className="block max-w-full max-h-full w-auto h-auto"
-        style={{ maxHeight: "clamp(480px, 72vh, 720px)" }}
+        style={{ maxHeight: "clamp(420px, calc(100vh - 11rem), 720px)" }}
         controls
         playsInline
         preload="metadata"
@@ -152,7 +152,7 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
         className="relative"
         style={{
           width: "clamp(854px, 85vw, 1280px)",
-          height: "clamp(480px, 72vh, 720px)",
+          height: "clamp(420px, calc(100vh - 11rem), 720px)",
         }}
       >
         <iframe
@@ -174,7 +174,7 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
         alt={mediaLabel}
         loading="lazy"
         className="block max-w-full max-h-full w-auto h-auto"
-        style={{ maxHeight: "clamp(480px, 72vh, 720px)" }}
+        style={{ maxHeight: "clamp(420px, calc(100vh - 11rem), 720px)" }}
         draggable={false}
       />
     );
