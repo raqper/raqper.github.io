@@ -19,7 +19,7 @@ import nokia5Video from "@/assets/nokia-approach-5.png";
 import man1Img from "@/assets/man-approach-1.png";
 import man2Video from "@/assets/man-approach-2.gif";
 import man3Img from "@/assets/man-approach-3.png";
-import man4Img from "@/assets/man-approach-3.png";
+import man4Img from "@/assets/man-approach-4.png";
 import man5Img from "@/assets/man-approach-5.png";
 
 import nos1Img from "@/assets/nos-approach-1.png";
@@ -29,6 +29,7 @@ import nos3Img from "@/assets/nos-approach-3.png";
 import nosDetail1 from "@/assets/nos-fid-detail-1.png";
 import nosDetail2 from "@/assets/nos-fid-detail-2.png";
 import nosDetail3 from "@/assets/nos-fid-detail-3.png";
+import nosDetail3_1Gif from "@/assets/nos-fid-detail-3_1.gif";
 import nosDetail4 from "@/assets/nos-fid-detail-4.png";
 import nosDetail5Video from "@/assets/nos-fid-detail-5.gif";
 
@@ -61,6 +62,7 @@ export const MEDIA_CONTENT: Record<string, MediaEntry> = {
   "nos-media-fidDetail-1": { type: "image", src: nosDetail1 },
   "nos-media-fidDetail-2": { type: "image", src: nosDetail2 },
   "nos-media-fidDetail-3": { type: "image", src: nosDetail3 },
+  "nos-media-fidDetail-3-1": { type: "image", src: nosDetail3_1Gif },
   "nos-media-fidDetail-4": { type: "image", src: nosDetail4 },
   "nos-media-fidDetail-5": { type: "image", src: nosDetail5Video },
 };

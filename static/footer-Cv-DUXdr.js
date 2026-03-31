@@ -1,4 +1,4 @@
-import{r as a,j as e}from"./index-BVNPrVcq.js";function x({children:r,className:t="",rootMargin:n="0px 0px -80px 0px"}){const s=a.useRef(null),[i,o]=a.useState(!1);return a.useEffect(()=>{const l=s.current;if(!l)return;const c=new IntersectionObserver(([d])=>{d.isIntersecting&&o(!0)},{threshold:.1,rootMargin:n});return c.observe(l),()=>c.disconnect()},[n]),e.jsx("div",{ref:s,className:t,style:{opacity:i?1:0,transform:i?"translateY(0)":"translateY(20px)",transition:"opacity 0.6s ease, transform 0.6s ease"},children:r})}/**
+import{r as a,j as e}from"./index-BDQbzkAn.js";function x({children:r,className:t="",rootMargin:n="0px 0px -80px 0px"}){const s=a.useRef(null),[i,o]=a.useState(!1);return a.useEffect(()=>{const l=s.current;if(!l)return;const c=new IntersectionObserver(([d])=>{d.isIntersecting&&o(!0)},{threshold:.1,rootMargin:n});return c.observe(l),()=>c.disconnect()},[n]),e.jsx("div",{ref:s,className:t,style:{opacity:i?1:0,transform:i?"translateY(0)":"translateY(20px)",transition:"opacity 0.6s ease, transform 0.6s ease"},children:r})}/**
  * @license lucide-react v0.487.0 - ISC
  *
  * This source code is licensed under the ISC license.

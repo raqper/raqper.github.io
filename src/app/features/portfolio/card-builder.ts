@@ -16,13 +16,8 @@ export interface CardDef {
 const HIDDEN_MEDIA_IDS = new Set([
   "swap-wizard-media-approach-2",
   "swap-wizard-media-fidRound1",
-  "nokia-media-approach",
   "nokia-media-approach-3",
-  "man-media-approach-3",
-  "man-media-approach-5",
   "nos-media-approach-2",
-  "nos-media-fidDetail-2",
-  "nos-media-fidDetail-3",
 ]);
 
 function pushMedia(cards: CardDef[], useCaseId: UseCaseId, id: string) {
@@ -83,6 +78,7 @@ export function buildCards(): CardDef[] {
         pushMedia(cards, uc.id, `${uc.id}-media-fidDetail-1`);
         pushMedia(cards, uc.id, `${uc.id}-media-fidDetail-2`);
         pushMedia(cards, uc.id, `${uc.id}-media-fidDetail-3`);
+        pushMedia(cards, uc.id, `${uc.id}-media-fidDetail-3-1`);
         pushMedia(cards, uc.id, `${uc.id}-media-fidDetail-4`);
         pushMedia(cards, uc.id, `${uc.id}-media-fidDetail-5`);
       }
