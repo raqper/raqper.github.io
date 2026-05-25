@@ -131,7 +131,7 @@ export function EducationSection() {
                   lineHeight: 1.55,
                 }}
               >
-                Currently I teach 2 design systems online courses (in Portuguese), in Complete and Advanced formats. More teaching content is planned [ coming soon!].
+                Currently I teach 2 design systems online courses (in Portuguese), in Complete and Advanced formats. More teaching content is planned [coming soon!].
               </p>
 
               <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-6 lg:gap-8">
