@@ -110,6 +110,54 @@ export const contentItems: ContentItem[] = [
   // ── 2026 ──────────────────────────────────────────────────────────────────
 
   {
+    id: "36",
+    type: "livestream",
+    role: ["speaker"],
+    title: "Agentic Design Online Jam — May 2026",
+    description:
+      "Full livestream recording from the Agentic Design online jam on agentic workflows and tooling.",
+    image: ytThumb("OziA3qVH3kg"),
+    platform: "Agentic Design",
+    date: "May 2026",
+    dateISO: "2026-05-21",
+    link: "https://www.youtube.com/watch?v=OziA3qVH3kg",
+    tags: ["AI", "Figma", "Community", "Design Systems"],
+    videoLink: "https://www.youtube.com/watch?v=OziA3qVH3kg",
+  },
+
+  {
+    id: "37",
+    type: "meetup",
+    role: ["speaker"],
+    title: "Figma x Claude: Integrating AI into Your Design Workflow",
+    description:
+      "Friends of Figma Lisbon meetup on weaving Claude and agentic tooling into everyday Figma workflows.",
+    image: ytThumb("br3RwbnYC9c"),
+    platform: "Friends of Figma",
+    date: "Mar 2026",
+    dateISO: "2026-03-15",
+    link: "https://www.youtube.com/watch?v=br3RwbnYC9c",
+    tags: ["Friends of Figma", "Figma", "AI", "Community"],
+    videoLink: "https://www.youtube.com/watch?v=br3RwbnYC9c",
+  },
+
+  {
+    id: "38",
+    type: "talk",
+    role: ["speaker"],
+    title: "How Designers Built a Working Figma Plugin in 48 Hours (with AI)",
+    description:
+      "Into Design Systems AI Conference talk with Swap Wizard teammates — hackathon process to production-ready plugin.",
+    image: ytThumb("0upNxrEAHb0"),
+    platform: "Into Design Systems",
+    date: "Feb 2026",
+    dateISO: "2026-02-14",
+    link: "https://www.youtube.com/watch?v=0upNxrEAHb0",
+    tags: ["Into Design Systems", "Design Systems", "AI", "Figma", "Community"],
+    videoLink: "https://www.youtube.com/watch?v=0upNxrEAHb0",
+  },
+
+  {
     id: "33",
     type: "hackathon",
     role: ["speaker"],
