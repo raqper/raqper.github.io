@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // content-items.ts
-// All content/events data for the Career page Content section.
+// Community content for the Career page Content carousel (no courses — see educationOfferings).
 // Sorted reverse-chronologically (newest → oldest).
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -72,11 +72,10 @@ const ytThumb = (videoId: string) =>
 const ytThumbHq = (videoId: string) =>
   `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Live cohort courses (Teaching section, not the Content carousel) ───────
 
-export const contentItems: ContentItem[] = [
-  // ── Courses ───────────────────────────────────────────────────────────────
-
+/** Sorted newest cohort first */
+export const educationOfferings: ContentItem[] = [
   {
     id: "35",
     type: "course",
@@ -91,7 +90,6 @@ export const contentItems: ContentItem[] = [
     link: "https://www.thestarter.io/productdesign/design-systems-os-fundamentos-do-design-em-escala-thestarter",
     tags: ["Design Systems", "The Starter", "Teaching"],
   },
-
   {
     id: "34",
     type: "course",
@@ -106,7 +104,11 @@ export const contentItems: ContentItem[] = [
     link: "https://www.thestarter.io/design-systems-implementacao-em-escala-thestarter",
     tags: ["Design Systems", "The Starter", "Teaching"],
   },
+];
 
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const contentItems: ContentItem[] = [
   // ── 2026 ──────────────────────────────────────────────────────────────────
 
   {

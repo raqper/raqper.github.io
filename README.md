@@ -21,6 +21,10 @@ The website includes informations with NDA constraints.
 Please do not copy, share, or republish materials.
 Some visuals or descriptions may be adapted/redacted to respect confidentiality obligations.
 
+## Local development
+
+After `git pull`, root `index.html` may list hashed production bundles under `/static/`. **`npm run dev`** (or any `vite` dev server) copies [`src/index.template.html`](src/index.template.html) to `index.html` first so the app loads from `/src/main.tsx`. Use **http://localhost:5173/career** (or `/`) — the home route redirects to `/career`.
+
 ## Repository safety
 
 This repository is periodically audited for accidental secret exposure in tracked files and git history.

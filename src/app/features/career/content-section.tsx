@@ -103,6 +103,25 @@ export function ContentSection() {
     fallbackArrowStepPx: CONTENT_CAROUSEL_ARROW_STEP_FALLBACK,
   });
 
+  const carouselNav = (
+    <div className="flex shrink-0 basis-auto items-center gap-2" aria-label="Carousel navigation">
+      <CarouselArrow
+        direction="left"
+        disabled={atStart}
+        onClick={scrollBy}
+        className={CAROUSEL_ARROW_CLASS}
+        style={CAROUSEL_ARROW_STYLE}
+      />
+      <CarouselArrow
+        direction="right"
+        disabled={atEnd}
+        onClick={scrollByRight}
+        className={CAROUSEL_ARROW_CLASS}
+        style={CAROUSEL_ARROW_STYLE}
+      />
+    </div>
+  );
+
   return (
     <section
       id="content"
@@ -120,40 +139,31 @@ export function ContentSection() {
           <div className="pt-16 md:pt-24">
             <div className="px-6 md:px-10 pb-6">
               <div className="max-w-[1400px] mx-auto w-full">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[#a89cc8] tracking-[-0.05em] mb-4" style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}>
+                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-4">
+                  <div className="flex min-w-0 flex-1 flex-col gap-6 md:gap-0">
+                    <p
+                      className="w-full text-[#a89cc8] tracking-[-0.05em] md:mb-4"
+                      style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
+                    >
                       Content
                     </p>
-                    <h2
-                      className="text-[#edeaf5] tracking-[-0.04em]"
-                      style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
-                    >
-                      Contributing to the design community
-                    </h2>
+                    <div className="flex items-start justify-between gap-4 md:contents">
+                      <h2
+                        className="min-w-0 flex-1 text-[#edeaf5] tracking-[-0.04em] md:mb-0"
+                        style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
+                      >
+                        Contributing to the design community
+                      </h2>
+                      <div className="md:hidden">{carouselNav}</div>
+                    </div>
                     <p
-                      className="text-white tracking-[-0.02em] mt-6 md:mt-8 mb-6"
+                      className="mb-6 text-white tracking-[-0.02em] md:mt-8"
                       style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.2vw, 17px)", lineHeight: 1.55 }}
                     >
-                      I speak and teach through talks, livestreams, and online courses, believing knowledge-sharing is most valuable when it's a two-way exchange.
+                      I speak and teach through talks, livestreams, and community events, believing knowledge-sharing is most valuable when it's a two-way exchange.
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0 basis-auto" aria-label="Carousel navigation">
-                    <CarouselArrow
-                      direction="left"
-                      disabled={atStart}
-                      onClick={scrollBy}
-                      className={CAROUSEL_ARROW_CLASS}
-                      style={CAROUSEL_ARROW_STYLE}
-                    />
-                    <CarouselArrow
-                      direction="right"
-                      disabled={atEnd}
-                      onClick={scrollByRight}
-                      className={CAROUSEL_ARROW_CLASS}
-                      style={CAROUSEL_ARROW_STYLE}
-                    />
-                  </div>
+                  <div className="hidden md:flex">{carouselNav}</div>
                 </div>
 
                 <div style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }}>
@@ -176,7 +186,7 @@ export function ContentSection() {
                       <div
                         key={item.id}
                         data-content-carousel-card
-                        className="flex w-[clamp(104px,27vw,188px)] shrink-0 snap-start flex-col md:w-[clamp(200px,calc((100vw_-_10rem_-_80px)_/_5.5),318px)]"
+                        className="flex w-[clamp(88px,calc((100vw_-_3.5rem_-_32px)_/_2.5),200px)] shrink-0 snap-start flex-col md:w-[clamp(200px,calc((100vw_-_10rem_-_80px)_/_5.5),318px)]"
                       >
                         <CardItem item={item} />
                       </div>
