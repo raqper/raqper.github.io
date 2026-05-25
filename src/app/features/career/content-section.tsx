@@ -1,9 +1,12 @@
-import { useRef, useState, useEffect } from "react";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { ScrollReveal } from "@/app/components/scroll-reveal";
 import { CarouselArrow } from "@/app/components/shared/carousel-arrow";
 import { useCarouselScroll } from "@/app/hooks/use-carousel-scroll";
 import { contentItems, highlights, type ContentItem } from "@/app/data/content-items";
+import {
+  CONTENT_CAROUSEL_ARROW_STEP_FALLBACK,
+  CONTENT_CAROUSEL_GAP_PX,
+} from "@/app/features/career/content-carousel-layout";
 
 const typeColors: Record<string, { bg: string; text: string; border: string }> = {
   livestream: { bg: "bg-[#b08828]/15", text: "text-[#d4a848]", border: "border-[#b08828]/30" },
@@ -22,74 +25,68 @@ const CAROUSEL_ARROW_CLASS =
 const CAROUSEL_ARROW_STYLE = { borderColor: "rgba(46,26,106,0.5)", fontFamily: "var(--font-sans)" };
 
 function CardItem({ item }: { item: ContentItem }) {
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const [titleWraps, setTitleWraps] = useState(false);
-  const TITLE_LINE_HEIGHT = 22;
-
-  useEffect(() => {
-    const el = titleRef.current;
-    if (!el) return;
-    const check = () => setTitleWraps(el.scrollHeight > TITLE_LINE_HEIGHT + 1);
-    check();
-    const ro = new ResizeObserver(check);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [item.title]);
-
-  const descriptionClamp = titleWraps ? "line-clamp-2 md:line-clamp-2" : "line-clamp-2 md:line-clamp-3";
-  const descriptionMinH = titleWraps ? "min-h-[40px]" : "min-h-[60px]";
-
   return (
     <a
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="group bg-[#1c0048] rounded-xl overflow-hidden border border-[#2e1a6a] hover:border-[#2e1a6a]/60 transition-all duration-300 hover:shadow-[0_8px_40px_rgba(46,26,106,0.15)] flex flex-col"
+      className="group bg-[#1c0048] rounded-xl overflow-hidden border border-[#2e1a6a] hover:border-[#2e1a6a]/60 transition-all duration-300 hover:shadow-[0_8px_40px_rgba(46,26,106,0.15)] flex h-full min-h-[320px] w-full flex-col"
     >
-      <div className="relative h-[120px] md:h-[160px] overflow-hidden shrink-0">
+      <div className="relative h-[120px] shrink-0 overflow-hidden">
         <ImageWithFallback
           src={item.image}
           alt={item.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1c0048]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1c0048]/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
-      <div className="p-3 md:p-5 flex flex-col flex-1">
-        <div className="flex items-center gap-2 mb-2 md:mb-3">
-          <span className="text-white tracking-[-0.02em] text-xs md:text-[13px]" style={{ fontFamily: "var(--font-sans)", fontWeight: 500 }}>
+      <div className="flex flex-1 flex-col p-3">
+        <div className="mb-2 flex min-w-0 items-center gap-2">
+          <span
+            className="min-w-0 truncate text-[13px] tracking-[-0.02em] text-white"
+            style={{ fontFamily: "var(--font-sans)", fontWeight: 500 }}
+          >
             {item.platform}
           </span>
-          <span className="w-1 h-1 rounded-full bg-[#2e1a6a]" />
-          <span className="text-[#a89cc8] tracking-[-0.02em] text-xs md:text-[13px]" style={{ fontFamily: "var(--font-sans)", fontWeight: 400 }}>
+          <span className="h-1 w-1 shrink-0 rounded-full bg-[#2e1a6a]" />
+          <span
+            className="shrink-0 text-[13px] tracking-[-0.02em] text-[#a89cc8]"
+            style={{ fontFamily: "var(--font-sans)", fontWeight: 400 }}
+          >
             {item.date}
           </span>
         </div>
         <h3
-          ref={titleRef}
-          className="text-[#edeaf5] tracking-[-0.03em] mb-2 md:mb-3 group-hover:text-[#d4c8e8] transition-colors text-sm md:text-base"
-          style={{ fontFamily: "var(--font-expanded)", fontWeight: 600, lineHeight: "22px" }}
+          className="mb-2 line-clamp-2 min-h-[40px] text-[13px] tracking-[-0.03em] text-[#edeaf5] transition-colors group-hover:text-[#d4c8e8]"
+          style={{ fontFamily: "var(--font-expanded)", fontWeight: 600, lineHeight: "20px" }}
         >
           {item.title}
         </h3>
         <p
-          className={`text-white tracking-[-0.02em] flex-1 ${descriptionMinH} ${descriptionClamp}`}
-          style={{ fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 400, lineHeight: "20px" }}
+          className="line-clamp-3 min-h-[60px] flex-1 text-[13px] tracking-[-0.02em] text-white"
+          style={{ fontFamily: "var(--font-sans)", fontWeight: 400, lineHeight: "20px" }}
         >
           {item.description}
         </p>
-        <div className="mt-3 md:mt-4 flex items-center gap-2">
+        <div className="mt-auto flex items-center gap-2 pt-3">
           <span
-            className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold border capitalize ${typeColors[item.type]?.bg ?? "bg-[#2e1a6a]/20"} ${typeColors[item.type]?.text ?? "text-[#9b82e0]"} ${typeColors[item.type]?.border ?? "border-[#2e1a6a]/40"}`}
+            className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold capitalize ${typeColors[item.type]?.bg ?? "bg-[#2e1a6a]/20"} ${typeColors[item.type]?.text ?? "text-[#9b82e0]"} ${typeColors[item.type]?.border ?? "border-[#2e1a6a]/40"}`}
             style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}
           >
             {item.type}
           </span>
           <div className="flex-1" />
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shrink-0">
-            <span className="text-[#b08828] tracking-[-0.02em]" style={{ fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 600 }}>
+          <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <span className="text-[13px] tracking-[-0.02em] text-[#b08828]" style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}>
               View
             </span>
-            <svg className="w-3.5 h-3.5 text-[#b08828] group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg
+              className="h-3.5 w-3.5 text-[#b08828] transition-transform group-hover:translate-x-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
             </svg>
           </div>
@@ -100,7 +97,30 @@ function CardItem({ item }: { item: ContentItem }) {
 }
 
 export function ContentSection() {
-  const { stripRef, atStart, atEnd, isDragging, scrollBy, scrollByRight, dragHandlers } = useCarouselScroll();
+  const { stripRef, atStart, atEnd, isDragging, scrollBy, scrollByRight, dragHandlers } = useCarouselScroll({
+    arrowStepCardSelector: "[data-content-carousel-card]",
+    arrowStepGapPx: CONTENT_CAROUSEL_GAP_PX,
+    fallbackArrowStepPx: CONTENT_CAROUSEL_ARROW_STEP_FALLBACK,
+  });
+
+  const carouselNav = (
+    <div className="flex shrink-0 basis-auto items-center gap-2" aria-label="Carousel navigation">
+      <CarouselArrow
+        direction="left"
+        disabled={atStart}
+        onClick={scrollBy}
+        className={CAROUSEL_ARROW_CLASS}
+        style={CAROUSEL_ARROW_STYLE}
+      />
+      <CarouselArrow
+        direction="right"
+        disabled={atEnd}
+        onClick={scrollByRight}
+        className={CAROUSEL_ARROW_CLASS}
+        style={CAROUSEL_ARROW_STYLE}
+      />
+    </div>
+  );
 
   return (
     <section
@@ -119,40 +139,31 @@ export function ContentSection() {
           <div className="pt-16 md:pt-24">
             <div className="px-6 md:px-10 pb-6">
               <div className="max-w-[1400px] mx-auto w-full">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[#a89cc8] tracking-[-0.05em] mb-4" style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}>
+                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-4">
+                  <div className="flex min-w-0 flex-1 flex-col gap-6 md:gap-0">
+                    <p
+                      className="w-full text-[#a89cc8] tracking-[-0.05em] md:mb-4"
+                      style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
+                    >
                       Content
                     </p>
-                    <h2
-                      className="text-[#edeaf5] tracking-[-0.04em]"
-                      style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
-                    >
-                      Contributing to the design community
-                    </h2>
+                    <div className="flex items-start justify-between gap-4 md:contents">
+                      <h2
+                        className="min-w-0 flex-1 text-[#edeaf5] tracking-[-0.04em] md:mb-0"
+                        style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
+                      >
+                        Contributing to the design community
+                      </h2>
+                      <div className="md:hidden">{carouselNav}</div>
+                    </div>
                     <p
-                      className="text-white tracking-[-0.02em] mt-6 md:mt-8 mb-6"
+                      className="mb-6 text-white tracking-[-0.02em] md:mt-8"
                       style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.2vw, 17px)", lineHeight: 1.55 }}
                     >
-                      I speak and teach through talks, livestreams, and online courses, believing knowledge-sharing is most valuable when it's a two-way exchange.
+                      I speak and teach through talks, livestreams, and community events, believing knowledge-sharing is most valuable when it's a two-way exchange.
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0 basis-auto" aria-label="Carousel navigation">
-                    <CarouselArrow
-                      direction="left"
-                      disabled={atStart}
-                      onClick={scrollBy}
-                      className={CAROUSEL_ARROW_CLASS}
-                      style={CAROUSEL_ARROW_STYLE}
-                    />
-                    <CarouselArrow
-                      direction="right"
-                      disabled={atEnd}
-                      onClick={scrollByRight}
-                      className={CAROUSEL_ARROW_CLASS}
-                      style={CAROUSEL_ARROW_STYLE}
-                    />
-                  </div>
+                  <div className="hidden md:flex">{carouselNav}</div>
                 </div>
 
                 <div style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }}>
@@ -172,7 +183,11 @@ export function ContentSection() {
                     onMouseLeave={dragHandlers.onMouseUp}
                   >
                     {contentItems.map((item) => (
-                      <div key={item.id} className="shrink-0 snap-start" style={{ width: "clamp(240px, 58vw, 340px)" }}>
+                      <div
+                        key={item.id}
+                        data-content-carousel-card
+                        className="flex w-[clamp(88px,calc((100vw_-_3.5rem_-_32px)_/_2.5),200px)] shrink-0 snap-start flex-col md:w-[clamp(200px,calc((100vw_-_10rem_-_80px)_/_5.5),318px)]"
+                      >
                         <CardItem item={item} />
                       </div>
                     ))}

@@ -1,9 +1,21 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 
-const CARD_STEP = 280;
+const DEFAULT_CARD_STEP = 280;
 
-export function useCarouselScroll() {
+export type UseCarouselScrollOptions = {
+  /** When set, arrow scroll distance = first matching card width + gap (responsive). */
+  arrowStepCardSelector?: string;
+  /** Flex gap between cards in px (e.g. Tailwind gap-4 = 16). */
+  arrowStepGapPx?: number;
+  /** Used when selector misses or before layout (should match desktop max card + gap). */
+  fallbackArrowStepPx?: number;
+};
+
+export function useCarouselScroll(options?: UseCarouselScrollOptions) {
   const stripRef = useRef<HTMLDivElement>(null);
+  const gapPx = options?.arrowStepGapPx ?? 16;
+  const fallbackStep = options?.fallbackArrowStepPx ?? DEFAULT_CARD_STEP;
+  const cardSelector = options?.arrowStepCardSelector;
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeftStart, setScrollLeftStart] = useState(0);
@@ -54,13 +66,22 @@ export function useCarouselScroll() {
     el.scrollTo({ left: el.scrollLeft + delta, behavior: "smooth" });
   };
 
+  const getArrowStep = useCallback(() => {
+    if (!cardSelector) return DEFAULT_CARD_STEP;
+    const el = stripRef.current;
+    if (!el) return fallbackStep;
+    const card = el.querySelector<HTMLElement>(cardSelector);
+    if (!card) return fallbackStep;
+    return Math.round(card.getBoundingClientRect().width) + gapPx;
+  }, [cardSelector, gapPx, fallbackStep]);
+
   return {
     stripRef,
     atStart,
     atEnd,
     isDragging,
-    scrollBy: () => scrollBy(-CARD_STEP),
-    scrollByRight: () => scrollBy(CARD_STEP),
+    scrollBy: () => scrollBy(-getArrowStep()),
+    scrollByRight: () => scrollBy(getArrowStep()),
     dragHandlers: { onMouseDown, onMouseMove, onMouseUp },
   };
 }

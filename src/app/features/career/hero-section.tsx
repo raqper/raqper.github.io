@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import raquelPortraitImg from "@/assets/raquel-portrait-2_v2.png";
 const raquelPortrait = raquelPortraitImg;
 
-const NAV_ITEMS = ["Experience", "Content", "Skills", "Contact"];
+const NAV_ITEMS = ["Experience", "Content", "Education", "Skills", "Contact"];
 
 export function HeroSection() {
   const [drawerOpen, setDrawerOpen] = useState(false);

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { HeroSection } from "@/app/features/career/hero-section";
 import { SkillsSection } from "@/app/features/career/skills-section";
 import { ContentSection } from "@/app/features/career/content-section";
+import { EducationSection } from "@/app/features/career/education-section";
 import { TimelineSection } from "@/app/features/career/timeline-section";
 import { CtaSection } from "@/app/features/career/cta-section";
 import { Footer } from "@/app/components/footer";
@@ -13,6 +14,7 @@ export default function Home() {
       <Suspense fallback={null}>
         <TimelineSection />
         <ContentSection />
+        <EducationSection />
         <SkillsSection />
         <CtaSection />
       </Suspense>

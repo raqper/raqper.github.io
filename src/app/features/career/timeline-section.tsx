@@ -55,6 +55,25 @@ function MilestoneCard({ milestone }: { milestone: Milestone }) {
 export function TimelineSection() {
   const { stripRef, atStart, atEnd, isDragging, scrollBy, scrollByRight, dragHandlers } = useCarouselScroll();
 
+  const carouselNav = (
+    <div className="flex shrink-0 basis-auto items-center gap-2" aria-label="Carousel navigation">
+      <CarouselArrow
+        direction="left"
+        disabled={atStart}
+        onClick={scrollBy}
+        className={CAROUSEL_ARROW_CLASS}
+        style={CAROUSEL_ARROW_STYLE}
+      />
+      <CarouselArrow
+        direction="right"
+        disabled={atEnd}
+        onClick={scrollByRight}
+        className={CAROUSEL_ARROW_CLASS}
+        style={CAROUSEL_ARROW_STYLE}
+      />
+    </div>
+  );
+
   return (
     <section
       id="experience"
@@ -73,43 +92,31 @@ export function TimelineSection() {
           <div className="pt-16 md:pt-24">
             <div className="px-6 md:px-10">
               <div className="max-w-[1400px] mx-auto w-full">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
+                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-4">
+                  <div className="flex min-w-0 flex-1 flex-col gap-6 md:gap-0">
                     <p
-                      className="text-[#a89cc8] tracking-[-0.05em] mb-4"
+                      className="w-full text-[#a89cc8] tracking-[-0.05em] md:mb-4"
                       style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
                     >
                       Experience
                     </p>
-                    <h2
-                      className="text-[#edeaf5] tracking-[-0.04em]"
-                      style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
-                    >
-                      Scaling impact over time
-                    </h2>
+                    <div className="flex items-start justify-between gap-4 md:contents">
+                      <h2
+                        className="min-w-0 flex-1 text-[#edeaf5] tracking-[-0.04em] md:mb-0"
+                        style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 700, lineHeight: 1.1 }}
+                      >
+                        Scaling impact over time
+                      </h2>
+                      <div className="md:hidden">{carouselNav}</div>
+                    </div>
                     <p
-                      className="text-white tracking-[-0.02em] mt-6 md:mt-8"
+                      className="text-white tracking-[-0.02em] md:mt-8"
                       style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.2vw, 17px)", lineHeight: 1.55 }}
                     >
                       Since 2017, I've progressively expanded my scope, from designing interfaces to shaping how teams build, scale, and integrate AI into their workflows.
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0 basis-auto" aria-label="Carousel navigation">
-                    <CarouselArrow
-                      direction="left"
-                      disabled={atStart}
-                      onClick={scrollBy}
-                      className={CAROUSEL_ARROW_CLASS}
-                      style={CAROUSEL_ARROW_STYLE}
-                    />
-                    <CarouselArrow
-                      direction="right"
-                      disabled={atEnd}
-                      onClick={scrollByRight}
-                      className={CAROUSEL_ARROW_CLASS}
-                      style={CAROUSEL_ARROW_STYLE}
-                    />
-                  </div>
+                  <div className="hidden md:flex">{carouselNav}</div>
                 </div>
 
                 <div className="pt-6" style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }}>
