@@ -24,7 +24,7 @@ export default function Portfolio() {
 
   return (
     <main id="main-content" className="w-full min-h-screen" style={{ background: "var(--p-bg-base)" }}>
-      {/* Navigation — matches hero-section nav style */}
+      {/* Navigation - matches hero-section nav style */}
       <nav className="fixed top-0 left-0 right-0 z-50">
         {/* Backdrop blur */}
         <div
@@ -36,98 +36,92 @@ export default function Portfolio() {
             WebkitBackdropFilter: "blur(8px)",
           }}
         />
-        <div className="px-4 sm:px-6 md:px-10 py-4 md:py-6">
-          <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between gap-3">
-            {/* Left — Back arrow (hidden for now) + Portfolio title */}
-            <div className="flex items-center gap-3 shrink-0">
-              <Link
-                to="/career"
-                className="hidden relative flex items-center justify-center rounded-full p-[7px] text-white hover:text-[#edeaf5] transition-colors duration-300"
-                style={{
-                  background: "rgba(46,26,106,0.25)",
-                  border: "1px solid rgba(46,26,106,0.4)",
-                }}
-                aria-label="Back to home"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M19 12H5" />
-                  <path d="m12 19-7-7 7-7" />
-                </svg>
-              </Link>
-              <h2
-                className="text-[#edeaf5] tracking-[-0.04em]"
-                style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(18px, 2.5vw, 28px)", fontWeight: 700, lineHeight: 1.1 }}
-              >
-                Portfolio
-              </h2>
-            </div>
-
-            {/* Right — Use case chips (scrollable on small screens) */}
-            <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar">
-              {useCaseChips.map((chip) => {
-                const isActive = chipState?.activeChip === chip.id;
-                const styles = chipActiveStyles[chip.id];
-                return (
-                  <button
-                    type="button"
-                    key={chip.id}
-                    onClick={() => chipState?.handleChipClick(chip.id)}
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 cursor-pointer shrink-0 whitespace-nowrap hover:text-[#edeaf5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#130032]"
+        <div className="px-4 sm:px-6 md:px-10 pt-4 md:pt-6">
+          <div className="max-w-[1400px] mx-auto w-full">
+            <div className="flex items-start justify-between gap-3 pb-3">
+              {/* Left - Portfolio title + NDA notice */}
+              <div className="flex flex-col gap-3 min-w-0 text-left">
+                <div className="flex items-center gap-3 shrink-0">
+                  <Link
+                    to="/career"
+                    className="hidden relative flex items-center justify-center rounded-full p-[7px] text-white hover:text-[#edeaf5] transition-colors duration-300"
                     style={{
-                      fontFamily: "var(--font-sans)",
-                      fontSize: "12px",
-                      fontWeight: 500,
-                      backgroundColor: isActive ? styles.bg : "transparent",
-                      borderColor: isActive ? styles.border : "rgba(168,156,200,0.42)",
-                      color: isActive ? styles.text : "#d0c7e7",
+                      background: "rgba(46,26,106,0.25)",
+                      border: "1px solid rgba(46,26,106,0.4)",
                     }}
-                    aria-pressed={isActive}
+                    aria-label="Back to home"
                   >
-                    {chip.label}
-                  </button>
-                );
-              })}
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M19 12H5" />
+                      <path d="m12 19-7-7 7-7" />
+                    </svg>
+                  </Link>
+                  <h2
+                    className="text-[#edeaf5] tracking-[-0.04em]"
+                    style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(18px, 2.5vw, 28px)", fontWeight: 700, lineHeight: 1.1 }}
+                  >
+                    Portfolio
+                  </h2>
+                </div>
+                <p
+                  className="text-[#c4bade] text-xs sm:text-sm md:text-[13px] leading-snug"
+                  style={{ fontFamily: "var(--font-sans)", fontWeight: 500 }}
+                >
+                  <span className="mr-1.5 align-middle" aria-hidden>🔐</span>
+                  Some projects are under NDA. Please do not share. Certain visuals may be adapted.
+                </p>
+              </div>
+
+              {/* Right - Use case chips (scrollable on small screens) */}
+              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar shrink-0 pt-0.5">
+                {useCaseChips.map((chip) => {
+                  const isActive = chipState?.activeChip === chip.id;
+                  const styles = chipActiveStyles[chip.id];
+                  return (
+                    <button
+                      type="button"
+                      key={chip.id}
+                      onClick={() => chipState?.handleChipClick(chip.id)}
+                      className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border transition-all duration-300 cursor-pointer shrink-0 whitespace-nowrap hover:text-[#edeaf5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#130032]"
+                      style={{
+                        fontFamily: "var(--font-sans)",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        backgroundColor: isActive ? styles.bg : "transparent",
+                        borderColor: isActive ? styles.border : "rgba(168,156,200,0.42)",
+                        color: isActive ? styles.text : "#d0c7e7",
+                      }}
+                      aria-pressed={isActive}
+                    >
+                      {chip.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-          {/* Progress bar — aligned with nav content */}
-          <div
-            className="max-w-[1400px] mx-auto w-full mt-4 md:mt-6 h-px relative overflow-hidden"
-            style={{ background: "rgba(46,26,106,0.4)" }}
-          >
+            {/* Progress bar - bottom border of nav header */}
             <div
-              ref={progressBarNavRef}
-              className="absolute inset-y-0 left-0 w-full origin-left"
-              style={{
-                transform: "scaleX(0)",
-                background: "linear-gradient(to right, #2e1a6a, #b08828, #ede0a8)",
-              }}
-            />
-          </div>
-          {/* NDA notice — right next to progress bar, inside main nav */}
-          <div
-            className="max-w-[1400px] mx-auto w-full py-2.5 md:py-3 px-4 sm:px-6 md:px-10 text-center rounded-b-lg"
-            style={{
-              background: "linear-gradient(180deg, rgba(46,26,106,0.25) 0%, rgba(30,15,70,0.35) 100%)",
-              borderBottom: "1px solid rgba(46,26,106,0.4)",
-              boxShadow: "inset 0 0 0 1px rgba(176,136,40,0.08)",
-            }}
-          >
-            <p
-              className="text-[#c4bade] text-xs sm:text-sm md:text-[13px] leading-snug"
-              style={{ fontFamily: "var(--font-sans)", fontWeight: 500 }}
+              className="h-px relative overflow-hidden"
+              style={{ background: "rgba(46,26,106,0.4)" }}
             >
-              <span className="mr-1.5 align-middle" aria-hidden>🔐</span>
-              Some projects are under NDA. Please do not share. Certain visuals may be adapted.
-            </p>
+              <div
+                ref={progressBarNavRef}
+                className="absolute inset-y-0 left-0 w-full origin-left"
+                style={{
+                  transform: "scaleX(0)",
+                  background: "linear-gradient(to right, #2e1a6a, #b08828, #ede0a8)",
+                }}
+              />
+            </div>
           </div>
         </div>
       </nav>
