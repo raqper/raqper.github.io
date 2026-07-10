@@ -13,10 +13,11 @@ export interface PortfolioChipState {
 }
 
 const cardsByUseCase = new Map<UseCaseId, typeof ALL_CARDS>();
+const introCard = ALL_CARDS.find((card) => card.type === "intro");
 for (const useCase of allUseCases) {
   cardsByUseCase.set(
     useCase.id,
-    ALL_CARDS.filter((card) => card.useCaseId === useCase.id)
+    ALL_CARDS.filter((card) => card.useCaseId === useCase.id && card.type !== "intro")
   );
 }
 
@@ -48,6 +49,7 @@ function unlockBodyScroll() {
 export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onChipStateChange?: (state: PortfolioChipState) => void; navProgressBarRef?: React.RefObject<HTMLDivElement | null> }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const trackAlignRef = useRef<HTMLDivElement>(null);
 
   // Current horizontal offset (accumulated from wheel deltas)
   const offsetRef = useRef(0);
@@ -196,7 +198,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
       // and offset is at max (meaning they need to reverse through horizontal content)
       if (exitedDown) {
         if (sectionCoversViewport && offsetRef.current >= max) {
-          // User scrolled back up into the section — re-engage
+          // User scrolled back up into the section - re-engage
           exitedDown = false;
         } else {
           // Still past the section or not ready to re-engage
@@ -314,7 +316,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
     };
 
     const onTouchEnd = () => {
-      // Keep lock state — it will be released on next scroll boundary
+      // Keep lock state - it will be released on next scroll boundary
     };
 
     section.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -351,13 +353,19 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
       window.scrollTo({ top: sectionRef.current.offsetTop, behavior: "smooth" });
     }
 
-    // Find the first card element for this use case
+    // Find the first card element for this use case (skip intro)
     const cardElements = Array.from(trackRef.current.children) as HTMLElement[];
-    const targetCard = cardElements.find((el) => el.dataset.usecaseId === id);
+    const targetCard = cardElements.find(
+      (el) => el.dataset.usecaseId === id && el.dataset.cardType !== "intro"
+    );
     if (!targetCard) return;
 
-    const desiredScreenX = parseFloat(getComputedStyle(trackRef.current).paddingLeft) || 40;
-    const targetOffset = Math.min(max, Math.max(0, targetCard.offsetLeft - desiredScreenX));
+    const alignLeft = trackAlignRef.current?.getBoundingClientRect().left ?? 40;
+    const trackLeft = trackRef.current.getBoundingClientRect().left;
+    const targetOffset = Math.min(
+      max,
+      Math.max(0, targetCard.offsetLeft + trackLeft - alignLeft)
+    );
 
     // Animate to target offset
     const start = offsetRef.current;
@@ -382,7 +390,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
     requestAnimationFrame(animate);
   }, [isMobile, applyOffset]);
 
-  // Expose chip state to parent (nav bar) — always provide fresh callback
+  // Expose chip state to parent (nav bar) - always provide fresh callback
   useEffect(() => {
     onChipStateChange?.({ activeChip, handleChipClick });
   }, [activeChip, handleChipClick, onChipStateChange]);
@@ -399,11 +407,25 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
       }}
     >
       <div className="overflow-hidden flex flex-col h-full">
-        {/* Spacer for fixed nav (includes NDA banner in nav) */}
-        <div className="pt-28 md:pt-32 shrink-0" />
+        {/* Spacer for fixed nav */}
+        <div className="pt-24 md:pt-28 shrink-0" />
 
         {isMobile && (
           <div className="px-4 pt-6 pb-16 flex flex-col gap-10 relative z-10">
+            {introCard && (
+              <ScrollReveal>
+                <div
+                  className="rounded-2xl overflow-hidden"
+                  style={{
+                    minHeight: "420px",
+                    background: "#130030",
+                    border: "1px solid rgba(176,136,40,0.15)",
+                  }}
+                >
+                  <CardRenderer card={introCard} onCaseClick={handleChipClick} />
+                </div>
+              </ScrollReveal>
+            )}
             {allUseCases.map((uc) => {
               const accent = accents[uc.id];
               const cards = cardsByUseCase.get(uc.id) ?? [];
@@ -425,16 +447,20 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                         <div
                           className="rounded-2xl overflow-hidden"
                           style={{
-                            minHeight: card.type === "overview" ? "360px" : "auto",
-                            aspectRatio: card.type === "media" ? "16 / 9" : undefined,
-                            background: card.type === "overview" || card.type === "impact"
-                              ? "#130030"
-                              : card.type === "media"
-                                ? "transparent"
-                                : "#1c0048",
+                            minHeight: card.type === "overview" ? "360px" : card.type === "prototypeFlowStep" ? "clamp(440px, 55vh, 760px)" : "auto",
+                            aspectRatio:
+                              card.type === "media"
+                                ? "16 / 9"
+                                : undefined,
+                            background:
+                              card.type === "overview" || card.type === "impact" || card.type === "intro"
+                                ? "#130030"
+                                : card.type === "media"
+                                  ? "transparent"
+                                  : "#1c0048",
                           }}
                         >
-                          <CardRenderer card={card} />
+                          <CardRenderer card={card} onCaseClick={handleChipClick} />
                         </div>
                       </ScrollReveal>
                     ))}
@@ -447,19 +473,37 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
 
         {!isMobile && (
           <div className="flex-1 flex flex-col justify-center overflow-hidden relative z-10">
-            <div
-              ref={trackRef}
-              className="flex gap-5 will-change-transform relative py-4"
-              style={{
-                paddingLeft: "max(1.5rem, calc((100vw - 1400px) / 2 + 2.5rem))",
-                paddingRight: "50vw",
-              }}
-            >
+            <div className="px-4 sm:px-6 md:px-10 w-full">
+              <div
+                ref={trackAlignRef}
+                className="max-w-[1400px] mx-auto w-full overflow-visible"
+              >
+                <div
+                  ref={trackRef}
+                  className="flex gap-5 will-change-transform relative pb-4"
+                  style={{ paddingRight: "50vw" }}
+                >
               {ALL_CARDS.map((card, index) => {
                 const isFirstInGroup = index === 0 || ALL_CARDS[index - 1].useCaseId !== card.useCaseId;
                 const isMedia = card.type === "media";
+                const isIntro = card.type === "intro";
+                const isLearnings = card.type === "learnings";
+                const isPrototypeFlowStep = card.type === "prototypeFlowStep";
                 const isNokiaCompareCard = card.id === "nokia-media-pre-impact-2";
-                const nonMediaHeight = "clamp(420px, calc(100vh - 11rem), 720px)";
+                const nonMediaHeight = "clamp(440px, calc(100vh - 9.5rem), 760px)";
+                const cardWidth = isIntro
+                  ? "clamp(640px, 64vw, 960px)"
+                  : isPrototypeFlowStep
+                    ? "clamp(880px, 78vw, 1152px)"
+                  : isMedia
+                    ? "auto"
+                    : "clamp(569px, 57vw, 853px)";
+                const cardHeight = isMedia
+                  ? isNokiaCompareCard
+                    ? nonMediaHeight
+                    : "auto"
+                  : nonMediaHeight;
+                const cardMaxHeight = nonMediaHeight;
 
                 return (
                   <div
@@ -467,6 +511,7 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                     className="flex gap-5 shrink-0 items-center"
                     data-card-index={index}
                     data-usecase-id={card.useCaseId}
+                    data-card-type={card.type}
                   >
                     {isFirstInGroup && index !== 0 && (
                       <div
@@ -477,25 +522,32 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                     <div
                       className="shrink-0 rounded-2xl transition-all duration-300 overflow-hidden"
                       style={{
-                        width: isMedia ? "auto" : "clamp(569px, 57vw, 853px)",
-                        height: isMedia ? (isNokiaCompareCard ? nonMediaHeight : "auto") : nonMediaHeight,
-                        maxHeight: nonMediaHeight,
+                        width: cardWidth,
+                        height: cardHeight,
+                        maxHeight: cardMaxHeight,
                         aspectRatio: isMedia
-                          ? (isNokiaCompareCard ? "16 / 9" : undefined)
-                          : "1280 / 1080",
+                          ? isNokiaCompareCard
+                            ? "16 / 9"
+                            : undefined
+                          : isIntro || isLearnings || isPrototypeFlowStep
+                            ? undefined
+                            : "1280 / 1080",
                         background:
-                          card.type === "overview" || card.type === "impact"
+                          card.type === "overview" || card.type === "impact" || card.type === "intro"
                             ? "#130030"
                             : isMedia
                               ? "transparent"
                               : "#1c0048",
+                        border: isIntro ? "1px solid rgba(176,136,40,0.15)" : undefined,
                       }}
                     >
-                      <CardRenderer card={card} />
+                      <CardRenderer card={card} onCaseClick={handleChipClick} />
                     </div>
                   </div>
                 );
               })}
+                </div>
+              </div>
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { accents } from "./portfolio-data";
 import type { UseCase } from "./portfolio-data";
 import type { CardDef } from "./card-builder";
@@ -19,6 +19,59 @@ function formatMediaLabel(cardId: string): string {
     .replace(/-/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
+
+function AutoplayVideo({
+  src,
+  label,
+  autoplay = false,
+  className = "block max-w-full max-h-full w-auto h-auto",
+  style,
+}: {
+  src: string;
+  label: string;
+  autoplay?: boolean;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!autoplay) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          void video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.45 },
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [autoplay]);
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      aria-label={label}
+      className={className}
+      style={style ?? { maxHeight: "clamp(440px, calc(100vh - 9.5rem), 760px)" }}
+      controls
+      autoPlay={autoplay}
+      muted={autoplay}
+      playsInline
+      preload="metadata"
+    />
+  );
+}
+
+export { AutoplayVideo };
 
 export function SegmentedControl<T extends string | number>({
   options,
@@ -102,7 +155,7 @@ export function NokiaBeforeAfterCard() {
         {imageSrc ? (
           <img
             src={imageSrc}
-            alt={`Nokia comparison screen ${screen}, ${version} tokens`}
+            alt={`Nokia comparison screen ${screen}, ${version === "new" ? "Connect theme" : "FreeForm theme"}`}
             className="absolute inset-0 w-full h-full object-contain"
             draggable={false}
           />
@@ -118,7 +171,7 @@ export function NokiaBeforeAfterCard() {
               className="font-['TikTok_Sans',sans-serif] text-center tracking-[-0.02em]"
               style={{ fontSize: "14px", fontWeight: 500, color: `${NOKIA_ACCENT}cc` }}
             >
-              Screen {screen} — {version === "new" ? "New tokens" : "Old tokens"}
+              Screen {screen}, {version === "new" ? "New tokens" : "Old tokens"}
             </p>
           </div>
         )}
@@ -134,15 +187,21 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
 
   if (media?.type === "video") {
     return (
-      <video
-        src={media.src}
-        aria-label={mediaLabel}
-        className="block max-w-full max-h-full w-auto h-auto"
-        style={{ maxHeight: "clamp(420px, calc(100vh - 11rem), 720px)" }}
-        controls
-        playsInline
-        preload="metadata"
-      />
+      <div className="flex flex-col gap-3 max-h-full">
+        {media.caption && (
+          <p
+            className="font-['TikTok_Sans',sans-serif] tracking-[-0.02em] shrink-0 px-1"
+            style={{ fontSize: "14px", fontWeight: 500, lineHeight: "20px", color: accent }}
+          >
+            {media.caption}
+          </p>
+        )}
+        <AutoplayVideo
+          src={media.src}
+          label={media.caption ?? mediaLabel}
+          autoplay={media.autoplay}
+        />
+      </div>
     );
   }
 
@@ -152,7 +211,7 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
         className="relative"
         style={{
           width: "clamp(854px, 85vw, 1280px)",
-          height: "clamp(420px, calc(100vh - 11rem), 720px)",
+          height: "clamp(440px, calc(100vh - 9.5rem), 760px)",
         }}
       >
         <iframe
@@ -174,7 +233,7 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
         alt={mediaLabel}
         loading="lazy"
         className="block max-w-full max-h-full w-auto h-auto"
-        style={{ maxHeight: "clamp(420px, calc(100vh - 11rem), 720px)" }}
+        style={{ maxHeight: "clamp(440px, calc(100vh - 9.5rem), 760px)" }}
         draggable={false}
       />
     );

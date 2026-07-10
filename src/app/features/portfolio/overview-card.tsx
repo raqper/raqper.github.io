@@ -52,6 +52,14 @@ export function OverviewCard({ uc }: { uc: UseCase }) {
         >
           {uc.title}
         </h3>
+        {uc.overview.pitch && (
+          <p
+            className="font-['TikTok_Sans',sans-serif] text-[#a89cc8] tracking-[-0.02em] mt-3"
+            style={{ fontSize: "15px", fontWeight: 400, lineHeight: "22px" }}
+          >
+            {uc.overview.pitch}
+          </p>
+        )}
         <div
           className="flex flex-col gap-5 mt-6 pt-6"
           style={{ borderTop: "1px solid rgba(46,26,106,0.4)" }}
