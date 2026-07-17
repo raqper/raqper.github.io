@@ -84,9 +84,9 @@ export const portfolioIntro: PortfolioIntro = {
     { label: "AI-ready", value: "Structured tokens, MCP workflows, machine-readable docs" },
   ],
   cases: [
-    { id: "nokia", label: "Nokia", role: "Design System Lead", hook: "", logo: nokiaLogo },
-    { id: "man", label: "MAN", role: "Design Ops Lead", hook: "", logo: manLogo },
-    { id: "nos", label: "NOS", role: "Senior Product Design", hook: "", logo: nosLogo },
+    { id: "nokia", label: "Nokia", role: "Design System", hook: "", logo: nokiaLogo },
+    { id: "man", label: "MAN", role: "Design Ops", hook: "", logo: manLogo },
+    { id: "nos", label: "NOS", role: "Product Design", hook: "", logo: nosLogo },
   ],
 };
 
