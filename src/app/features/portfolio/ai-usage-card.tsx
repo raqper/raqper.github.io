@@ -64,7 +64,7 @@ export function AiUsageCard({ uc }: { uc: UseCase }) {
   );
 
   return (
-    <div className="h-full flex flex-col p-8 md:p-10 overflow-y-auto">
+    <div className="h-full flex flex-col p-5 sm:p-6 md:p-8 lg:p-10 overflow-y-auto">
       <span
         className="font-['TikTok_Sans',sans-serif] tracking-[-0.03em] mb-3 shrink-0"
         style={{ fontSize: "12px", fontWeight: 500, color: accent }}
@@ -84,7 +84,7 @@ export function AiUsageCard({ uc }: { uc: UseCase }) {
         {ai.framing}
       </p>
 
-      <div className="flex gap-3 mb-5 shrink-0">
+      <div className="flex flex-col md:flex-row gap-3 mb-5 shrink-0">
         {phaseBlock("First time", ai.before.duration, ai.before.tools, ai.before.steps, false)}
         {phaseBlock("Now", ai.after.duration, ai.after.tools, ai.after.steps, true)}
       </div>

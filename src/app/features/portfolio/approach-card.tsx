@@ -5,7 +5,7 @@ export function ApproachCard({ uc }: { uc: UseCase }) {
   const accent = accents[uc.id];
   const grad = gradients[uc.id];
   return (
-    <div className="h-full flex flex-col p-8 md:p-10">
+    <div className="h-full flex flex-col p-5 sm:p-6 md:p-8 lg:p-10">
       <div className="flex items-center justify-between w-full mb-4">
         <span
           className="font-['TikTok_Sans',sans-serif] tracking-[-0.03em]"

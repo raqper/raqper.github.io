@@ -408,16 +408,15 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
     >
       <div className="overflow-hidden flex flex-col h-full">
         {/* Spacer for fixed nav */}
-        <div className="pt-24 md:pt-28 shrink-0" />
+        <div className="pt-36 md:pt-28 shrink-0" />
 
         {isMobile && (
-          <div className="px-4 pt-6 pb-16 flex flex-col gap-10 relative z-10">
+          <div className="px-4 pt-6 pb-16 flex flex-col gap-10 relative z-10 overflow-x-hidden w-full max-w-full">
             {introCard && (
               <ScrollReveal>
                 <div
-                  className="rounded-2xl overflow-hidden"
+                  className="rounded-2xl overflow-hidden w-full max-w-full"
                   style={{
-                    minHeight: "420px",
                     background: "#130030",
                     border: "1px solid rgba(176,136,40,0.15)",
                   }}
@@ -442,14 +441,28 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                     <div className="flex-1 h-px" style={{ background: `${accent}25` }} />
                   </div>
                   <div className="flex flex-col gap-4">
-                    {cards.map((card) => (
+                    {cards.map((card) => {
+                      const isNokiaCompareCard = card.id === "nokia-media-pre-impact-2";
+                      return (
                       <ScrollReveal key={card.id}>
                         <div
-                          className="rounded-2xl overflow-hidden"
+                          className={`rounded-2xl overflow-hidden w-full max-w-full${
+                            card.type === "media"
+                              ? isNokiaCompareCard
+                                ? " flex h-full min-h-0 flex-col"
+                                : " flex items-center justify-center"
+                              : ""
+                          }`}
                           style={{
-                            minHeight: card.type === "overview" ? "360px" : card.type === "prototypeFlowStep" ? "clamp(440px, 55vh, 760px)" : "auto",
+                            height: isNokiaCompareCard ? "clamp(360px, 95vw, 520px)" : undefined,
+                            minHeight:
+                              card.type === "overview"
+                                ? "360px"
+                                : isNokiaCompareCard
+                                  ? "clamp(360px, 95vw, 520px)"
+                                  : "auto",
                             aspectRatio:
-                              card.type === "media"
+                              card.type === "media" && !isNokiaCompareCard
                                 ? "16 / 9"
                                 : undefined,
                             background:
@@ -463,7 +476,8 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                           <CardRenderer card={card} onCaseClick={handleChipClick} />
                         </div>
                       </ScrollReveal>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -520,7 +534,13 @@ export function PortfolioSection({ onChipStateChange, navProgressBarRef }: { onC
                       />
                     )}
                     <div
-                      className="shrink-0 rounded-2xl transition-all duration-300 overflow-hidden"
+                      className={`shrink-0 rounded-2xl transition-all duration-300 overflow-hidden${
+                        isMedia
+                          ? isNokiaCompareCard
+                            ? " flex flex-col"
+                            : " flex items-center justify-center"
+                          : ""
+                      }`}
                       style={{
                         width: cardWidth,
                         height: cardHeight,

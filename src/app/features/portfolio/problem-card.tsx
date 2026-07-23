@@ -11,7 +11,7 @@ export function ProblemCard({ uc }: { uc: UseCase }) {
   const isNokia = uc.id === "nokia";
 
   return (
-    <div className="h-full flex flex-col p-8 md:p-10 min-h-0 overflow-y-auto">
+    <div className="h-full flex flex-col p-5 sm:p-6 md:p-8 lg:p-10 min-h-0 overflow-y-auto">
       <span
         className="font-['TikTok_Sans',sans-serif] tracking-[-0.03em] mb-6 shrink-0"
         style={{ fontSize: "12px", fontWeight: 500, color: accent }}
@@ -20,7 +20,7 @@ export function ProblemCard({ uc }: { uc: UseCase }) {
       </span>
       <h3
         className="font-['Space_Grotesk',sans-serif] text-[#edeaf5] tracking-[-0.03em] mb-5 shrink-0"
-        style={{ fontSize: "20px", fontWeight: 600, lineHeight: 1.3 }}
+        style={{ fontSize: "clamp(17px, 4.5vw, 20px)", fontWeight: 600, lineHeight: 1.3 }}
       >
         {uc.problem.headline}
       </h3>
@@ -56,7 +56,7 @@ export function ProblemCard({ uc }: { uc: UseCase }) {
       )}
       {survey && (
         <div
-          className="mt-6 shrink-0 rounded-xl overflow-hidden flex"
+          className="mt-6 shrink-0 rounded-xl overflow-hidden flex flex-col md:flex-row"
           style={{ border: `1px solid ${accent}15` }}
         >
           <div
@@ -100,7 +100,7 @@ export function ProblemCard({ uc }: { uc: UseCase }) {
               </p>
             )}
           </div>
-          <div className="w-px self-stretch" style={{ background: `${accent}15` }} />
+          <div className="w-full h-px md:w-px md:h-auto md:self-stretch shrink-0" style={{ background: `${accent}15` }} />
           <div
             className="flex-1 p-5 flex flex-col"
             style={{ background: `${accent}05` }}

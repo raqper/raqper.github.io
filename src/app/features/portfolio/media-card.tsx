@@ -24,7 +24,7 @@ function AutoplayVideo({
   src,
   label,
   autoplay = false,
-  className = "block max-w-full max-h-full w-auto h-auto",
+  className = "block max-w-full max-h-full w-auto h-auto object-contain object-center mx-auto",
   style,
 }: {
   src: string;
@@ -60,8 +60,8 @@ function AutoplayVideo({
       ref={videoRef}
       src={src}
       aria-label={label}
-      className={className}
-      style={style ?? { maxHeight: "clamp(440px, calc(100vh - 9.5rem), 760px)" }}
+      className={`${className} max-w-full max-h-[min(50vh,400px)] md:max-h-[clamp(440px,calc(100vh-9.5rem),760px)] object-contain object-center mx-auto`}
+      style={style}
       controls
       autoPlay={autoplay}
       muted={autoplay}
@@ -86,7 +86,7 @@ export function SegmentedControl<T extends string | number>({
 }) {
   return (
     <div
-      className="relative flex items-center rounded-full p-[3px]"
+      className="relative flex w-auto shrink-0 items-center rounded-full p-[3px]"
       style={{
         background: "rgba(46,26,106,0.25)",
         border: "1px solid rgba(46,26,106,0.4)",
@@ -98,11 +98,11 @@ export function SegmentedControl<T extends string | number>({
           <button
             key={String(opt.value)}
             type="button"
-            className="relative z-10 rounded-full px-2.5 py-1 transition-colors"
+            className="relative z-10 rounded-full px-2 py-1 sm:px-2.5 transition-colors"
             style={{
               background: isActive ? "rgba(166,205,255,0.18)" : "transparent",
               fontFamily: "var(--font-sans)",
-              fontSize: "11px",
+              fontSize: "10px",
               fontWeight: 500,
               letterSpacing: "-0.02em",
               color: isActive ? accentColor : "#635c8c",
@@ -123,9 +123,9 @@ export function NokiaBeforeAfterCard() {
   const imageSrc = NOKIA_COMPARISON_IMAGES[String(screen)]?.[version];
 
   return (
-    <div className="h-full w-full min-h-0 relative flex flex-col bg-black/40">
+    <div className="flex h-full w-full min-h-0 flex-col bg-black/40">
       <div
-        className="z-10 flex shrink-0 items-center justify-between gap-3 p-3"
+        className="z-10 flex shrink-0 flex-row flex-nowrap items-center justify-between gap-1.5 px-2 py-2.5 sm:gap-2 sm:p-3"
         style={{
           background: "rgba(12,0,36,0.6)",
           backdropFilter: "blur(8px)",
@@ -151,12 +151,12 @@ export function NokiaBeforeAfterCard() {
           accentColor={NOKIA_ACCENT}
         />
       </div>
-      <div className="flex-1 min-h-0 relative">
+      <div className="relative min-h-[260px] w-full flex-1">
         {imageSrc ? (
           <img
             src={imageSrc}
             alt={`Nokia comparison screen ${screen}, ${version === "new" ? "Connect theme" : "FreeForm theme"}`}
-            className="absolute inset-0 w-full h-full object-contain"
+            className="h-full w-full object-contain object-center"
             draggable={false}
           />
         ) : (
@@ -187,33 +187,29 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
 
   if (media?.type === "video") {
     return (
-      <div className="flex flex-col gap-3 max-h-full">
+      <div className="flex flex-col gap-3 w-full h-full max-h-full">
         {media.caption && (
           <p
-            className="font-['TikTok_Sans',sans-serif] tracking-[-0.02em] shrink-0 px-1"
+            className="font-['TikTok_Sans',sans-serif] tracking-[-0.02em] shrink-0 px-1 text-center"
             style={{ fontSize: "14px", fontWeight: 500, lineHeight: "20px", color: accent }}
           >
             {media.caption}
           </p>
         )}
-        <AutoplayVideo
-          src={media.src}
-          label={media.caption ?? mediaLabel}
-          autoplay={media.autoplay}
-        />
+        <div className="flex flex-1 items-center justify-center w-full min-h-0">
+          <AutoplayVideo
+            src={media.src}
+            label={media.caption ?? mediaLabel}
+            autoplay={media.autoplay}
+          />
+        </div>
       </div>
     );
   }
 
   if (media?.type === "youtube") {
     return (
-      <div
-        className="relative"
-        style={{
-          width: "clamp(854px, 85vw, 1280px)",
-          height: "clamp(440px, calc(100vh - 9.5rem), 760px)",
-        }}
-      >
+      <div className="relative w-full aspect-video">
         <iframe
           src={media.src}
           title={mediaLabel}
@@ -228,14 +224,15 @@ export function MediaPlaceholderCard({ uc, card }: { uc: UseCase; card: CardDef 
 
   if (media?.type === "image") {
     return (
-      <img
-        src={media.src}
-        alt={mediaLabel}
-        loading="lazy"
-        className="block max-w-full max-h-full w-auto h-auto"
-        style={{ maxHeight: "clamp(440px, calc(100vh - 9.5rem), 760px)" }}
-        draggable={false}
-      />
+      <div className="flex items-center justify-center w-full h-full">
+        <img
+          src={media.src}
+          alt={mediaLabel}
+          loading="lazy"
+          className="block max-w-full max-h-[min(50vh,400px)] md:max-h-[clamp(440px,calc(100vh-9.5rem),760px)] w-auto h-auto object-contain object-center mx-auto"
+          draggable={false}
+        />
+      </div>
     );
   }
 

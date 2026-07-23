@@ -4,7 +4,7 @@ import type { UseCase } from "./portfolio-data";
 export function ImpactCard({ uc }: { uc: UseCase }) {
   const accent = accents[uc.id];
   return (
-    <div className="h-full flex flex-col p-8 md:p-10 relative overflow-hidden">
+    <div className="h-full flex flex-col p-5 sm:p-6 md:p-8 lg:p-10 relative overflow-hidden">
       <div
         className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full opacity-20 blur-[100px]"
         style={{ background: accent }}
@@ -24,7 +24,7 @@ export function ImpactCard({ uc }: { uc: UseCase }) {
       {uc.impact.reflection && (
         <p
           className="font-['TikTok_Sans',sans-serif] text-white tracking-[-0.02em] relative z-10 mb-8"
-          style={{ fontSize: "20px", fontWeight: 400, lineHeight: "32px" }}
+          style={{ fontSize: "clamp(15px, 4vw, 20px)", fontWeight: 400, lineHeight: "32px" }}
         >
           {uc.impact.reflection}
         </p>

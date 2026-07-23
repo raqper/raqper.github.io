@@ -4,7 +4,7 @@ import type { UseCase } from "./portfolio-data";
 export function OverviewCard({ uc }: { uc: UseCase }) {
   const accent = accents[uc.id];
   return (
-    <div className="h-full flex flex-col justify-between p-8 md:p-10 relative overflow-hidden">
+    <div className="h-full flex flex-col justify-between p-5 sm:p-6 md:p-8 lg:p-10 relative overflow-hidden">
       {uc.bgImage ? (
         <>
           <img

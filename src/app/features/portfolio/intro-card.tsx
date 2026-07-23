@@ -5,7 +5,7 @@ const SHOW_INTRO_PILLARS = false;
 
 export function IntroCard({ onCaseClick }: { onCaseClick?: (id: UseCaseId) => void }) {
   return (
-    <div className="h-full flex flex-col items-center justify-center p-8 md:p-10 relative overflow-hidden min-h-0">
+    <div className="h-full flex flex-col items-center justify-center p-5 sm:p-6 md:p-8 lg:p-10 relative overflow-hidden min-h-0">
       <div
         className="absolute -top-20 -right-20 w-[350px] h-[350px] rounded-full opacity-30 blur-[90px] pointer-events-none"
         style={{
@@ -36,16 +36,7 @@ export function IntroCard({ onCaseClick }: { onCaseClick?: (id: UseCaseId) => vo
             {portfolioIntro.subhead}
           </p>
         </div>
-        <div
-          className="w-full"
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "nowrap",
-            alignItems: "stretch",
-            gap: "12px",
-          }}
-        >
+        <div className="w-full flex flex-col md:flex-row items-stretch gap-3 md:gap-[12px]">
           {portfolioIntro.cases.map((item) => {
             const accent = accents[item.id];
             const chipStyle = chipActiveStyles[item.id];
@@ -55,11 +46,11 @@ export function IntroCard({ onCaseClick }: { onCaseClick?: (id: UseCaseId) => vo
                 type="button"
                 onClick={() => onCaseClick?.(item.id)}
                 aria-label={`Jump to ${item.label} case study`}
-                className="group rounded-xl px-3 py-5 transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#130032]"
+                className="group rounded-xl px-3 py-4 md:py-5 transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#130032]"
                 style={{
                   flex: "1 1 0",
                   minWidth: 0,
-                  minHeight: "152px",
+                  minHeight: "auto",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -77,7 +68,7 @@ export function IntroCard({ onCaseClick }: { onCaseClick?: (id: UseCaseId) => vo
                   e.currentTarget.style.borderColor = chipStyle.border;
                 }}
               >
-                <div className="mb-3 flex h-12 w-[108px] shrink-0 items-center justify-center">
+                <div className="mb-3 flex h-12 w-[80px] md:w-[108px] shrink-0 items-center justify-center">
                   {item.logo ? (
                     <img
                       src={item.logo}

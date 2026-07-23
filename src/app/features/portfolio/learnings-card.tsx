@@ -69,7 +69,7 @@ function OutcomesLearnings({ uc, accent }: { uc: UseCase; accent: string }) {
 
       <div className="flex flex-col gap-3 w-full min-w-0 min-h-0 overflow-y-auto">
         {stats.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 shrink-0">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 shrink-0">
             {stats.map((stat, i) => (
               <div
                 key={i}
@@ -123,7 +123,7 @@ export function LearningsCard({ uc }: { uc: UseCase }) {
   const isRich = (uc.learnings.outcomes?.length ?? 0) > 0;
 
   return (
-    <div className="h-full flex flex-col p-8 md:p-10 relative overflow-hidden">
+    <div className="h-full flex flex-col p-5 sm:p-6 md:p-8 lg:p-10 relative overflow-hidden">
       <div
         className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full opacity-20 blur-[100px] pointer-events-none"
         style={{ background: accent }}

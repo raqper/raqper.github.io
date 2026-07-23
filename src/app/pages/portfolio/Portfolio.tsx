@@ -23,7 +23,7 @@ export default function Portfolio() {
   }, []);
 
   return (
-    <main id="main-content" className="w-full min-h-screen" style={{ background: "var(--p-bg-base)" }}>
+    <main id="main-content" className="w-full min-h-screen overflow-x-hidden" style={{ background: "var(--p-bg-base)" }}>
       {/* Navigation - matches hero-section nav style */}
       <nav className="fixed top-0 left-0 right-0 z-50">
         {/* Backdrop blur */}
@@ -38,13 +38,13 @@ export default function Portfolio() {
         />
         <div className="px-4 sm:px-6 md:px-10 pt-4 md:pt-6">
           <div className="max-w-[1400px] mx-auto w-full">
-            <div className="flex items-start justify-between gap-3 pb-3">
-              {/* Left - Portfolio title + NDA notice */}
-              <div className="flex flex-col gap-3 min-w-0 text-left">
+            <div className="flex flex-col gap-3 pb-3 md:flex-row md:items-start md:justify-between md:gap-3">
+              {/* Title + NDA (left on desktop) */}
+              <div className="flex flex-col gap-3 min-w-0 text-left md:flex-1">
                 <div className="flex items-center gap-3 shrink-0">
                   <Link
                     to="/career"
-                    className="hidden relative flex items-center justify-center rounded-full p-[7px] text-white hover:text-[#edeaf5] transition-colors duration-300"
+                    className="relative flex shrink-0 items-center justify-center rounded-full p-[7px] text-white hover:text-[#edeaf5] transition-colors duration-300"
                     style={{
                       background: "rgba(46,26,106,0.25)",
                       border: "1px solid rgba(46,26,106,0.4)",
@@ -73,7 +73,7 @@ export default function Portfolio() {
                   </h2>
                 </div>
                 <p
-                  className="text-[#c4bade] text-xs sm:text-sm md:text-[13px] leading-snug"
+                  className="text-[#c4bade] text-[11px] sm:text-sm md:text-[13px] leading-snug"
                   style={{ fontFamily: "var(--font-sans)", fontWeight: 500 }}
                 >
                   <span className="mr-1.5 align-middle" aria-hidden>🔐</span>
@@ -81,8 +81,8 @@ export default function Portfolio() {
                 </p>
               </div>
 
-              {/* Right - Use case chips (scrollable on small screens) */}
-              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar shrink-0 pt-0.5">
+              {/* Use case chips (right on desktop) */}
+              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar w-full md:w-auto md:shrink-0 md:pt-0.5">
                 {useCaseChips.map((chip) => {
                   const isActive = chipState?.activeChip === chip.id;
                   const styles = chipActiveStyles[chip.id];

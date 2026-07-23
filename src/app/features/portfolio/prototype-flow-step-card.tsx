@@ -30,7 +30,7 @@ export function PrototypeFlowStepCard({ uc, card }: { uc: UseCase; card: CardDef
       style={{ ["--flow-text-col" as string]: LEFT_COL_WIDTH }}
     >
       <div
-        className="flex flex-col items-start justify-start min-w-0 min-h-0 p-6 md:pt-8 md:pl-8 md:pr-4 md:pb-6"
+        className="flex flex-col items-start justify-start min-w-0 min-h-0 p-5 sm:p-6 md:pt-8 md:pl-8 md:pr-4 md:pb-6"
         style={{ background: FLOW_MEDIA_BG }}
       >
         <span
@@ -59,7 +59,7 @@ export function PrototypeFlowStepCard({ uc, card }: { uc: UseCase; card: CardDef
             src={media.src}
             label={mediaLabel}
             autoplay={media.autoplay}
-            className="absolute inset-0 w-full h-full object-contain object-left"
+            className="absolute inset-0 w-full h-full object-contain object-center"
             style={{ maxHeight: "none" }}
           />
         )}
@@ -67,7 +67,7 @@ export function PrototypeFlowStepCard({ uc, card }: { uc: UseCase; card: CardDef
           <img
             src={media.src}
             alt={mediaLabel}
-            className="absolute inset-0 w-full h-full object-contain object-left"
+            className="absolute inset-0 w-full h-full object-contain object-center"
             draggable={false}
           />
         )}

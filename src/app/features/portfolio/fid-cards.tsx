@@ -18,7 +18,7 @@ export function FIDIntroCard({ uc }: { uc: UseCase }) {
   if (!fid) return null;
 
   return (
-    <div className="h-full flex flex-col p-8 md:p-10 overflow-y-auto">
+    <div className="h-full flex flex-col p-5 sm:p-6 md:p-8 lg:p-10 overflow-y-auto">
       <FIDLabel accent={accent} label={fid.introLabel} />
       <h3
         className="font-['Space_Grotesk',sans-serif] text-[#edeaf5] tracking-[-0.03em] mb-5"
@@ -28,7 +28,7 @@ export function FIDIntroCard({ uc }: { uc: UseCase }) {
       </h3>
       <p
         className="font-['TikTok_Sans',sans-serif] text-white tracking-[-0.02em]"
-        style={{ fontSize: "20px", fontWeight: 400, lineHeight: "32px" }}
+        style={{ fontSize: "clamp(15px, 4vw, 20px)", fontWeight: 400, lineHeight: "32px" }}
       >
         {fid.context}
       </p>
@@ -107,7 +107,7 @@ export function FIDRoundsCard({ uc }: { uc: UseCase }) {
 
   return (
     <div
-      className={`h-full flex flex-col p-8 md:p-10 ${isNos ? "overflow-hidden" : "overflow-y-auto"}`}
+      className={`h-full flex flex-col p-5 sm:p-6 md:p-8 lg:p-10 ${isNos ? "overflow-hidden" : "overflow-y-auto"}`}
     >
       <FIDLabel accent={accent} label={fid.roundsLabel} />
       <div className="flex flex-col gap-4 mt-2">
