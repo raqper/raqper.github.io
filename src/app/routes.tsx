@@ -4,6 +4,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 const Home = lazy(() => import("./pages/career/Home"));
 const Portfolio = lazy(() => import("./pages/portfolio/Portfolio"));
 const HobbiesHome = lazy(() => import("./pages/hobbies/HobbiesHome"));
+const Workshop = lazy(() => import("./pages/workshop/Workshop"));
 
 export const PORTFOLIO_PATH = "/portfolio/catlady";
 
@@ -20,6 +21,10 @@ export const router = createBrowserRouter(
     {
       path: "/hobbies",
       Component: HobbiesHome,
+    },
+    {
+      path: "/workshop",
+      Component: Workshop,
     },
     {
       path: "/portfolio/catlady",

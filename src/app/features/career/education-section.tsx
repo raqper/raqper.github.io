@@ -1,6 +1,9 @@
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { ScrollReveal } from "@/app/components/scroll-reveal";
+import { Link } from "react-router";
 import { educationOfferings, type ContentItem } from "@/app/data/content-items";
+import { WORKSHOP_PATH, workshop } from "@/app/data/workshop-data";
+import workshopShape from "@/assets/hobbies-3d-1.png";
 
 const LIVE_COHORT_BADGE =
   "inline-flex items-center rounded-full border border-[#b08828]/30 bg-[#b08828]/15 px-1.5 py-0.5 text-[9px] font-semibold text-[#d4a848] md:px-2.5 md:py-1 md:text-[11px]";
@@ -83,6 +86,50 @@ function EducationCard({ item }: { item: ContentItem }) {
   );
 }
 
+/** Featured link to the upcoming /workshop page. */
+function WorkshopFeature() {
+  return (
+    <Link
+      to={WORKSHOP_PATH}
+      className="group relative mb-2 flex flex-col overflow-hidden rounded-xl border border-[#b08828]/40 bg-[#1c0048] transition-all duration-300 hover:border-[#b08828]/70 hover:shadow-[0_8px_40px_rgba(176,136,40,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0028] sm:mb-3 md:mb-6 md:flex-row md:items-center lg:mb-8"
+    >
+      <img
+        src={workshopShape}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        draggable={false}
+        className="pointer-events-none absolute -right-10 -top-16 w-[220px] opacity-50 transition-transform duration-700 group-hover:rotate-6 md:static md:order-2 md:mr-6 md:w-[200px] md:opacity-90"
+      />
+      <div className="relative flex min-w-0 flex-1 flex-col p-4 md:p-8">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span className={LIVE_COHORT_BADGE} style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}>
+            New · {workshop.dates}
+          </span>
+          <span className={LANG_BADGE} style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}>
+            Live online workshop
+          </span>
+        </div>
+        <h3
+          className="text-[#edeaf5] transition-colors group-hover:text-[#d4c8e8]"
+          style={{ fontFamily: "var(--font-expanded)", fontWeight: 600, letterSpacing: "-0.03em", fontSize: "clamp(18px, 2vw, 26px)", lineHeight: 1.2 }}
+        >
+          {workshop.title}
+        </h3>
+        <p className="mt-2 max-w-[640px] text-[13px] leading-5 tracking-[-0.02em] text-white md:text-[15px] md:leading-6" style={{ fontFamily: "var(--font-sans)" }}>
+          {workshop.promise}
+        </p>
+        <span className="mt-4 inline-flex items-center gap-1 text-[13px] font-semibold tracking-[-0.02em] text-[#d4a848]" style={{ fontFamily: "var(--font-sans)" }}>
+          See the programme
+          <svg className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+          </svg>
+        </span>
+      </div>
+    </Link>
+  );
+}
+
 export function EducationSection() {
   return (
     <section
@@ -134,6 +181,7 @@ export function EducationSection() {
                 Currently I teach 2 design systems online courses (in Portuguese), in Complete and Advanced formats. More teaching content is planned [coming soon!].
               </p>
 
+              <WorkshopFeature />
               <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-6 lg:gap-8">
                 {educationOfferings.map((item) => (
                   <EducationCard key={item.id} item={item} />

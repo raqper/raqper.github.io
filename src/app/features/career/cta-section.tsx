@@ -1,27 +1,65 @@
 import { ArrowUpRight } from "lucide-react";
 import { ScrollReveal } from "@/app/components/scroll-reveal";
+import { getRegisterAction, LINKEDIN_URL } from "@/app/data/workshop-data";
 
-type CtaVariant = "career" | "portfolio";
+type CtaVariant = "career" | "portfolio" | "workshop";
 
-const CTA_COPY: Record<CtaVariant, { heading: string; body: string; buttonLabel: string }> = {
-  career: {
-    heading: "Exploring opportunities",
-    body: "Interested in working together? Let's connect on LinkedIn. If you'd like to see my portfolio for a role, I'll send you a magic link.",
-    buttonLabel: "Connect on LinkedIn",
-  },
-  portfolio: {
-    heading: "Let's talk",
-    body: "Thanks for taking the time to review my work! If you'd like to discuss a role, let's talk more.",
-    buttonLabel: "Connect on LinkedIn",
-  },
+type CtaCopy = {
+  sectionId: string;
+  eyebrow: string;
+  heading: string;
+  body: string;
+  buttonLabel: string;
+  href: string;
+  external: boolean;
+  note?: string;
 };
 
+function getCtaCopy(variant: CtaVariant): CtaCopy {
+  switch (variant) {
+    case "portfolio":
+      return {
+        sectionId: "contact",
+        eyebrow: "Contact",
+        heading: "Let's talk",
+        body: "Thanks for taking the time to review my work! If you'd like to discuss a role, let's talk more.",
+        buttonLabel: "Connect on LinkedIn",
+        href: LINKEDIN_URL,
+        external: true,
+      };
+    case "workshop": {
+      const action = getRegisterAction();
+      return {
+        sectionId: "register",
+        eyebrow: "Register",
+        heading: "Save your seat",
+        body: "Three live sessions, one design system, and a real screen you built with AI. Small group, so you get help when you're stuck.",
+        buttonLabel: action.label,
+        href: action.href,
+        external: action.external,
+        note: action.note,
+      };
+    }
+    case "career":
+    default:
+      return {
+        sectionId: "contact",
+        eyebrow: "Contact",
+        heading: "Exploring opportunities",
+        body: "Interested in working together? Let's connect on LinkedIn. If you'd like to see my portfolio for a role, I'll send you a magic link.",
+        buttonLabel: "Connect on LinkedIn",
+        href: LINKEDIN_URL,
+        external: true,
+      };
+  }
+}
+
 export function CtaSection({ variant = "career" }: { variant?: CtaVariant }) {
-  const copy = CTA_COPY[variant];
+  const copy = getCtaCopy(variant);
 
   return (
     <section
-      id="contact"
+      id={copy.sectionId}
       className="relative pt-10 pb-24 md:pt-16 md:pb-40 overflow-hidden"
       style={{
         background: "linear-gradient(180deg, #0f0028 0%, #0a001c 40%, rgb(5 0 14) 100%)",
@@ -52,7 +90,7 @@ export function CtaSection({ variant = "career" }: { variant?: CtaVariant }) {
                 className="text-[#a89cc8] tracking-[-0.05em] mb-4"
                 style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}
               >
-                Contact
+                {copy.eyebrow}
               </p>
               <h2
                 className="text-[#edeaf5] tracking-[-0.04em]"
@@ -66,12 +104,19 @@ export function CtaSection({ variant = "career" }: { variant?: CtaVariant }) {
               >
                 {copy.body}
               </p>
+              {copy.note && (
+                <p
+                  className="text-[#a89cc8] tracking-[-0.02em] mt-3"
+                  style={{ fontFamily: "var(--font-sans)", fontSize: "13px", lineHeight: 1.5 }}
+                >
+                  {copy.note}
+                </p>
+              )}
             </div>
 
             <a
-              href="https://www.linkedin.com/in/raqper/"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={copy.href}
+              {...(copy.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="group shrink-0 inline-flex items-center gap-3 bg-[#ede0a8] text-[#0c0024] px-8 py-4 rounded-full border border-[#ede0a8] hover:bg-transparent hover:text-[#ede0a8] transition-all duration-300 hover:shadow-[0_0_30px_rgba(237,224,168,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a001c]"
             >
               <span

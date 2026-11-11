@@ -43,6 +43,35 @@ async function validateHtmlOutputs() {
   if (indexHtml.includes('/raqper/')) {
     failures.push("index.html still references /raqper/ paths; expected root (/) paths.");
   }
+
+  await validateRoutePages(indexHtml);
+}
+
+/** Route pages (e.g. /workshop) must boot the same bundle and carry their own preview meta. */
+async function validateRoutePages(indexHtml) {
+  const routes = [{ dir: "workshop", titleIncludes: "AI for designers", image: "og/workshop.png" }];
+  const bundle = indexHtml.match(/src="(\/static\/index-[^"]+\.js)"/)?.[1];
+
+  for (const route of routes) {
+    const routeIndex = path.join(ROOT, route.dir, "index.html");
+    await mustExist(routeIndex, `/${route.dir} entry file`);
+    await mustExist(path.join(ROOT, route.image), `/${route.dir} preview image`);
+    let html = "";
+    try {
+      html = await readFile(routeIndex, "utf8");
+    } catch {
+      continue;
+    }
+    if (bundle && !html.includes(bundle)) {
+      failures.push(`${route.dir}/index.html does not load the current bundle (${bundle}).`);
+    }
+    if (!html.includes(route.titleIncludes)) {
+      failures.push(`${route.dir}/index.html is missing its route-specific title.`);
+    }
+    if (!html.includes(`property="og:image"`)) {
+      failures.push(`${route.dir}/index.html is missing og:image.`);
+    }
+  }
 }
 
 await validateHtmlOutputs();

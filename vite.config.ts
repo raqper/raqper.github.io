@@ -37,6 +37,11 @@ export default defineConfig({
     emptyOutDir: true,
   },
   assetsInclude: ["**/*.svg", "**/*.csv"],
+  optimizeDeps: {
+    // Only scan the app source. Built HTML in the repo root (404.html, workshop/index.html)
+    // points at /static bundles, which the dev dependency scan must not crawl.
+    entries: ["src/main.tsx"],
+  },
   preview: {
     port: 5173,
     host: true,
