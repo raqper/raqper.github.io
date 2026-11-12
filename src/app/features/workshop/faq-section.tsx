@@ -1,5 +1,5 @@
 import { faq } from "@/app/data/workshop-data";
-import { SectionHeading, SectionShell } from "./section-heading";
+import { PRETTY, SectionHeading, SectionShell } from "./section-heading";
 
 export function FaqSection() {
   return (
@@ -9,7 +9,7 @@ export function FaqSection() {
       background="linear-gradient(180deg, rgb(5 0 14) 0%, #0a001c 40%, #0f0028 100%)"
     >
       <SectionHeading id="faq-title" eyebrow="FAQ" title="Questions, answered" />
-      <div className="mt-10 md:mt-14 border-t border-[#2e1a6a]">
+      <div className="mt-8 md:mt-14 border-t border-[#2e1a6a]">
         {faq.map((item) => (
           <details key={item.q} className="group border-b border-[#2e1a6a]">
             <summary
@@ -32,7 +32,7 @@ export function FaqSection() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
             </summary>
-            <p className="pb-6 pr-10 text-white/90 tracking-[-0.02em] max-w-[880px]" style={{ fontFamily: "var(--font-sans)", fontSize: "15px", lineHeight: 1.6 }}>
+            <p className={`pb-6 pr-10 text-white/90 tracking-[-0.02em] max-w-[880px] ${PRETTY}`} style={{ fontFamily: "var(--font-sans)", fontSize: "15px", lineHeight: 1.6 }}>
               {item.a}
             </p>
           </details>

@@ -3,7 +3,7 @@ import { ScrollReveal } from "@/app/components/scroll-reveal";
 import { Link } from "react-router";
 import { educationOfferings, type ContentItem } from "@/app/data/content-items";
 import { WORKSHOP_PATH, workshop } from "@/app/data/workshop-data";
-import workshopShape from "@/assets/hobbies-3d-1.png";
+import workshopShape from "@/assets/workshop/star-1.jpg";
 
 const LIVE_COHORT_BADGE =
   "inline-flex items-center rounded-full border border-[#b08828]/30 bg-[#b08828]/15 px-1.5 py-0.5 text-[9px] font-semibold text-[#d4a848] md:px-2.5 md:py-1 md:text-[11px]";
@@ -99,7 +99,7 @@ function WorkshopFeature() {
         aria-hidden
         loading="lazy"
         draggable={false}
-        className="pointer-events-none absolute -right-10 -top-16 w-[220px] opacity-50 transition-transform duration-700 group-hover:rotate-6 md:static md:order-2 md:mr-6 md:w-[200px] md:opacity-90"
+        className="pointer-events-none absolute -right-8 -top-10 w-[160px] opacity-70 mix-blend-screen transition-transform duration-700 group-hover:rotate-6 md:static md:order-2 md:mr-6 md:w-[180px] md:opacity-100"
       />
       <div className="relative flex min-w-0 flex-1 flex-col p-4 md:p-8">
         <div className="mb-3 flex flex-wrap items-center gap-2">

@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { ScrollReveal } from "@/app/components/scroll-reveal";
-import { getRegisterAction, LINKEDIN_URL } from "@/app/data/workshop-data";
+import { getRegisterNote, LINKEDIN_URL } from "@/app/data/workshop-data";
 
 type CtaVariant = "career" | "portfolio" | "workshop";
 
@@ -27,19 +28,18 @@ function getCtaCopy(variant: CtaVariant): CtaCopy {
         href: LINKEDIN_URL,
         external: true,
       };
-    case "workshop": {
-      const action = getRegisterAction();
+    case "workshop":
+      // The button itself is passed in by the workshop page (it opens the register sheet).
       return {
         sectionId: "register",
         eyebrow: "Register",
         heading: "Save your seat",
         body: "Three live sessions, one design system, and a real screen you built with AI. Small group, so you get help when you're stuck.",
-        buttonLabel: action.label,
-        href: action.href,
-        external: action.external,
-        note: action.note,
+        buttonLabel: "Register",
+        href: "#register",
+        external: false,
+        note: getRegisterNote(),
       };
-    }
     case "career":
     default:
       return {
@@ -54,7 +54,8 @@ function getCtaCopy(variant: CtaVariant): CtaCopy {
   }
 }
 
-export function CtaSection({ variant = "career" }: { variant?: CtaVariant }) {
+/** `action` replaces the default link button (used by the workshop page for its Register button). */
+export function CtaSection({ variant = "career", action }: { variant?: CtaVariant; action?: ReactNode }) {
   const copy = getCtaCopy(variant);
 
   return (
@@ -114,6 +115,7 @@ export function CtaSection({ variant = "career" }: { variant?: CtaVariant }) {
               )}
             </div>
 
+            {action ?? (
             <a
               href={copy.href}
               {...(copy.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
@@ -127,6 +129,7 @@ export function CtaSection({ variant = "career" }: { variant?: CtaVariant }) {
               </span>
               <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
+            )}
           </div>
         </ScrollReveal>
         </div>

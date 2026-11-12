@@ -49,7 +49,15 @@ async function validateHtmlOutputs() {
 
 /** Route pages (e.g. /workshop) must boot the same bundle and carry their own preview meta. */
 async function validateRoutePages(indexHtml) {
-  const routes = [{ dir: "workshop", titleIncludes: "AI for designers", image: "og/workshop.png" }];
+  const certificates = JSON.parse(await readFile(path.join(ROOT, "src", "app", "data", "certificates.json"), "utf8"));
+  const routes = [
+    { dir: "workshop", titleIncludes: "AI for designers", image: "og/workshop.png" },
+    ...certificates.map((cert) => ({
+      dir: `workshop/certificate/${cert.id}`,
+      titleIncludes: "Certificate of participation",
+      image: "og/workshop.png",
+    })),
+  ];
   const bundle = indexHtml.match(/src="(\/static\/index-[^"]+\.js)"/)?.[1];
 
   for (const route of routes) {

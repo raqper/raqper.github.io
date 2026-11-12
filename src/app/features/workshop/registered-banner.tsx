@@ -31,7 +31,8 @@ export function RegisteredBanner() {
           </p>
           <p className="mt-1 text-white/90 tracking-[-0.02em]" style={{ fontFamily: "var(--font-sans)", fontSize: "14px", lineHeight: 1.5 }}>
             Check your email for the Stripe receipt. Your invoice follows within 5 working days, and the setup guide and
-            Google Meet invitation arrive before the workshop.
+            Google Meet invitation arrive before the workshop. Your certificate of participation is issued after the
+            last session.
           </p>
         </div>
         <button

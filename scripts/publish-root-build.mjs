@@ -17,14 +17,26 @@ const SITE_URL = "https://raqper.github.io";
  * previews (LinkedIn, WhatsApp, Slack) show the right title and image without
  * running JavaScript. The SPA still boots from the same /static bundle.
  */
+const WORKSHOP_IMAGE = { source: path.join(ROOT, "src", "og", "workshop.png"), publishedPath: "og/workshop.png" };
+
+/** Certificates of participation (src/app/data/certificates.json): one static page each, kept out of search. */
+const certificates = JSON.parse(await readFile(path.join(ROOT, "src", "app", "data", "certificates.json"), "utf8"));
+
 const ROUTE_PAGES = [
   {
     route: "workshop",
     title: "AI for designers: from prompt to product · Workshop by Raquel Pereira",
     description:
       "A live online workshop for junior and mid-level designers. In three days you take one design system from Figma tokens to a GitHub repository, then build a real screen on top of it with Claude.",
-    image: { source: path.join(ROOT, "src", "og", "workshop.png"), publishedPath: "og/workshop.png" },
+    image: WORKSHOP_IMAGE,
   },
+  ...certificates.map((cert) => ({
+    route: `workshop/certificate/${cert.id}`,
+    title: `${cert.name} · Certificate of participation`,
+    description: `${cert.name} took part in "${cert.course}", a ${cert.hours}-hour live online workshop by Raquel Pereira (${cert.cohort}).`,
+    image: WORKSHOP_IMAGE,
+    noindex: true,
+  })),
 ];
 
 const escapeAttr = (value) => value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
@@ -51,6 +63,7 @@ function buildRouteHtml(baseHtml, page) {
   html = setMeta(html, "name", "twitter:title", page.title);
   html = setMeta(html, "name", "twitter:description", page.description);
   html = setMeta(html, "name", "twitter:image", imageUrl);
+  if (page.noindex) html = setMeta(html, "name", "robots", "noindex");
   return html;
 }
 
@@ -70,4 +83,4 @@ for (const page of ROUTE_PAGES) {
   await copyFile(page.image.source, imageTarget);
 }
 
-console.log(`Published .site build artifacts to root output (+ ${ROUTE_PAGES.length} route page).`);
+console.log(`Published .site build artifacts to root output (+ ${ROUTE_PAGES.length} route pages).`);
