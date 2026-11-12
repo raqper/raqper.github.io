@@ -9,13 +9,13 @@ import {
   type MotionValue,
 } from "motion/react";
 
-// AI-generated star renders on pure black (Figma file "Workshop 3D renders").
-// They are shown with mix-blend-mode: screen, so the black disappears on the dark page.
-import fluffyStar from "@/assets/workshop/star-1.jpg";
-import glassStar from "@/assets/workshop/star-2.jpg";
-import sparkle from "@/assets/workshop/star-3.jpg";
-import goldSparkle from "@/assets/workshop/star-4.jpg";
-import violetStar from "@/assets/workshop/star-5.jpg";
+// AI-generated star renders, cut out to transparent WebP (the original renders were on pure black).
+// No blend mode is needed, so overlapping stars don't show each other's background.
+import fluffyStar from "@/assets/workshop/star-1.webp";
+import glassStar from "@/assets/workshop/star-2.webp";
+import sparkle from "@/assets/workshop/star-3.webp";
+import goldSparkle from "@/assets/workshop/star-4.webp";
+import violetStar from "@/assets/workshop/star-5.webp";
 
 export const STARS = { fluffyStar, glassStar, sparkle, goldSparkle, violetStar } as const;
 export type StarName = keyof typeof STARS;
@@ -38,7 +38,7 @@ export function FloatingShapesStyles() {
         50% { transform: translate3d(calc(var(--dx) * 0.3), calc(var(--dy) * -1.6), 0) rotate(0deg); }
         75% { transform: translate3d(calc(var(--dx) * -1), calc(var(--dy) * -0.7), 0) rotate(calc(var(--rot) * -1)); }
       }
-      .workshop-star { mix-blend-mode: screen; user-select: none; pointer-events: none; }
+      .workshop-star { user-select: none; pointer-events: none; }
       .workshop-drift { animation: workshopDrift var(--drift, 12s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
       .workshop-orbit { animation: workshopOrbit var(--drift, 16s) ease-in-out infinite; animation-delay: var(--delay, 0s); will-change: transform; }
       @media (prefers-reduced-motion: reduce) {
@@ -89,7 +89,7 @@ const DESKTOP: StarSpec[] = [
   },
   {
     name: "goldSparkle",
-    className: "hidden lg:block right-[37%] top-[13%] w-[clamp(90px,9vw,150px)]",
+    className: "hidden lg:block right-[31%] top-[21%] w-[clamp(90px,9vw,150px)]",
     drift: "11s", delay: "-2s", dx: 14, dy: 16, rot: 14,
     depth: -180, spin: -40, pointer: 20, rotate: 15,
   },
@@ -208,8 +208,6 @@ export function HeroStars() {
     <motion.div
       className="absolute inset-0 z-[1] pointer-events-none overflow-hidden"
       aria-hidden
-      // Blend the whole layer at once: per-image blending is isolated by the motion wrappers.
-      style={{ mixBlendMode: "screen" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.4, ease: EASE, delay: 0.2 }}

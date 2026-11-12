@@ -51,7 +51,7 @@ function CertificateSheet({ cert }: { cert: CertificateData }) {
         <div className="absolute pointer-events-none" style={{ inset: "2.2cqw", border: "0.12cqw solid rgba(212,168,72,0.55)", borderRadius: "0.6cqw" }} aria-hidden />
 
         {/* Stars */}
-        <div className="absolute inset-0 pointer-events-none" style={{ mixBlendMode: "screen" }} aria-hidden>
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <img src={STARS.glassStar} alt="" className="absolute" style={{ right: "3cqw", top: "2.5cqw", width: "21cqw", rotate: "-8deg" }} />
           <img src={STARS.goldSparkle} alt="" className="absolute" style={{ right: "23cqw", top: "6cqw", width: "6cqw", rotate: "15deg" }} />
           <img src={STARS.sparkle} alt="" className="absolute" style={{ right: "6cqw", bottom: "15cqw", width: "9cqw" }} />
