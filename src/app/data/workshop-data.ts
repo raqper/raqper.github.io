@@ -49,8 +49,8 @@ export const workshop = {
   hours: 10,
   days: 3,
   seats: 15,
-  /** TODO: set the price in euros, e.g. 290. null hides the price. */
-  price: null as number | null,
+  /** Price in euros, one price for everyone. null hides the price. */
+  price: 300 as number | null,
   currency: "EUR",
   /** TODO: paste the live Stripe Payment Link here. null shows "Registration opens soon". */
   registrationUrl: null as string | null,
