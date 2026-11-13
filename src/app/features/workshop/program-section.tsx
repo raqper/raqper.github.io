@@ -12,8 +12,8 @@ export function ProgramSection() {
       <SectionHeading
         id="program-title"
         eyebrow="Programme"
-        title="Three days, hands-on with AI"
-        lead={`${workshop.hours} hours, live on Google Meet. Times are ${workshop.timezone}.`}
+        title="Three sessions, hands-on with AI"
+        lead={`${workshop.hours} hours over ${workshop.sessions} live sessions on Google Meet, in ${workshop.language}, and about 60% of it hands-on. Times are ${workshop.timezone}.`}
         star="sparkle"
       />
       <ol className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5">
@@ -46,6 +46,11 @@ export function ProgramSection() {
                 </li>
               ))}
             </ul>
+            {day.handsOn && (
+              <p className="mt-auto pt-5 text-[#a89cc8] tracking-[-0.02em]" style={{ fontFamily: "var(--font-sans)", fontSize: "13px" }}>
+                {day.handsOn}
+              </p>
+            )}
           </li>
         ))}
       </ol>

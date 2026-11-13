@@ -1,11 +1,12 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Check, Lock, X } from "lucide-react";
+import { ArrowUpRight, Check, X } from "lucide-react";
 import {
-  buildCheckoutUrl,
+  extras,
   formatPrice,
-  getNotifyLink,
   getRegisterState,
+  LINKEDIN_URL,
   outcomes,
+  readinessLine,
   requirementsLine,
   workshop,
 } from "@/app/data/workshop-data";
@@ -18,11 +19,7 @@ export function openRegisterSheet() {
   window.dispatchEvent(new Event(OPEN_EVENT));
 }
 
-const INCLUDED = [
-  ...outcomes.map((o) => o.title),
-  "Setup guide and catch-up checkpoints",
-  "Certificate of participation",
-];
+const INCLUDED = [...outcomes.map((o) => o.title), ...extras];
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#130032]";
@@ -37,7 +34,6 @@ export function RegisterSheet() {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const [agreed, setAgreed] = useState(false);
-  const [email, setEmail] = useState("");
   const state = getRegisterState();
   const price = formatPrice(workshop.price);
 
@@ -57,13 +53,17 @@ export function RegisterSheet() {
     document.documentElement.style.overflow = "";
   };
 
-  const pay = (e: React.FormEvent) => {
+  // Luma opens in a new tab, so the page (and this sheet) stay where they were.
+  const continueToLuma = (e: React.FormEvent) => {
     e.preventDefault();
-    const url = buildCheckoutUrl(email.trim() || undefined);
-    if (url && agreed) window.location.assign(url);
+    if (workshop.registrationUrl && agreed) window.open(workshop.registrationUrl, "_blank", "noopener,noreferrer");
   };
 
-  const notify = getNotifyLink(state === "soldOut" ? `Waitlist: ${workshop.title}` : `Notify me: ${workshop.title}`);
+  // Sold out: Luma runs the waitlist. Not open yet: LinkedIn is the only contact on the site.
+  const fallback =
+    state === "soldOut" && workshop.registrationUrl
+      ? { href: workshop.registrationUrl, label: "Join the waitlist on Luma" }
+      : { href: LINKEDIN_URL, label: "Message me on LinkedIn to get notified" };
 
   return (
     <dialog
@@ -119,8 +119,11 @@ export function RegisterSheet() {
             <ul className="flex flex-col gap-1">
               {workshop.schedule.map((s) => (
                 <li key={s.day} className="flex justify-between gap-6 sm:justify-start text-white/90" style={{ ...SANS, fontSize: "14px" }}>
-                  <span className="sm:w-[84px]">{s.day}</span>
-                  <span className="text-[#ede0a8] tabular-nums">{s.time}</span>
+                  <span className="sm:w-[96px]">{s.day}</span>
+                  <span className="text-[#ede0a8] tabular-nums">
+                    {s.time}
+                    {s.note && <span className="ml-2 text-[#a89cc8]">{s.note}</span>}
+                  </span>
                 </li>
               ))}
               <li className="text-[#a89cc8]" style={{ ...SANS, fontSize: "12px" }}>
@@ -156,7 +159,7 @@ export function RegisterSheet() {
           </div>
 
           {state === "open" ? (
-            <form id="workshop-register-form" onSubmit={pay} className="mt-5 border-t border-[#2e1a6a] pt-4">
+            <form id="workshop-register-form" onSubmit={continueToLuma} className="mt-5 border-t border-[#2e1a6a] pt-4">
               <label className="flex cursor-pointer gap-3 rounded-lg border border-[#2e1a6a] bg-[#0a001c]/50 p-3.5 has-[:checked]:border-[#d4a848]/60">
                 <input
                   type="checkbox"
@@ -166,27 +169,16 @@ export function RegisterSheet() {
                   className="mt-0.5 h-5 w-5 shrink-0 accent-[#d4a848]"
                 />
                 <span className={`text-white/90 ${PRETTY}`} style={{ ...SANS, fontSize: "14px", lineHeight: 1.45 }}>
-                  I have, or will get before the workshop, everything I need. <span className="text-[#a89cc8]">{requirementsLine}</span>
+                  I meet the level and will have everything set up before the first session.{" "}
+                  <span className="text-[#a89cc8]">
+                    {readinessLine} {requirementsLine}
+                  </span>
                 </span>
               </label>
 
-              <label className="mt-4 block">
-                <span className="text-[#a89cc8]" style={{ ...SANS, fontSize: "13px" }}>
-                  Email for your receipt and setup guide (you can also add it at checkout)
-                </span>
-                <input
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="mt-1.5 block h-12 w-full rounded-lg border border-[#2e1a6a] bg-[#0a001c]/70 px-3.5 text-[16px] text-white placeholder:text-white/30 focus:border-[#d4a848]/70 focus:outline-none focus:ring-2 focus:ring-[#d4a848]/30"
-                  style={SANS}
-                />
-              </label>
               <p className={`mt-3 text-[#a89cc8] ${PRETTY}`} style={{ ...SANS, fontSize: "12px", lineHeight: 1.5 }}>
-                Add your NIF or company tax ID at checkout to have it on your invoice. {workshop.refundPolicy}
+                Luma asks for your email and the name for your certificate. Need an invoice with your NIF or company tax ID? Message
+                me through Luma after registering. {workshop.refundPolicy}
               </p>
             </form>
           ) : (
@@ -197,7 +189,7 @@ export function RegisterSheet() {
               <p className={`mt-1 text-white/85 ${PRETTY}`} style={{ ...SANS, fontSize: "14px", lineHeight: 1.5 }}>
                 {state === "soldOut"
                   ? "Join the waitlist and you'll be the first to know when a seat frees up or the next cohort opens."
-                  : "Payment opens here as soon as the dates are confirmed. Leave your details and I'll let you know first."}
+                  : "Registration opens here soon. Message me and I'll let you know first."}
               </p>
               <p className={`mt-3 text-[#a89cc8] ${PRETTY}`} style={{ ...SANS, fontSize: "13px", lineHeight: 1.5 }}>
                 {requirementsLine}
@@ -220,22 +212,22 @@ export function RegisterSheet() {
                 className={`flex h-14 w-full items-center justify-center gap-2.5 rounded-full border border-[#ede0a8] bg-[#ede0a8] text-[#0c0024] transition-all duration-300 hover:shadow-[0_0_30px_rgba(237,224,168,0.2)] disabled:cursor-not-allowed disabled:border-[#2e1a6a] disabled:bg-[#2e1a6a]/60 disabled:text-white/50 disabled:shadow-none ${FOCUS}`}
                 style={{ ...SANS, fontSize: "16px", fontWeight: 600 }}
               >
-                <Lock className="h-4 w-4" aria-hidden />
-                {price ? `Pay ${price} securely` : "Pay securely"}
+                {price ? `Continue to Luma · ${price}` : "Continue to Luma"}
+                <ArrowUpRight className="h-4 w-4" aria-hidden />
               </button>
               <p className={`mt-2.5 text-center text-[#a89cc8] ${PRETTY}`} style={{ ...SANS, fontSize: "12px", lineHeight: 1.5 }}>
-                {agreed ? "Secure checkout by Stripe" : "Tick the box above to continue"} · Card, Apple Pay, Google Pay, MB WAY,
-                Multibanco
+                {agreed ? "Opens Luma in a new tab · Secure checkout by Stripe" : "Tick the box above to continue"}
               </p>
             </>
           ) : (
             <a
-              href={notify.href}
-              {...(notify.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              href={fallback.href}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`flex h-14 w-full items-center justify-center rounded-full border border-[#ede0a8] bg-[#ede0a8] text-[#0c0024] transition-all duration-300 hover:shadow-[0_0_30px_rgba(237,224,168,0.2)] ${FOCUS}`}
               style={{ ...SANS, fontSize: "16px", fontWeight: 600 }}
             >
-              {state === "soldOut" ? "Join the waitlist" : notify.label}
+              {fallback.label}
             </a>
           )}
         </div>

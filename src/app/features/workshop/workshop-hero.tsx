@@ -102,7 +102,7 @@ export function WorkshopHero() {
                 className="text-[#edeaf5] tracking-[-0.03em] mb-3 md:mb-4"
                 style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(14px, 1.6vw, 22px)", fontWeight: 700, lineHeight: 1.2 }}
               >
-                Live online workshop · {workshop.dates}
+                Live online workshop · AI + design systems · {workshop.shortDates}
               </p>
               <h1
                 className="text-white tracking-[-0.04em]"

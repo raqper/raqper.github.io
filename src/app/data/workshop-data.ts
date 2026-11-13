@@ -1,28 +1,18 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // workshop-data.ts
 // Single source of truth for the /workshop page (December 2026 edition).
-// Course content mirrors "Course Plan v4 | December edition" in Notion.
+// Course content mirrors "Course Plan v5 | December edition" in Notion.
 //
-// Values marked TODO are placeholders until confirmed:
-//   - dates, price, registrationUrl (Stripe Payment Link), language, refund policy,
-//     contactEmail, testimonials
+// Registration runs on Luma (registrationUrl). Luma handles the Stripe checkout,
+// the waitlist, the Google Meet link and the reminders. Every Register button on
+// the page opens the in-page register sheet first (schedule, price, requirements
+// checkbox), and the sheet sends people on to Luma.
 //
-// Registration flow: every Register button opens the in-page register sheet
-// (features/workshop/register-sheet.tsx). The sheet's "Pay securely" button sends
-// people to the Stripe Payment Link below. While registrationUrl is null the sheet
-// shows "Registration opens soon" instead of a pay button.
+// Luma registration questions to keep in sync with this page:
+//   - "Name for your certificate" (required)
+//   - "Have you built components with variants and variables in Figma?"
 //
-// Stripe Payment Link checklist (Stripe dashboard → Payment links → New):
-//   1. Product "AI for designers: from prompt to product (December 2026)", one-time price in EUR.
-//   2. Options → "Limit the number of payments" = seats (15).
-//   3. Payment methods: card, Apple Pay, Google Pay, MB WAY, Multibanco.
-//   4. Collect customer name + email; "Allow customers to add a tax ID" (NIF / company VAT).
-//   5. Custom fields: "Name for your certificate" (text, required).
-//   6. Consent checkbox (custom field, dropdown Yes/No): "Publish my certificate with my
-//      name on raqper.github.io so I can add it to LinkedIn".
-//   7. After payment → "Don't show confirmation page" → redirect to
-//      https://raqper.github.io/workshop?registered=1
-//   8. Paste the link (https://buy.stripe.com/…) into registrationUrl below.
+// Still TODO: student count for the instructor bio.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const WORKSHOP_PATH = "/workshop";
@@ -33,34 +23,27 @@ export const workshop = {
   title: "AI for designers: from prompt to product",
   shortTitle: "AI for designers",
   promise:
-    "In three days you take one design system from Figma tokens to a GitHub repository, then build a real screen on top of it with Claude.",
-  /** TODO: replace with the confirmed dates, e.g. "11–13 December 2026". */
-  dates: "December 2026",
-  datesConfirmed: false,
+    "In three live sessions you take one design system from Figma tokens to a GitHub repository, then build a real screen on top of it with Claude.",
+  dates: "11–13 December 2026",
+  shortDates: "11–13 Dec",
   schedule: [
-    { day: "Friday", time: "17:00–20:00" },
-    { day: "Saturday", time: "09:00–12:30" },
-    { day: "Sunday", time: "09:00–12:30" },
-  ],
+    { day: "Fri 11 Dec", time: "18:00–20:00" },
+    { day: "Sat 12 Dec", time: "09:00–12:30" },
+    { day: "Sun 13 Dec", time: "09:00–12:30" },
+  ] as { day: string; time: string; note?: string }[],
   timezone: "Lisbon time (WET)",
   format: "live online on Google Meet",
-  /** TODO: confirm the teaching language. */
   language: "English",
-  hours: 10,
-  days: 3,
+  hours: 9,
+  sessions: 3,
   seats: 15,
   /** Price in euros, one price for everyone. null hides the price. */
   price: 300 as number | null,
   currency: "EUR",
-  /** TODO: paste the live Stripe Payment Link here. null shows "Registration opens soon". */
-  registrationUrl: null as string | null,
-  /** Sent to Stripe as client_reference_id so payments can be matched to this cohort. */
-  cohortId: "workshop-dec-2026",
-  /** TODO: public contact email for "notify me" / waitlist. null falls back to LinkedIn. */
-  contactEmail: null as string | null,
-  /** TODO: confirm the refund policy wording. */
+  /** Luma event. null shows "Registration opens soon". */
+  registrationUrl: "https://luma.com/1smnd2n6" as string | null,
   refundPolicy: "Full refund up to 7 days before the first session.",
-  /** Set to true when the Payment Link limit is reached. */
+  /** Set to true when the Luma event is full: the sheet then sends people to the Luma waitlist. */
   soldOut: false,
   tools: ["Claude", "Figma", "Code"],
 } as const;
@@ -77,9 +60,9 @@ export function formatPrice(price: number | null): string | null {
 export type RegisterState = "open" | "soon" | "soldOut";
 
 export function getRegisterState(): RegisterState {
+  if (!workshop.registrationUrl) return "soon";
   if (workshop.soldOut) return "soldOut";
-  if (workshop.registrationUrl) return "open";
-  return "soon";
+  return "open";
 }
 
 /** Label for every Register button; the button itself always opens the register sheet. */
@@ -99,41 +82,20 @@ export function getRegisterLabel(): string {
 export function getRegisterNote(): string {
   switch (getRegisterState()) {
     case "soldOut":
-      return "This cohort is full. Join the waitlist to hear about the next one.";
+      return "This cohort is full. Join the waitlist on Luma to hear when a seat frees up.";
     case "open":
-      return `Secure checkout by Stripe. Maximum ${workshop.seats} seats.`;
+      return `Checkout and the Meet link via Luma. Maximum ${workshop.seats} seats.`;
     default:
       return `Registration opens soon. Maximum ${workshop.seats} seats.`;
   }
 }
 
-/** Stripe Payment Link URL with the email prefilled and the cohort reference attached. */
-export function buildCheckoutUrl(email?: string): string | null {
-  if (!workshop.registrationUrl) return null;
-  const url = new URL(workshop.registrationUrl);
-  url.searchParams.set("client_reference_id", workshop.cohortId);
-  if (email) url.searchParams.set("prefilled_email", email);
-  return url.toString();
-}
-
-/** Where "notify me" and the waitlist go: email if set, otherwise LinkedIn. */
-export function getNotifyLink(subject: string): { href: string; label: string; external: boolean } {
-  if (workshop.contactEmail) {
-    return {
-      href: `mailto:${workshop.contactEmail}?subject=${encodeURIComponent(subject)}`,
-      label: "Email me to get notified",
-      external: false,
-    };
-  }
-  return { href: LINKEDIN_URL, label: "Message me on LinkedIn to get notified", external: true };
-}
-
 /** Short facts shown as a strip under the hero. */
 export const facts = [
-  { label: "Format", value: `${workshop.days} live sessions` },
-  { label: "Duration", value: `${workshop.hours} hours` },
-  { label: "Where", value: "Online, Google Meet" },
-  { label: "Language", value: workshop.language },
+  { label: "Dates", value: workshop.shortDates },
+  { label: "Format", value: `${workshop.sessions} sessions · ${workshop.hours} h` },
+  { label: "Price", value: formatPrice(workshop.price) ?? "Announced soon" },
+  { label: "Group", value: `Max. ${workshop.seats} people` },
 ];
 
 export const personas = [
@@ -142,8 +104,8 @@ export const personas = [
     body: "You've used chat tools, but never connected AI to your files or your design system.",
   },
   {
-    title: "Code sounds scary",
-    body: "Terminal, Git, React: you'll learn just enough to use them with confidence, step by step.",
+    title: "You've never shipped code",
+    body: "Terminal, Git, React: you learn just enough to use them, step by step, while Claude does most of the typing.",
   },
   {
     title: "You want proof, not notes",
@@ -151,8 +113,12 @@ export const personas = [
   },
 ];
 
+/** The entry bar: what people must already know. Mirrors the Luma registration question. */
+export const readinessLine =
+  "You're ready if you can build a component with variants and use variables in Figma. You don't need to know how to code.";
+
 export const requirementsLine =
-  "You'll need Figma (Professional plan) and Claude (Pro plan), a free GitHub account and a laptop where you can install software. Plans are your own and not included.";
+  "You'll need your own Figma Professional and Claude Pro plans (roughly €40 a month together, and you can cancel after the workshop), a free GitHub account and a laptop where you can install software. Setting everything up before the first session is your responsibility, and the setup guide walks you through it.";
 
 export const outcomes = [
   { title: "A proper Figma library for AI", body: "Tokens and components built so AI can read them." },
@@ -161,98 +127,81 @@ export const outcomes = [
   { title: "A screen from your vibe coding", body: "Built with Claude on your system, published on GitHub." },
 ];
 
-export type Day = { id: string; label: string; title: string; when: string; bullets: string[] };
+/** Attendee-only extras, listed in the register sheet. */
+export const extras = ["Setup guide and catch-up checkpoints", "End-to-end checklist", "Session recordings", "Certificate of participation"];
+
+export type Day = { id: string; label: string; title: string; when: string; bullets: string[]; handsOn?: string };
 
 export const days: Day[] = [
   {
     id: "day-1",
     label: "01",
     title: "Make it AI-ready",
-    when: "Friday · 17:00–20:00",
-    bullets: ["AI basics, in plain English", "Connect Claude to Figma", "Design tokens with AI"],
+    when: "Fri 11 Dec · 18:00–20:00",
+    bullets: [
+      "See the finished result, then AI basics in plain English",
+      "Write the CLAUDE.md that keeps AI on-system",
+      "Add a colour ramp to your Figma tokens with Claude",
+    ],
+    handsOn: "1 h hands-on",
   },
   {
     id: "day-2",
     label: "02",
     title: "Make it real",
-    when: "Saturday · 09:00–12:30",
-    bullets: ["Components and docs", "From Figma to code", "Your first Storybook"],
+    when: "Sat 12 Dec · 09:00–12:30",
+    bullets: [
+      "Build a component from a spec Claude writes",
+      "Generate docs AI can read",
+      "Turn Figma components into React and Storybook",
+    ],
+    handsOn: "2 h 15 hands-on",
   },
   {
     id: "day-3",
     label: "03",
     title: "Ship it and build with it",
-    when: "Sunday · 09:00–12:30",
-    bullets: ["Audit and improve with AI", "Publish on GitHub", "Vibe code a real screen"],
+    when: "Sun 13 Dec · 09:00–12:30",
+    bullets: ["Audit and fix your system with AI", "Publish it on GitHub", "Vibe code a screen with only your components"],
+    handsOn: "2 h 25 hands-on",
   },
 ];
 
-export const formatCallout = "Live sessions · Hands-on practice · Certificate of participation";
+export const formatCallout = "Live sessions · Q&A every day · Recordings afterwards · Certificate of participation";
 
 export const instructor = {
   name: "Raquel Pereira",
-  bio: "Designer since 2017, focused on AI-ready design systems. I teach design systems courses and speak at Friends of Figma and Into Design Systems events. This workshop is the workflow I use every day.",
+  // TODO: add the number of students taught once confirmed.
+  bio: "Designer since 2017, focused on AI-ready design systems. I teach design systems and AI courses, most recently AI for Design Tokens & Components at Projector, and I speak at Friends of Figma and Into Design Systems events. This workshop is the workflow I use every day.",
 };
-
-// ── Testimonials ─────────────────────────────────────────────────────────────
-// TODO: replace the three placeholders with real quotes from past students
-// (max 3), then set testimonialsReady to true. While false, the section only
-// renders on the local dev server, so placeholder quotes never go live.
-// photo: an imported image URL, or null to show initials.
-
-export type Testimonial = {
-  quote: string;
-  name: string;
-  role: string;
-  course: string;
-  photo: string | null;
-};
-
-export const testimonialsReady = false;
-
-export const testimonials: Testimonial[] = [
-  {
-    quote: "Placeholder quote. One or two sentences about what changed in their work after the course.",
-    name: "Student name",
-    role: "Product designer, Company",
-    course: "Design systems course, 2025",
-    photo: null,
-  },
-  {
-    quote: "Placeholder quote. Something specific they built or learned, in their own words.",
-    name: "Student name",
-    role: "UX/UI designer, Company",
-    course: "Design systems course, 2025",
-    photo: null,
-  },
-  {
-    quote: "Placeholder quote. How the teaching felt: pace, support, clarity.",
-    name: "Student name",
-    role: "Junior designer, Company",
-    course: "Design systems course, 2026",
-    photo: null,
-  },
-];
 
 export const faq = [
   {
     q: "Do I need to know how to code?",
-    a: "No. Code fundamentals help, but every new concept is explained when you need it, and Claude does most of the typing.",
+    a: "No. Every new concept is explained when you need it, and Claude does most of the typing. You do need Figma basics: components, variants and variables.",
   },
   {
     q: "How do the sessions work?",
-    a: "Three live sessions on Google Meet, with demos followed by hands-on practice. You'll get the calendar invitation and a setup guide before the workshop.",
+    a: "Three live sessions on Google Meet: Friday evening, then Saturday and Sunday morning, with short breaks. Each one mixes short demos with practice and ends with Q&A. Luma sends the Meet link and reminders, and it's the same link for every session.",
+  },
+  {
+    q: "Are the sessions recorded?",
+    a: "Yes. Recordings are shared with attendees after the sessions, so you can rewatch any step.",
+  },
+  {
+    q: "Can I use a company laptop or Windows?",
+    a: "Yes, as long as you can install software on it. Setting up your laptop and accounts before the first session is your responsibility. The setup guide walks you through every step, and live time is for building, not troubleshooting.",
+  },
+  {
+    q: "What if I miss a session or fall behind?",
+    a: "Every hands-on block has a ready-made checkpoint you can pick up from, and the recordings cover anything you missed.",
   },
   {
     q: "How do I pay, and will I get an invoice?",
-    a: "Checkout is handled by Stripe (card, Apple Pay, Google Pay, MB WAY, Multibanco). Add your NIF or company tax ID at checkout and it will appear on your invoice.",
+    a: "Registration and payment run on Luma, with secure Stripe checkout. If you need an invoice with your NIF or company tax ID, message me through Luma after registering and I'll issue it.",
   },
   {
     q: "Do I get a certificate?",
-    a: "Yes. Everyone who attends at least two of the three sessions receives a certificate of participation, with a link you can add to your LinkedIn profile.",
-  },
-  {
-    q: "What if I miss a session?",
-    a: "Each practical block has a ready-made checkpoint, so you can catch up and keep building.",
+    a: "Yes. Everyone who attends at least two of the three sessions receives a certificate of participation, with a link you can add to your LinkedIn profile. Luma asks for the name to put on it when you register.",
   },
 ];

@@ -1,4 +1,4 @@
-import { personas, requirementsLine } from "@/app/data/workshop-data";
+import { personas, readinessLine, requirementsLine } from "@/app/data/workshop-data";
 import { InlineStar, type StarName } from "./floating-shapes";
 import { BALANCE, PRETTY, SectionHeading, SectionShell } from "./section-heading";
 
@@ -26,7 +26,13 @@ export function AudienceSection() {
           </li>
         ))}
       </ul>
-      <p className={`mt-5 md:mt-6 text-[#a89cc8] tracking-[-0.02em] max-w-[760px] lg:max-w-none ${PRETTY}`} style={{ fontFamily: "var(--font-sans)", fontSize: "14px", lineHeight: 1.55 }}>
+      <p
+        className={`mt-5 md:mt-6 rounded-xl border border-[#b08828]/30 bg-[#b08828]/10 px-5 py-4 text-[#ede0a8] tracking-[-0.02em] max-w-[760px] lg:max-w-none ${PRETTY}`}
+        style={{ fontFamily: "var(--font-sans)", fontSize: "15px", fontWeight: 500, lineHeight: 1.5 }}
+      >
+        {readinessLine}
+      </p>
+      <p className={`mt-4 text-[#a89cc8] tracking-[-0.02em] max-w-[760px] lg:max-w-none ${PRETTY}`} style={{ fontFamily: "var(--font-sans)", fontSize: "14px", lineHeight: 1.55 }}>
         {requirementsLine}
       </p>
     </SectionShell>

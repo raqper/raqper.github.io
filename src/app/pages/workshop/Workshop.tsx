@@ -9,9 +9,7 @@ import { OutcomesSection } from "@/app/features/workshop/outcomes-section";
 import { ProgramSection } from "@/app/features/workshop/program-section";
 import { RegisterButton } from "@/app/features/workshop/register-button";
 import { RegisterSheet } from "@/app/features/workshop/register-sheet";
-import { RegisteredBanner } from "@/app/features/workshop/registered-banner";
 import { StickyRegisterBar } from "@/app/features/workshop/sticky-register-bar";
-import { TestimonialsSection } from "@/app/features/workshop/testimonials-section";
 import { WorkshopHero } from "@/app/features/workshop/workshop-hero";
 import { workshop } from "@/app/data/workshop-data";
 
@@ -39,14 +37,12 @@ export default function Workshop() {
   return (
     <main id="main-content" className="w-full min-h-screen overflow-x-hidden pb-20 md:pb-0" style={{ background: "var(--p-bg-base)" }}>
       <FloatingShapesStyles />
-      <RegisteredBanner />
       <WorkshopHero />
       <Suspense fallback={null}>
         <AudienceSection />
         <OutcomesSection />
         <ProgramSection />
         <InstructorSection />
-        <TestimonialsSection />
         <FaqSection />
         <CtaSection variant="workshop" action={<RegisterButton />} />
       </Suspense>

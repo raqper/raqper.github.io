@@ -41,7 +41,7 @@ export function StickyRegisterBar() {
             {workshop.shortTitle}
           </p>
           <p className="truncate text-[#a89cc8]" style={{ fontFamily: "var(--font-sans)", fontSize: "12px" }}>
-            {workshop.dates} · {workshop.days} live sessions
+            {workshop.shortDates} · {workshop.sessions} live sessions
           </p>
         </div>
         <RegisterButton size="sm" />
