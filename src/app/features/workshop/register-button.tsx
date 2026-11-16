@@ -42,12 +42,14 @@ export function RegisterButton({
 }
 
 export function RegisterNote({ className = "" }: { className?: string }) {
+  const note = getRegisterNote();
+  if (!note) return null;
   return (
     <p
       className={`text-[#a89cc8] tracking-[-0.02em] ${className}`}
       style={{ fontFamily: "var(--font-sans)", fontSize: "13px", lineHeight: 1.5 }}
     >
-      {getRegisterNote()}
+      {note}
     </p>
   );
 }

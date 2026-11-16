@@ -93,7 +93,7 @@ export function RegisterSheet() {
         <div className="flex items-start justify-between gap-4 px-5 pt-3 md:px-8 md:pt-7">
           <div>
             <p className="text-[#a89cc8] tracking-[-0.05em]" style={{ ...SANS, fontSize: "13px" }}>
-              Register · {workshop.dates}
+              Your ticket · {workshop.dates}
             </p>
             <h2
               id={titleId}
@@ -138,7 +138,7 @@ export function RegisterSheet() {
                 {price ?? "Announced soon"}
               </p>
               <p className="text-[#a89cc8]" style={{ ...SANS, fontSize: "12px" }}>
-                Max. {workshop.seats} seats
+                {workshop.seats} seats
               </p>
             </div>
           </div>
@@ -177,8 +177,8 @@ export function RegisterSheet() {
               </label>
 
               <p className={`mt-3 text-[#a89cc8] ${PRETTY}`} style={{ ...SANS, fontSize: "12px", lineHeight: 1.5 }}>
-                Luma asks for your email and the name for your certificate. Need an invoice with your NIF or company tax ID? Message
-                me through Luma after registering. {workshop.refundPolicy}
+                Luma asks for your email and the name to put on your certificate. Need an invoice? Email me after registering and
+                I'll send you an official Portuguese invoice (recibo verde). {workshop.refundPolicy}
               </p>
             </form>
           ) : (

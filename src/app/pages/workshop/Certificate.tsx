@@ -172,7 +172,7 @@ export default function CertificatePage() {
             <div className="mt-6 md:mt-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="text-[#a89cc8]" style={{ fontFamily: "var(--font-sans)", fontSize: "14px" }}>
-                  Verified certificate · issued by {ISSUER}
+                  Certificate of participation · issued personally by {ISSUER}
                 </p>
                 <h2
                   className="mt-1 text-[#edeaf5] tracking-[-0.04em] [text-wrap:balance]"

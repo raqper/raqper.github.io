@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
-import { facts, workshop } from "@/app/data/workshop-data";
+import { facts, heroEyebrow, toolsNote, workshop } from "@/app/data/workshop-data";
 import { HeroStars } from "./floating-shapes";
 import { RegisterButton, RegisterNote } from "./register-button";
 
@@ -10,7 +10,7 @@ const BLUR_INTRO = typeof window !== "undefined" && window.matchMedia("(min-widt
 
 const NAV_ITEMS = [
   { id: "for-you", label: "For you" },
-  { id: "program", label: "Programme" },
+  { id: "program", label: "Agenda" },
   { id: "faq", label: "FAQ" },
 ];
 
@@ -102,7 +102,7 @@ export function WorkshopHero() {
                 className="text-[#edeaf5] tracking-[-0.03em] mb-3 md:mb-4"
                 style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(14px, 1.6vw, 22px)", fontWeight: 700, lineHeight: 1.2 }}
               >
-                Live online workshop · AI + design systems · {workshop.shortDates}
+                {heroEyebrow}
               </p>
               <h1
                 className="text-white tracking-[-0.04em]"
@@ -116,8 +116,7 @@ export function WorkshopHero() {
                 className="text-white tracking-[-0.02em] mt-5 md:mt-6 w-full max-w-[600px]"
                 style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(15px, 1.15vw, 17px)", fontWeight: 400, lineHeight: 1.6 }}
               >
-                Three live sessions to go from your first prompt to a real design system on GitHub, built with Claude
-                and Figma. Made for junior and mid-level designers.
+                {workshop.heroLead}
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
@@ -131,14 +130,14 @@ export function WorkshopHero() {
                   className={`inline-flex min-h-[44px] whitespace-nowrap items-center justify-center rounded-full sm:px-8 sm:py-4 text-white/85 hover:text-white sm:border sm:border-[#2e1a6a] sm:hover:border-[#9b82e0]/60 transition-colors ${FOCUS}`}
                   style={{ fontFamily: "var(--font-sans)", fontSize: "15px", fontWeight: 500 }}
                 >
-                  See the programme
+                  See the agenda
                 </a>
               </div>
               <RegisterNote className="hidden sm:block mt-4 max-w-[520px]" />
             </motion.div>
 
             {/* Fact strip */}
-            <dl className="mt-10 md:mt-16 lg:mt-20 flex flex-wrap gap-2 lg:grid lg:grid-cols-4 lg:gap-0 lg:max-w-[60%] lg:border-t lg:border-[#2e1a6a] lg:pt-6">
+            <dl className="mt-10 md:mt-16 lg:mt-20 flex flex-wrap gap-2 lg:grid lg:grid-cols-5 lg:gap-0 lg:max-w-[80%] xl:max-w-[72%] lg:border-t lg:border-[#2e1a6a] lg:pt-6">
               {facts.map((f, i) => (
                 <div
                   key={f.label}
@@ -159,6 +158,9 @@ export function WorkshopHero() {
                 </div>
               ))}
             </dl>
+            <p className="mt-3 lg:mt-4 max-w-[640px] text-[#a89cc8] tracking-[-0.02em]" style={{ fontFamily: "var(--font-sans)", fontSize: "12px", lineHeight: 1.5 }}>
+              {toolsNote}
+            </p>
           </div>
         </div>
       </motion.div>

@@ -34,11 +34,11 @@ function getCtaCopy(variant: CtaVariant): CtaCopy {
         sectionId: "register",
         eyebrow: "Register",
         heading: "Save your seat",
-        body: "Three live sessions, one design system, and a real screen you built with AI. Small group, so you get help when you're stuck.",
-        buttonLabel: "Register",
+        body: "Three live sessions, one library, and real screens you vibe coded with AI. Small group, so you get help when you're stuck.",
+        buttonLabel: "Get your ticket",
         href: "#register",
         external: false,
-        note: getRegisterNote(),
+        note: getRegisterNote() ?? undefined,
       };
     case "career":
     default:
