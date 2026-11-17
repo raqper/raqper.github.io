@@ -27,7 +27,7 @@ const ROUTE_PAGES = [
     route: "workshop",
     title: "AI for designers: from prompt to product · Workshop by Raquel Pereira",
     description:
-      "A live online workshop for junior and mid-level designers. In three live sessions you take one design system from Figma tokens to a GitHub repository, then build a real screen on top of it with Claude.",
+      "A live online workshop for junior and mid-level designers. In three live sessions you go from your first prompt to vibe coding real screens from a component library with Claude and Figma, published on GitHub.",
     image: WORKSHOP_IMAGE,
   },
   ...certificates.map((cert) => ({

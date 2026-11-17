@@ -31,7 +31,7 @@ export function InstructorSection() {
             {instructor.name}
           </h2>
           <p
-            className={`mt-3 max-w-[720px] text-white/90 tracking-[-0.02em] ${PRETTY}`}
+            className={`mt-3 w-full text-white/90 tracking-[-0.02em] ${PRETTY}`}
             style={{ fontFamily: "var(--font-sans)", fontSize: "clamp(15px, 1.15vw, 17px)", lineHeight: 1.6 }}
           >
             {instructor.bio}

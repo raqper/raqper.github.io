@@ -137,20 +137,20 @@ export function WorkshopHero() {
             </motion.div>
 
             {/* Fact strip */}
-            <dl className="mt-10 md:mt-16 lg:mt-20 flex flex-wrap gap-2 lg:grid lg:grid-cols-5 lg:gap-0 lg:max-w-[80%] xl:max-w-[72%] lg:border-t lg:border-[#2e1a6a] lg:pt-6">
+            <dl className="mt-10 md:mt-16 lg:mt-20 flex flex-wrap gap-2 lg:flex lg:w-fit lg:gap-0 lg:border-t lg:border-[#2e1a6a] lg:pt-6">
               {facts.map((f, i) => (
                 <div
                   key={f.label}
-                  className={`rounded-full border border-[#2e1a6a] bg-[#1c0048]/50 px-3.5 py-2 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 ${
-                    i > 0 ? "lg:border-l lg:border-[#2e1a6a] lg:pl-5" : ""
+                  className={`rounded-full border border-[#2e1a6a] bg-[#1c0048]/50 px-3.5 py-2 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-5 lg:py-0 ${
+                    i === 0 ? "lg:pl-0" : "lg:border-l lg:border-[#2e1a6a]"
                   }`}
                 >
-                  <dt className="hidden lg:block text-[#a89cc8] tracking-[-0.02em]" style={{ fontFamily: "var(--font-sans)", fontSize: "12px" }}>
+                  <dt className="hidden lg:block text-[#a89cc8] tracking-[-0.02em] text-[12px] lg:text-[11.5px]" style={{ fontFamily: "var(--font-sans)" }}>
                     {f.label}
                   </dt>
                   <dd
-                    className="text-[#ede0a8] tracking-[-0.02em] lg:mt-1"
-                    style={{ fontFamily: "var(--font-sans)", fontSize: "14px", fontWeight: 600 }}
+                    className="text-[#ede0a8] tracking-[-0.02em] lg:mt-1 text-[14px] lg:text-[13px]"
+                    style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}
                   >
                     <span className="sr-only lg:hidden">{f.label}: </span>
                     {f.value}

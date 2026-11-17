@@ -6,9 +6,9 @@
 //   1. For each attendee who joined at least 2 of the 3 sessions AND agreed at checkout
 //      to have their certificate published, add a row to certificates.json:
 //        { "id": "AIFD-2026-12-001", "name": "Full Name", "issued": "2026-12-13",
-//          "course": "AI for designers: from prompt to product", "hours": 10,
+//          "course": "AI for designers: from prompt to product", "hours": 9,
 //          "cohort": "December 2026" }
-//      Use the "Name for your certificate" field from Stripe, exactly as typed.
+//      Use the "Name for your certificate" answer from Luma, exactly as typed.
 //   2. Build and deploy. The build also writes a static page per certificate so
 //      LinkedIn link previews work (scripts/publish-root-build.mjs).
 //   3. Email each person their link: https://raqper.github.io/workshop/certificate/<id>
@@ -39,7 +39,7 @@ const DEV_SAMPLE: Certificate = {
   name: "Alex Example",
   issued: "2026-12-13",
   course: "AI for designers: from prompt to product",
-  hours: 10,
+  hours: 9,
   cohort: "December 2026",
 };
 

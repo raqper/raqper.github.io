@@ -32,7 +32,7 @@ export function FaqSection() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
             </summary>
-            <p className={`pb-6 pr-10 text-white/90 tracking-[-0.02em] max-w-[880px] ${PRETTY}`} style={{ fontFamily: "var(--font-sans)", fontSize: "15px", lineHeight: 1.6 }}>
+            <p className={`pb-6 pr-10 w-full text-white/90 tracking-[-0.02em] ${PRETTY}`} style={{ fontFamily: "var(--font-sans)", fontSize: "15px", lineHeight: 1.6 }}>
               {item.a}
             </p>
           </details>

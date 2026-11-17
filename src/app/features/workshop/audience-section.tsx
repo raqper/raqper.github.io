@@ -1,5 +1,5 @@
-import { Check } from "lucide-react";
-import { personas, readiness, requirements, requirementsNote } from "@/app/data/workshop-data";
+import { Check, X, type LucideIcon } from "lucide-react";
+import { notForYou, personas, readiness, requirements, requirementsNote } from "@/app/data/workshop-data";
 import { InlineStar, type StarName } from "./floating-shapes";
 import { BALANCE, PRETTY, SectionHeading, SectionShell } from "./section-heading";
 
@@ -7,16 +7,31 @@ const CARD_STARS: StarName[] = ["fluffyStar", "glassStar", "sparkle"];
 
 const SANS = { fontFamily: "var(--font-sans)" } as const;
 
-function CheckList({ title, items }: { title: string; items: string[] }) {
+function CheckList({
+  title,
+  items,
+  icon: Icon = Check,
+  muted = false,
+  twoCol = false,
+}: {
+  title: string;
+  items: string[];
+  icon?: LucideIcon;
+  muted?: boolean;
+  twoCol?: boolean;
+}) {
   return (
     <div>
-      <h3 className="text-[#ede0a8] tracking-[-0.02em]" style={{ ...SANS, fontSize: "15px", fontWeight: 600 }}>
+      <h3
+        className={`tracking-[-0.02em] ${muted ? "text-[#edeaf5]" : "text-[#ede0a8]"}`}
+        style={{ ...SANS, fontSize: "15px", fontWeight: 600 }}
+      >
         {title}
       </h3>
-      <ul className="mt-3 flex flex-col gap-2.5">
+      <ul className={`mt-3 flex flex-col gap-2.5 ${twoCol ? "md:grid md:grid-cols-2 md:gap-x-10" : ""}`}>
         {items.map((item) => (
           <li key={item} className="flex gap-2.5">
-            <Check className="mt-[3px] h-4 w-4 shrink-0 text-[#d4a848]" aria-hidden />
+            <Icon className={`mt-[3px] h-4 w-4 shrink-0 ${muted ? "text-[#a89cc8]" : "text-[#d4a848]"}`} aria-hidden />
             <span className={`text-white/90 tracking-[-0.02em] ${PRETTY}`} style={{ ...SANS, fontSize: "15px", lineHeight: 1.45 }}>
               {item}
             </span>
@@ -42,7 +57,7 @@ export function AudienceSection() {
             <div>
               <h3
                 className={`text-[#edeaf5] tracking-[-0.03em] ${BALANCE}`}
-                style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(17px, 1.6vw, 20px)", fontWeight: 600, lineHeight: 1.25 }}
+                style={{ fontFamily: "var(--font-expanded)", fontSize: "clamp(20px, 2.1vw, 27px)", fontWeight: 600, lineHeight: 1.2 }}
               >
                 {p.title}
               </h3>
@@ -61,14 +76,21 @@ export function AudienceSection() {
         </p>
         <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10">
           <CheckList title="You're ready if" items={readiness} />
-          <CheckList title="You'll need" items={requirements} />
+          <div>
+            <CheckList title="You'll need" items={requirements} />
+            <p
+              className={`mt-4 text-[#ede0a8]/90 tracking-[-0.02em] ${PRETTY}`}
+              style={{ ...SANS, fontSize: "14px", lineHeight: 1.5 }}
+            >
+              {requirementsNote}
+            </p>
+          </div>
         </div>
-        <p
-          className={`mt-5 border-t border-[#b08828]/25 pt-4 text-[#ede0a8]/90 tracking-[-0.02em] ${PRETTY}`}
-          style={{ ...SANS, fontSize: "14px", lineHeight: 1.5 }}
-        >
-          {requirementsNote}
-        </p>
+
+        {/* Expectation setting, part of the same box: who this workshop is not a fit for. */}
+        <div className="mt-6 border-t border-[#b08828]/25 pt-5">
+          <CheckList title="This workshop is not for you if" items={notForYou} icon={X} muted twoCol />
+        </div>
       </div>
     </SectionShell>
   );
