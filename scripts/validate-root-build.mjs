@@ -52,6 +52,8 @@ async function validateRoutePages(indexHtml) {
   const certificates = JSON.parse(await readFile(path.join(ROOT, "src", "app", "data", "certificates.json"), "utf8"));
   const routes = [
     { dir: "workshop", titleIncludes: "AI for designers", image: "og/workshop-card.png" },
+    { dir: "workshop/terms", titleIncludes: "Workshop terms", image: "og/workshop-card.png" },
+    { dir: "privacy", titleIncludes: "Privacy policy", image: "og/workshop-card.png" },
     ...certificates.map((cert) => ({
       dir: `workshop/certificate/${cert.id}`,
       titleIncludes: "Certificate of participation",

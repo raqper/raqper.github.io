@@ -32,6 +32,18 @@ const ROUTE_PAGES = [
       "A live online workshop for junior and mid-level designers. 11–13 Dec, 10 hours: go from your first prompt to vibe coding real screens from a component library with Claude and Figma, published on GitHub.",
     image: WORKSHOP_CARD,
   },
+  {
+    route: "workshop/terms",
+    title: "Workshop terms · AI for designers · Raquel Pereira",
+    description: "Terms of sale for AI for designers: from prompt to product: price, cancellation, withdrawal, recordings and disputes.",
+    image: WORKSHOP_CARD,
+  },
+  {
+    route: "privacy",
+    title: "Privacy policy · Raquel Pereira",
+    description: "How Raquel Pereira handles personal data on raqper.github.io and in her workshops.",
+    image: WORKSHOP_CARD,
+  },
   ...certificates.map((cert) => ({
     route: `workshop/certificate/${cert.id}`,
     title: `${cert.name} · Certificate of participation`,
