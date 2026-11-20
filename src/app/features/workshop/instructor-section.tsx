@@ -37,7 +37,7 @@ export function InstructorSection() {
             {instructor.bio}
           </p>
           <Link
-            to="/career"
+            to="/career#content"
             className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-[#ede0a8] hover:text-white transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a001c]"
             style={{ fontFamily: "var(--font-sans)", fontSize: "15px", fontWeight: 600 }}
           >

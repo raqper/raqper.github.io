@@ -140,7 +140,7 @@ function WorkshopFeature() {
             New · {workshop.dates}
           </span>
           <span className={LANG_BADGE} style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}>
-            Intensive online · {workshop.seats} seats
+            Intensive online · {workshop.hours} h
           </span>
         </div>
         <h3

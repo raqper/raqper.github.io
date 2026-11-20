@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef } from "react";
+import { Link } from "react-router";
 import { ArrowUpRight, Check, X } from "lucide-react";
 import {
   extras,
@@ -6,8 +7,7 @@ import {
   getRegisterState,
   LINKEDIN_URL,
   outcomes,
-  readinessLine,
-  requirementsLine,
+  TERMS_PATH,
   workshop,
 } from "@/app/data/workshop-data";
 import { PRETTY } from "./section-heading";
@@ -19,7 +19,8 @@ export function openRegisterSheet() {
   window.dispatchEvent(new Event(OPEN_EVENT));
 }
 
-const INCLUDED = [...outcomes.map((o) => o.title), ...extras];
+// "At the end" list: what people build plus what they keep afterwards (the prep happens before, so it stays on the page).
+const INCLUDED = [...outcomes.map((o) => o.title), ...extras.filter((e) => !e.startsWith("Pre-workshop prep"))];
 
 const FOCUS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#130032]";
@@ -33,7 +34,6 @@ const SANS = { fontFamily: "var(--font-sans)" } as const;
 export function RegisterSheet() {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
-  const [agreed, setAgreed] = useState(false);
   const state = getRegisterState();
   const price = formatPrice(workshop.price);
 
@@ -53,16 +53,17 @@ export function RegisterSheet() {
     document.documentElement.style.overflow = "";
   };
 
-  // Luma opens in a new tab, so the page (and this sheet) stay where they were.
-  const continueToLuma = (e: React.FormEvent) => {
+  // Stripe Checkout opens in a new tab, so the page (and this sheet) stay where they were.
+  // Stripe asks for the country (EU-only dropdown), the NIF/VAT number and agreement to the terms.
+  const continueToCheckout = (e: React.FormEvent) => {
     e.preventDefault();
-    if (workshop.registrationUrl && agreed) window.open(workshop.registrationUrl, "_blank", "noopener,noreferrer");
+    if (workshop.registrationUrl) window.open(workshop.registrationUrl, "_blank", "noopener,noreferrer");
   };
 
-  // Sold out: Luma runs the waitlist. Not open yet: LinkedIn is the only contact on the site.
+  // Sold out or not open yet: LinkedIn is the waitlist and the way to get notified.
   const fallback =
-    state === "soldOut" && workshop.registrationUrl
-      ? { href: workshop.registrationUrl, label: "Join the waitlist on Luma" }
+    state === "soldOut"
+      ? { href: LINKEDIN_URL, label: "Message me on LinkedIn to join the waitlist" }
       : { href: LINKEDIN_URL, label: "Message me on LinkedIn to get notified" };
 
   return (
@@ -138,7 +139,7 @@ export function RegisterSheet() {
                 {price ?? "Announced soon"}
               </p>
               <p className="text-[#a89cc8]" style={{ ...SANS, fontSize: "12px" }}>
-                {workshop.seats} seats
+                {price ? workshop.priceNote : ""}
               </p>
             </div>
           </div>
@@ -146,7 +147,7 @@ export function RegisterSheet() {
           {/* Included */}
           <div className="mt-5 border-t border-[#2e1a6a] pt-4">
             <p className="text-[#a89cc8]" style={{ ...SANS, fontSize: "13px" }}>
-              What's included
+              What you will get at the end
             </p>
             <ul className="mt-2 grid grid-cols-1 gap-x-5 gap-y-1.5 sm:grid-cols-2">
               {INCLUDED.map((item) => (
@@ -159,26 +160,21 @@ export function RegisterSheet() {
           </div>
 
           {state === "open" ? (
-            <form id="workshop-register-form" onSubmit={continueToLuma} className="mt-5 border-t border-[#2e1a6a] pt-4">
-              <label className="flex cursor-pointer gap-3 rounded-lg border border-[#2e1a6a] bg-[#0a001c]/50 p-3.5 has-[:checked]:border-[#d4a848]/60">
-                <input
-                  type="checkbox"
-                  required
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                  className="mt-0.5 h-5 w-5 shrink-0 accent-[#d4a848]"
-                />
-                <span className={`text-white/90 ${PRETTY}`} style={{ ...SANS, fontSize: "14px", lineHeight: 1.45 }}>
-                  I meet the level and will have everything set up before the first session.{" "}
-                  <span className="text-[#a89cc8]">
-                    {readinessLine} {requirementsLine}
-                  </span>
-                </span>
-              </label>
+            <form id="workshop-register-form" onSubmit={continueToCheckout} className="mt-5 border-t border-[#2e1a6a] pt-4">
+              <p
+                className={`rounded-lg border border-[#2e1a6a] bg-[#0a001c]/50 p-3.5 text-white/90 ${PRETTY}`}
+                style={{ ...SANS, fontSize: "14px", lineHeight: 1.45 }}
+              >
+                Open to people living in the European Union only.
+              </p>
 
               <p className={`mt-3 text-[#a89cc8] ${PRETTY}`} style={{ ...SANS, fontSize: "12px", lineHeight: 1.5 }}>
-                Luma asks for your email and the name to put on your certificate. Need an invoice? Email me after registering and
-                I'll send you an official Portuguese invoice (recibo verde). {workshop.refundPolicy}
+                Stripe asks for your name, email, country and, if you'd like an invoice, your NIF or VAT number. Email me and
+                I'll send you the official Portuguese invoice (recibo verde). {workshop.refundPolicy} By booking you agree to the{" "}
+                <Link to={TERMS_PATH} target="_blank" className="text-[#ede0a8] underline underline-offset-2">
+                  workshop terms
+                </Link>
+                .
               </p>
             </form>
           ) : (
@@ -190,9 +186,6 @@ export function RegisterSheet() {
                 {state === "soldOut"
                   ? "Join the waitlist and you'll be the first to know when a seat frees up or the next cohort opens."
                   : "Registration opens here soon. Message me and I'll let you know first."}
-              </p>
-              <p className={`mt-3 text-[#a89cc8] ${PRETTY}`} style={{ ...SANS, fontSize: "13px", lineHeight: 1.5 }}>
-                {requirementsLine}
               </p>
             </div>
           )}
@@ -208,15 +201,14 @@ export function RegisterSheet() {
               <button
                 type="submit"
                 form="workshop-register-form"
-                disabled={!agreed}
                 className={`flex h-14 w-full items-center justify-center gap-2.5 rounded-full border border-[#ede0a8] bg-[#ede0a8] text-[#0c0024] transition-all duration-300 hover:shadow-[0_0_30px_rgba(237,224,168,0.2)] disabled:cursor-not-allowed disabled:border-[#2e1a6a] disabled:bg-[#2e1a6a]/60 disabled:text-white/50 disabled:shadow-none ${FOCUS}`}
                 style={{ ...SANS, fontSize: "16px", fontWeight: 600 }}
               >
-                {price ? `Continue to Luma · ${price}` : "Continue to Luma"}
+                {price ? `Book · ${price}` : "Book"}
                 <ArrowUpRight className="h-4 w-4" aria-hidden />
               </button>
               <p className={`mt-2.5 text-center text-[#a89cc8] ${PRETTY}`} style={{ ...SANS, fontSize: "12px", lineHeight: 1.5 }}>
-                {agreed ? "Opens Luma in a new tab · Secure checkout by Stripe" : "Tick the box above to continue"}
+                Opens secure Stripe checkout in a new tab
               </p>
             </>
           ) : (

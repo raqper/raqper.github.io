@@ -4,27 +4,83 @@
 // Course content mirrors "Course Plan v5 | December edition" in Notion, but the
 // public agenda is kept deliberately high level.
 //
-// Registration runs on Luma (registrationUrl). Luma handles the Stripe checkout,
-// the waitlist, the Google Meet link and the reminders. Every "Get your ticket"
-// button on the page opens the in-page register sheet first (schedule, price,
-// requirements checkbox), and the sheet sends people on to Luma.
+// Registration runs on a Stripe Payment Link (registrationUrl). Every "Get your
+// ticket" button opens the in-page register sheet first (schedule, price, EU
+// country select, readiness checkbox), and the sheet opens Stripe Checkout in a
+// new tab. Raquel then emails the welcome note, the prep guide and the Meet link.
 //
-// Luma registration questions to keep in sync with this page:
-//   - "Name for your certificate" (required)
-//   - "Have you built components with variants and variables in Figma?"
+// Stripe Payment Link settings to keep in sync with this page (plink_1UcrrzEOBeFxHGnF…):
+//   - Required dropdown "Country of residence (EU only)" with EU_COUNTRIES
+//   - Quantity 1, limit 15 completed checkouts (raise it by hand after a refund)
+//   - Automatic tax off: €275 is the final price (VAT-exempt, art. 53 CIVA)
+//   - Required terms checkbox linking to /workshop/terms
+//
+// Legal pages: /workshop/terms (data/workshop-terms.ts) and /privacy (data/privacy.ts).
+// Seller identity lives in `seller` below and feeds both.
 //
 // Recordings are temporary: the sessions are recorded on a Google Workspace
-// Business Standard trial and shared until `recordingsUntil`, then deleted when
-// the trial ends. Change the date in one place (workshop.recordingsUntil).
+// Business Standard trial (started Fri 11 Dec) and shared until `recordingsUntil`,
+// then deleted when the trial ends. Change the date in one place.
 // The certificate is a personal thank-you from Raquel, not an accredited
 // qualification: never call it "verified", "official" or "accredited".
 //
 // Still TODO: student count for the instructor bio.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Testimonial avatars (192px, from each person's LinkedIn, used with their consent).
+import melissaPhoto from "@/assets/workshop/testimonial-melissa.jpg";
+
 export const WORKSHOP_PATH = "/workshop";
 
 export const LINKEDIN_URL = "https://www.linkedin.com/in/raqper/";
+
+export const TERMS_PATH = "/workshop/terms";
+export const PRIVACY_PATH = "/privacy";
+
+/**
+ * Who sells the workshop, shown on /workshop/terms and /privacy.
+ * Raquel decided (20 Nov 2026) not to publish her NIF or address: name, email and LinkedIn only.
+ * The NIF still appears on each recibo verde she sends.
+ */
+export const seller = {
+  name: "Raquel Pereira",
+  email: "raqperfreelance@gmail.com" as string,
+  linkedin: "https://www.linkedin.com/in/raqper/" as string,
+};
+
+/** True once every seller detail is filled in. The legal pages show a warning in dev until then. */
+export const sellerComplete = !Object.values(seller).some((v) => v.startsWith("TODO"));
+
+/** The 27 EU member states. Feeds the register sheet select and the Stripe dropdown. */
+export const EU_COUNTRIES = [
+  { code: "AT", name: "Austria" },
+  { code: "BE", name: "Belgium" },
+  { code: "BG", name: "Bulgaria" },
+  { code: "HR", name: "Croatia" },
+  { code: "CY", name: "Cyprus" },
+  { code: "CZ", name: "Czechia" },
+  { code: "DK", name: "Denmark" },
+  { code: "EE", name: "Estonia" },
+  { code: "FI", name: "Finland" },
+  { code: "FR", name: "France" },
+  { code: "DE", name: "Germany" },
+  { code: "GR", name: "Greece" },
+  { code: "HU", name: "Hungary" },
+  { code: "IE", name: "Ireland" },
+  { code: "IT", name: "Italy" },
+  { code: "LV", name: "Latvia" },
+  { code: "LT", name: "Lithuania" },
+  { code: "LU", name: "Luxembourg" },
+  { code: "MT", name: "Malta" },
+  { code: "NL", name: "Netherlands" },
+  { code: "PL", name: "Poland" },
+  { code: "PT", name: "Portugal" },
+  { code: "RO", name: "Romania" },
+  { code: "SK", name: "Slovakia" },
+  { code: "SI", name: "Slovenia" },
+  { code: "ES", name: "Spain" },
+  { code: "SE", name: "Sweden" },
+] as const;
 
 export const workshop = {
   title: "AI for designers: from prompt to product",
@@ -38,25 +94,32 @@ export const workshop = {
   dates: "11–13 December 2026",
   shortDates: "11–13 Dec",
   schedule: [
-    { day: "Fri 11 Dec", time: "18:00–20:00" },
+    { day: "Fri 11 Dec", time: "18:00–21:00" },
     { day: "Sat 12 Dec", time: "09:00–12:30" },
     { day: "Sun 13 Dec", time: "09:00–12:30" },
   ] as { day: string; time: string; note?: string }[],
   timezone: "Lisbon time (WET)",
   format: "live online on Google Meet",
   language: "English",
-  hours: 9,
+  hours: 10,
   sessions: 3,
-  seats: 15,
+  /** Not shown on the site. Stripe stops selling after this many checkouts. */
+  seats: 20,
   /** Price in euros, one price for everyone. null hides the price. */
   price: 275 as number | null,
   currency: "EUR",
-  /** Luma event. null shows "Registration opens soon". */
-  registrationUrl: "https://luma.com/1smnd2n6" as string | null,
-  refundPolicy: "Full refund up to 7 days before the first session.",
-  /** Last day the session recordings can be watched (the Workspace trial ends the day after). */
-  recordingsUntil: "Tue 22 Dec",
-  /** Set to true when the Luma event is full: the sheet then sends people to the Luma waitlist. */
+  /** Final price wording. Raquel is VAT-exempt (art. 53 CIVA), so no VAT is charged: never say "VAT included". */
+  priceNote: "Final price, no VAT added",
+  vatNote: "No VAT is charged: I'm exempt under article 53 of the Portuguese VAT Code (CIVA).",
+  /** Stripe Payment Link. null shows "Registration opens soon". */
+  registrationUrl: "https://book.stripe.com/eVq00jffK5MLgHkgnpgIo01" as string | null,
+  /** Last day of the free-cancellation window (3 days before the first session). */
+  refundUntil: "Tue 8 Dec, 18:00 Lisbon time",
+  refundPolicy:
+    "Full refund if you cancel by Tue 8 Dec, or within 14 days of booking if that's later. After that, you can pass your seat to someone else.",
+  /** Last day the session recordings can be watched (the Workspace trial, started Fri 11 Dec, ends the day after). */
+  recordingsUntil: "Thu 24 Dec",
+  /** Set to true when Stripe stops selling (15 checkouts): the sheet then offers the waitlist. */
   soldOut: false,
   tools: ["Claude", "Figma", "Code"],
 } as const;
@@ -97,11 +160,11 @@ export function getRegisterLabel(): string {
 export function getRegisterNote(): string | null {
   switch (getRegisterState()) {
     case "soldOut":
-      return "This cohort is full. Join the waitlist on Luma to hear when a seat frees up.";
+      return "This cohort is full. Message me to join the waitlist.";
     case "open":
       return null;
     default:
-      return `Registration opens soon. ${workshop.seats} seats.`;
+      return "Registration opens soon.";
   }
 }
 
@@ -114,9 +177,9 @@ export const toolsNote = `*Figma Professional and Claude Pro are paid plans, bou
 export const facts = [
   { label: "Dates", value: workshop.shortDates },
   { label: "Format", value: `${workshop.sessions} sessions · ${workshop.hours} h` },
-  { label: "Price", value: formatPrice(workshop.price) ?? "Announced soon" },
-  { label: "Group", value: `${workshop.seats} seats` },
+  { label: "Price", value: workshop.price !== null ? `${formatPrice(workshop.price)} · no VAT added` : "Announced soon" },
   { label: "Tools", value: "Figma Pro, Claude Pro and GitHub*" },
+  { label: "Open to", value: "EU residents" },
 ];
 
 export const personas = [
@@ -134,7 +197,7 @@ export const personas = [
   },
 ];
 
-/** The entry bar: what people must already know. Mirrors the Luma registration question. */
+/** The entry bar: what people must already know. Mirrors the readiness checkbox in the register sheet. */
 export const readiness = [
   "You can build a component with variants in Figma",
   "You use variables in Figma",
@@ -162,12 +225,6 @@ export const requirements = [
 export const requirementsNote =
   "*Paid plans, priced by each provider and varying by country, not included in the workshop price. You can cancel them after the workshop.";
 
-/** One-sentence versions for the register sheet checkbox. */
-export const readinessLine =
-  "You can build components with variants and use variables in Figma. You don't need to know how to code.";
-export const requirementsLine =
-  "You'll have Figma Professional and Claude Pro (paid separately), a free GitHub account and a laptop where you can install software, all set up before day 1.";
-
 export const outcomes = [
   { title: "A proper Figma library for AI", body: "Tokens and components built so AI can read them." },
   { title: "Docs AI understands", body: "Clear documentation generated from your own file." },
@@ -178,9 +235,7 @@ export const outcomes = [
 /** Attendee-only extras, listed in the register sheet. */
 export const extras = [
   "Pre-workshop prep, a week before",
-  "Checkpoints to catch up if you fall behind",
   `Session recordings, available until ${workshop.recordingsUntil}`,
-  "End-to-end checklist",
   "A personal certificate of participation",
 ];
 
@@ -204,7 +259,7 @@ export const days: Day[] = [
     id: "day-1",
     label: "01",
     title: "Welcome and the AI basics",
-    when: "Fri 11 Dec · 18:00–20:00",
+    when: "Fri 11 Dec · 18:00–21:00",
     bullets: [
       "Introductions and what you want to get out of it",
       "The vocabulary you'll use all weekend, in plain English",
@@ -232,7 +287,7 @@ export const formatNotes = [
   "Live on Google Meet",
   "Q&A in every session",
   `Recordings until ${workshop.recordingsUntil}`,
-`Small group, ${workshop.seats} seats`];
+];
 
 export const instructor = {
   name: "Raquel Pereira",
@@ -251,34 +306,65 @@ export const faq = [
   },
   {
     q: "How do the sessions work?",
-    a: "Three live sessions on Google Meet: Friday evening, then Saturday and Sunday morning, with short breaks. Each one mixes short demos with practice and has time for Q&A. Luma sends the Meet link and reminders, and it's the same link for every session.",
+    a: "Three live sessions on Google Meet: Friday evening, then Saturday and Sunday morning, with short breaks. Each one mixes short demos with practice and has time for Q&A. I email you the Meet link on Fri 11 Dec, and it's the same link for every session.",
   },
   {
     q: "What happens after I register?",
-    a: `Luma emails your ticket straight away. The pre-workshop prep opens by Fri 4 Dec, so you have a week to set up calmly. Two days before the first session, Luma sends the Google Meet link (the same link for all three sessions) and reminders follow. After the workshop you get the session recordings until ${workshop.recordingsUntil}, and your certificate of participation.`,
+    a: `Stripe emails your receipt straight away, and I send you a welcome email within 24 hours. The pre-workshop prep opens by Fri 4 Dec, so you have a week to set up calmly. On Fri 11 Dec, by 12:00 Lisbon time, I email you the Google Meet link (the same link for all three sessions). After the workshop you get the session recordings until ${workshop.recordingsUntil}, and your certificate of participation.`,
   },
   {
     q: "Are the sessions recorded?",
-    a: `Yes, for a short time. I record each session on Google Meet and share the recordings with attendees until ${workshop.recordingsUntil}, then they're deleted. They're there to help you revisit a step, not to replace joining live: the workshop is hands-on, so plan to join all three sessions.`,
+    a: `Yes, for a short time. I record each session on Google Meet and share the recordings with attendees until ${workshop.recordingsUntil}, then they're deleted. Your camera is optional. They're there to help you revisit a step, not to replace joining live: the workshop is hands-on, so plan to join all three sessions.`,
   },
   {
     q: "What if I miss a session or fall behind?",
-    a: `Every practice block has a ready-made checkpoint you can pick up from, so you can rejoin at the next step. If you miss part of a session, the recording helps you catch up until ${workshop.recordingsUntil}.`,
+    a: `If you miss part of a session, the recording helps you catch up until ${workshop.recordingsUntil}, and you can bring your questions to the start of the next session.`,
   },
   {
     q: "Can I use a company laptop or Windows?",
     a: "Yes, as long as you can install software on it. The pre-workshop prep walks you through every step, so live time is for building, not troubleshooting.",
   },
   {
-    q: "How do I pay, and can I get an invoice?",
-    a: "Registration and payment run on Luma, with secure Stripe checkout. If you need an invoice, email me after registering and I'll send you an official Portuguese invoice (recibo verde).",
+    q: "Who can join?",
+    a: "This edition is open to adults living in the European Union. If you live outside the EU, message me and I'll let you know about future editions.",
+  },
+  {
+    q: "How do I pay, and do I get an invoice?",
+    a: `Payment runs on secure Stripe checkout (card, Apple Pay or Google Pay). ${formatPrice(workshop.price) ?? "The price"} is the final price: ${workshop.vatNote.charAt(0).toLowerCase()}${workshop.vatNote.slice(1)} Every booking gets an official Portuguese invoice (recibo verde): add your NIF or VAT number at checkout and email me when you'd like it.`,
   },
   {
     q: "What's the refund policy?",
-    a: workshop.refundPolicy,
+    a: `${workshop.refundPolicy} The full rules are in the workshop terms.`,
   },
   {
     q: "Is this an accredited course? Do I get a certificate?",
     a: "It's an independent workshop I run myself, not a school or an accredited course. As a thank you, everyone who attends at least two of the three sessions gets a personal certificate of participation from me. You're welcome to share it, and the experience, on LinkedIn.",
+  },
+];
+
+/** Quotes from past students, shown with their consent. 1–4 entries. */
+export type Testimonial = {
+  /** One short line shown large at the top of the card. */
+  highlight: string;
+  /** The full quote, clamped on the card with a "Read more" toggle. */
+  quote: string;
+  name: string;
+  role: string;
+  /** Which course they took, shown after the role when set. */
+  course?: string;
+  /** Imported image URL; initials are shown without one. */
+  photo?: string;
+  linkedin?: string;
+};
+
+export const testimonials: Testimonial[] = [
+  {
+    highlight: "I was surprised by how much I learned in so little time.",
+    quote:
+      "Raquel is an excellent teacher and, above all, an excellent person. I kept avoiding design systems because I thought they were far too complex and technical for me, but she made the subject simple enough to reach every kind of student, whatever their experience or goals, with classes that were very practical, relevant and engaging. I was surprised by how much I learned in so little time. No question went unanswered, no doubt was too small, and her advice was always practical and applied to our own contexts and interests. It was one of the best courses I've ever invested in. Thank you so much for everything, Raquel!",
+    name: "Melissa Fernandes",
+    role: "User Experience Designer @ IBM",
+    photo: melissaPhoto,
+    linkedin: "https://www.linkedin.com/in/melissa-c-fernandes/",
   },
 ];

@@ -6,6 +6,8 @@ const Portfolio = lazy(() => import("./pages/portfolio/Portfolio"));
 const HobbiesHome = lazy(() => import("./pages/hobbies/HobbiesHome"));
 const Workshop = lazy(() => import("./pages/workshop/Workshop"));
 const WorkshopCertificate = lazy(() => import("./pages/workshop/Certificate"));
+const WorkshopTerms = lazy(() => import("./pages/workshop/Terms"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 
 export const PORTFOLIO_PATH = "/portfolio/catlady";
 
@@ -26,6 +28,14 @@ export const router = createBrowserRouter(
     {
       path: "/workshop",
       Component: Workshop,
+    },
+    {
+      path: "/workshop/terms",
+      Component: WorkshopTerms,
+    },
+    {
+      path: "/privacy",
+      Component: Privacy,
     },
     {
       path: "/workshop/certificate/:id",

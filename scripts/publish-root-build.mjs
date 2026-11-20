@@ -18,6 +18,8 @@ const SITE_URL = "https://raqper.github.io";
  * running JavaScript. The SPA still boots from the same /static bundle.
  */
 const WORKSHOP_IMAGE = { source: path.join(ROOT, "src", "og", "workshop.png"), publishedPath: "og/workshop.png" };
+/** Link-preview card for the workshop page itself (title, dates, price). Certificates keep the plain star. */
+const WORKSHOP_CARD = { source: path.join(ROOT, "src", "og", "workshop-card.png"), publishedPath: "og/workshop-card.png" };
 
 /** Certificates of participation (src/app/data/certificates.json): one static page each, kept out of search. */
 const certificates = JSON.parse(await readFile(path.join(ROOT, "src", "app", "data", "certificates.json"), "utf8"));
@@ -27,8 +29,8 @@ const ROUTE_PAGES = [
     route: "workshop",
     title: "AI for designers: from prompt to product · Workshop by Raquel Pereira",
     description:
-      "A live online workshop for junior and mid-level designers. In three live sessions you go from your first prompt to vibe coding real screens from a component library with Claude and Figma, published on GitHub.",
-    image: WORKSHOP_IMAGE,
+      "A live online workshop for junior and mid-level designers. 11–13 Dec, 10 hours: go from your first prompt to vibe coding real screens from a component library with Claude and Figma, published on GitHub.",
+    image: WORKSHOP_CARD,
   },
   ...certificates.map((cert) => ({
     route: `workshop/certificate/${cert.id}`,

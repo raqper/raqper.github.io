@@ -9,6 +9,7 @@ import { OutcomesSection } from "@/app/features/workshop/outcomes-section";
 import { ProgramSection } from "@/app/features/workshop/program-section";
 import { RegisterButton } from "@/app/features/workshop/register-button";
 import { RegisterSheet } from "@/app/features/workshop/register-sheet";
+import { TestimonialsSection } from "@/app/features/workshop/testimonials-section";
 import { StickyRegisterBar } from "@/app/features/workshop/sticky-register-bar";
 import { WorkshopHero } from "@/app/features/workshop/workshop-hero";
 import { workshop } from "@/app/data/workshop-data";
@@ -41,6 +42,7 @@ export default function Workshop() {
       <Suspense fallback={null}>
         <AudienceSection />
         <OutcomesSection />
+        <TestimonialsSection />
         <ProgramSection />
         <InstructorSection />
         <FaqSection />
