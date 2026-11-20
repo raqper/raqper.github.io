@@ -17,6 +17,9 @@ import fofLayers2023 from "@/assets/fof-layers-2023.png";
 import vwdsDesignDay from "@/assets/vwds-design-day.png";
 import thestarterDsAdvanced from "@/assets/thestarter-ds-advanced.png";
 import thestarterDsComplete from "@/assets/thestarter-ds-complete.png";
+import aiDemoNightLisbon from "@/assets/ai-demo-night-lisbon.png";
+import projectorAiWorkshop from "@/assets/projector-ai-workshop.png";
+import inspect26 from "@/assets/inspect-26.png";
 
 export type ContentType =
   | "livestream"
@@ -110,6 +113,51 @@ export const educationOfferings: ContentItem[] = [
 
 export const contentItems: ContentItem[] = [
   // ── 2026 ──────────────────────────────────────────────────────────────────
+
+  {
+    id: "41",
+    type: "meetup",
+    role: ["speaker"],
+    title: "Building Internal Tools with AI, for AI",
+    description:
+      "AI Demo Night in Lisbon: a live demo of the internal AI tooling my team builds at Nagarro. No slides, just the work.",
+    image: aiDemoNightLisbon,
+    platform: "Friends of Figma",
+    date: "Nov 2026",
+    dateISO: "2026-11-19",
+    link: "https://www.linkedin.com/posts/raqper_im-excited-to-be-speaking-at-ai-demo-night-share-7528077822846947329-DqOW/",
+    tags: ["Friends of Figma", "AI", "Figma", "Community"],
+  },
+
+  {
+    id: "40",
+    type: "workshop",
+    role: ["instructor"],
+    title: "Design tokens and components with AI",
+    description:
+      "Weekend intensive online workshop for Projector Institute on creating and maintaining design tokens and components with AI.",
+    image: projectorAiWorkshop,
+    platform: "Projector Institute",
+    date: "Nov 2026",
+    dateISO: "2026-11-14",
+    link: "https://www.linkedin.com/posts/raqper_designsystems-aitools-designtokens-share-7528076497476169729-W7Ek/",
+    tags: ["Design Systems", "AI", "Teaching"],
+  },
+
+  {
+    id: "39",
+    type: "talk",
+    role: ["speaker"],
+    title: "Speaker at Inspect 26 by Detach!",
+    description:
+      "Online pre-event of Detach! 26 Fortaleza, alongside Nathan Curtis, TJ Pitre and others on design systems and AI.",
+    image: inspect26,
+    platform: "Detach! 26",
+    date: "Jul 2026",
+    dateISO: "2026-07-25",
+    link: "https://www.linkedin.com/feed/update/urn:li:activity:7472317321416691713/",
+    tags: ["Design Systems", "AI", "Community"],
+  },
 
   {
     id: "36",
