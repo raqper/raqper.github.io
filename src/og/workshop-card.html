@@ -1,0 +1,155 @@
+<!doctype html>
+<!--
+  Source for src/og/workshop-card.png (1200×630): the /workshop link preview and the
+  Black Friday promo image for LinkedIn and Slack. Typography, price box and date tiles
+  mirror the website hero (src/app/features/workshop/workshop-hero.tsx).
+  Regenerate with headless Chrome:
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+    --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=5000 \
+    --screenshot=src/og/workshop-card.png "file://$PWD/src/og/workshop-card.html"
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Workshop card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=TikTok+Sans:opsz,wght@12..36,300..800&display=block" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: "TikTok Sans", sans-serif;
+    color: #edeaf5;
+    background:
+      radial-gradient(70% 90% at 82% 30%, #2a0a6a 0%, rgba(42, 10, 106, 0) 70%),
+      radial-gradient(60% 80% at 10% 100%, #1a0548 0%, rgba(26, 5, 72, 0) 70%),
+      #0b0024;
+  }
+  .display { font-family: "Space Grotesk", sans-serif; }
+
+  /* Left column, same type styles as the website hero. */
+  .copy { position: absolute; left: 72px; top: 50px; width: 600px; }
+  .eyebrow { font-size: 26px; font-weight: 700; line-height: 1.2; letter-spacing: -0.03em; color: #edeaf5; }
+  h1 { margin-top: 12px; font-size: 60px; font-weight: 300; line-height: 1.05; letter-spacing: -0.04em; color: #ffffff; }
+  .offer { margin-top: 18px; font-size: 21px; line-height: 28px; letter-spacing: -0.02em; color: #ffffff; }
+  .offer b { color: #ede0a8; font-weight: 700; letter-spacing: 0.02em; }
+  .about { margin-top: 6px; font-size: 16px; line-height: 22px; letter-spacing: -0.01em; color: #c9bfe6; }
+
+  /* Price box + date tiles, as on the website (scaled ~1.15×). */
+  .offer-row { position: absolute; left: 72px; top: 400px; display: flex; gap: 12px; align-items: stretch; }
+  .pricebox {
+    display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 14px; row-gap: 8px;
+    padding: 16px 22px; border-radius: 18px; border: 1.5px solid rgba(237, 224, 168, 0.3); background: rgba(237, 224, 168, 0.08);
+  }
+  .pricebox s { align-self: end; font-size: 35px; line-height: 40px; font-weight: 300; color: #7a7390; text-decoration-thickness: 1.5px; letter-spacing: -0.02em; }
+  .pricebox .now { font-size: 55px; line-height: 1; font-weight: 600; color: #ede0a8; letter-spacing: -0.04em; }
+  .pricebox .until { font-size: 14px; line-height: 18px; font-weight: 700; color: #a89cc8; white-space: nowrap; }
+  .pricebox .code {
+    display: flex; align-items: center; justify-content: center; gap: 6px; padding: 2px 8px; border-radius: 7px;
+    border: 1.5px dashed rgba(237, 224, 168, 0.6); color: #ede0a8; font-size: 14px; line-height: 18px; font-weight: 600; letter-spacing: 0.04em;
+  }
+  .pricebox .code svg { width: 15px; height: 15px; }
+  .dates { display: flex; flex-direction: column; gap: 8px; list-style: none; }
+  .dates li {
+    flex: 1; display: flex; align-items: center; gap: 12px; padding: 0 18px 0 14px; border-radius: 14px;
+    border: 1.5px solid rgba(155, 130, 224, 0.4); background: rgba(155, 130, 224, 0.1);
+    font-size: 18px; font-weight: 600; color: #ffffff; letter-spacing: -0.01em; white-space: nowrap;
+  }
+  .dates svg { width: 22px; height: 22px; color: #c9b8ff; flex-shrink: 0; }
+  .dates .new { font-size: 13px; line-height: 18px; font-weight: 600; color: #0c0024; background: #c9b8ff; border-radius: 999px; padding: 0 8px; }
+
+  .signature { position: absolute; left: 72px; bottom: 40px; font-size: 16px; line-height: 22px; color: #a89cc8; letter-spacing: -0.01em; }
+  .signature b { color: #edeaf5; font-weight: 600; }
+  .signature .spark { color: #d4a848; margin: 0 8px; }
+
+  /* Stars */
+  .star { position: absolute; display: block; }
+  .star img { width: 100%; height: 100%; display: block; }
+  /* Star labels: straight, tight and bold, roughened by #fur and multiplied into the plush. */
+  .label { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; mix-blend-mode: multiply; }
+  .label text { font-family: "Space Grotesk", sans-serif; font-weight: 700; }
+  .yellow { width: 420px; height: 420px; left: 730px; top: 18px; transform: rotate(-6deg); }
+  .yellow .label text { fill: #4a2800; }
+  /* Same fluffy render, recoloured lavender. */
+  .lavender { width: 290px; height: 290px; left: 660px; top: 330px; transform: rotate(8deg); }
+  .lavender img { filter: grayscale(1) brightness(0.92) sepia(1) saturate(3.2) hue-rotate(218deg) brightness(1.12); }
+  .lavender .label text { fill: #220c4d; }
+
+  .crystal { width: 170px; height: 170px; left: 990px; top: 420px; transform: rotate(12deg); }
+  .bubble { width: 100px; height: 100px; left: 668px; top: 44px; transform: rotate(-14deg); }
+  .sparkle { width: 120px; height: 120px; left: 1078px; top: 6px; }
+</style>
+</head>
+<body>
+  <div class="copy">
+    <p class="eyebrow display">Live intensive workshop</p>
+    <h1 class="display">AI for designers:<br />from prompt to product.</h1>
+    <p class="offer">20% off with code <b>BLACKFRIDAY</b> until 31 Dec.</p>
+    <p class="about">Vibe code real screens from a component library with Claude and Figma.</p>
+  </div>
+
+  <div class="offer-row">
+    <div class="pricebox">
+      <s>€275</s>
+      <span class="now display">€220</span>
+      <span class="until">Until 31 Dec</span>
+      <span class="code">
+        BLACKFRIDAY
+        <!-- Lucide "copy" -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+      </span>
+    </div>
+    <ul class="dates">
+      <li>
+        <!-- Lucide "calendar-days" -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M16 2v4" /><path d="M8 2v4" /><path d="M3 10h18" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" /></svg>
+        29–31 Jan <span class="new">New</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M16 2v4" /><path d="M8 2v4" /><path d="M3 10h18" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" /></svg>
+        11–13 Dec
+      </li>
+    </ul>
+  </div>
+
+  <p class="signature"><b>Raquel Pereira</b><span class="spark">✶</span>raqper.github.io</p>
+
+  <!-- Fur filter: rough, fibrous letter edges, a soft shadow inside the press and a light rim below. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="fur" x="-15%" y="-15%" width="130%" height="130%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" result="rough" />
+      <feGaussianBlur in="rough" stdDeviation="0.6" result="soft" />
+      <feOffset in="soft" dy="2" result="down" />
+      <feFlood flood-color="#ffffff" flood-opacity="0.35" />
+      <feComposite in2="down" operator="in" result="rim" />
+      <feComponentTransfer in="soft" result="ink"><feFuncA type="linear" slope="0.9" /></feComponentTransfer>
+      <feMerge><feMergeNode in="rim" /><feMergeNode in="ink" /></feMerge>
+    </filter>
+  </svg>
+
+  <div class="star bubble"><img src="../assets/workshop/star-5.webp" alt="" /></div>
+  <div class="star sparkle"><img src="../assets/workshop/star-4.webp" alt="" /></div>
+  <div class="star yellow">
+    <img src="../assets/workshop/star-1.webp" alt="" />
+    <svg class="label" viewBox="0 0 420 420" aria-label="20% off">
+      <g filter="url(#fur)">
+        <text x="208" y="236" font-size="94" text-anchor="middle" letter-spacing="-5">20%</text>
+        <text x="208" y="288" font-size="50" text-anchor="middle" letter-spacing="-2">off</text>
+      </g>
+    </svg>
+  </div>
+  <div class="star lavender">
+    <img src="../assets/workshop/star-1.webp" alt="" />
+    <svg class="label" viewBox="0 0 290 290" aria-label="New dates">
+      <g filter="url(#fur)">
+        <text x="146" y="148" font-size="46" text-anchor="middle" letter-spacing="-2">New</text>
+        <text x="146" y="192" font-size="46" text-anchor="middle" letter-spacing="-2">dates</text>
+      </g>
+    </svg>
+  </div>
+  <div class="star crystal"><img src="../assets/workshop/star-2.webp" alt="" /></div>
+</body>
+</html>

@@ -1,15 +1,20 @@
 import { useEffect, useId, useRef } from "react";
 import { Link } from "react-router";
-import { ArrowUpRight, Check, X } from "lucide-react";
+import { ArrowUpRight, Check, Copy, X } from "lucide-react";
 import {
   extras,
   formatPrice,
+  getActivePromo,
+  getCheckoutUrl,
+  getOpenCohorts,
+  getPromoPrice,
   getRegisterState,
   LINKEDIN_URL,
   outcomes,
   TERMS_PATH,
   workshop,
 } from "@/app/data/workshop-data";
+import { useCopy } from "@/app/hooks/use-copy";
 import { PRETTY } from "./section-heading";
 
 const OPEN_EVENT = "workshop:register";
@@ -35,7 +40,16 @@ export function RegisterSheet() {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const state = getRegisterState();
-  const price = formatPrice(workshop.price);
+  const fullPrice = formatPrice(workshop.price);
+  const active = getActivePromo();
+  const promoPrice = formatPrice(getPromoPrice());
+  // The price people actually pay right now.
+  const price = promoPrice ?? fullPrice;
+  const openCohorts = getOpenCohorts();
+  const { copied, copy } = useCopy();
+  const copyCode = () => {
+    if (active) void copy(active.code);
+  };
 
   useEffect(() => {
     const open = () => {
@@ -54,10 +68,12 @@ export function RegisterSheet() {
   };
 
   // Stripe Checkout opens in a new tab, so the page (and this sheet) stay where they were.
-  // Stripe asks for the country (EU-only dropdown), the NIF/VAT number and agreement to the terms.
+  // Stripe asks for the dates, the country (EU-only dropdown) and the NIF/VAT number.
+  // While the offer runs, the promo code is already applied (prefilled_promo_code).
   const continueToCheckout = (e: React.FormEvent) => {
     e.preventDefault();
-    if (workshop.registrationUrl) window.open(workshop.registrationUrl, "_blank", "noopener,noreferrer");
+    const url = getCheckoutUrl();
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
   };
 
   // Sold out or not open yet: LinkedIn is the waitlist and the way to get notified.
@@ -94,7 +110,7 @@ export function RegisterSheet() {
         <div className="flex items-start justify-between gap-4 px-5 pt-3 md:px-8 md:pt-7">
           <div>
             <p className="text-[#a89cc8] tracking-[-0.05em]" style={{ ...SANS, fontSize: "13px" }}>
-              Your ticket · {workshop.dates}
+              {openCohorts.length > 1 ? "Your ticket · choose your dates at checkout" : `Your ticket · ${openCohorts[0]?.dates ?? ""}`}
             </p>
             <h2
               id={titleId}
@@ -115,32 +131,66 @@ export function RegisterSheet() {
         </div>
 
         <div className="mt-4 flex-1 overflow-y-auto overscroll-contain px-5 pb-4 md:px-8">
-          {/* Schedule + price */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
-            <ul className="flex flex-col gap-1">
-              {workshop.schedule.map((s) => (
-                <li key={s.day} className="flex justify-between gap-6 sm:justify-start text-white/90" style={{ ...SANS, fontSize: "14px" }}>
-                  <span className="sm:w-[96px]">{s.day}</span>
-                  <span className="text-[#ede0a8] tabular-nums">
-                    {s.time}
-                    {s.note && <span className="ml-2 text-[#a89cc8]">{s.note}</span>}
-                  </span>
-                </li>
+          {/* Dates (one block per open cohort) + price */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto] sm:items-start">
+            <div className="flex flex-col gap-3">
+              {openCohorts.map((c) => (
+                <div key={c.id}>
+                  <p className="flex items-center gap-2 whitespace-nowrap text-white" style={{ ...SANS, fontSize: "14px", fontWeight: 600 }}>
+                    {c.dates}
+                    {c.isNew && (
+                      <span className="rounded-full bg-[#9b82e0]/25 px-2 py-0.5 text-[#d4c8f5]" style={{ fontSize: "11px", fontWeight: 600 }}>
+                        New
+                      </span>
+                    )}
+                  </p>
+                  <ul className="mt-1 flex flex-col gap-0.5">
+                    {c.schedule.map((session) => (
+                      <li key={session.day} className="flex justify-between gap-6 sm:justify-start text-white/85" style={{ ...SANS, fontSize: "13.5px" }}>
+                        <span className="sm:w-[96px]">{session.day}</span>
+                        <span className="whitespace-nowrap text-[#ede0a8] tabular-nums">{session.time}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-              <li className="text-[#a89cc8]" style={{ ...SANS, fontSize: "12px" }}>
+              <p className="text-[#a89cc8]" style={{ ...SANS, fontSize: "12px" }}>
                 {workshop.timezone} · {workshop.format}
-              </li>
-            </ul>
-            <div className="sm:text-right">
+              </p>
+            </div>
+            <div className="sm:max-w-[210px] sm:text-right">
               <p className="text-[#a89cc8]" style={{ ...SANS, fontSize: "12px" }}>
                 Price
               </p>
               <p className="tracking-[-0.03em] text-[#ede0a8]" style={{ fontFamily: "var(--font-expanded)", fontSize: price ? "28px" : "16px", fontWeight: 700, lineHeight: 1.1 }}>
+                {promoPrice && (
+                  <s className="mr-2 text-[#a89cc8]" style={{ fontSize: "18px", fontWeight: 500 }}>
+                    <span className="sr-only">was </span>
+                    {fullPrice}
+                  </s>
+                )}
                 {price ?? "Announced soon"}
               </p>
               <p className="text-[#a89cc8]" style={{ ...SANS, fontSize: "12px" }}>
                 {price ? workshop.priceNote : ""}
               </p>
+              {active && promoPrice && (
+                <div className="mt-2 flex flex-col gap-1 sm:items-end">
+                  <button
+                    type="button"
+                    onClick={copyCode}
+                    className={`inline-flex w-fit items-center gap-1.5 rounded-full border border-dashed border-[#ede0a8]/60 px-3 py-1 text-[#ede0a8] transition-colors hover:bg-[#ede0a8]/10 ${FOCUS}`}
+                    style={{ ...SANS, fontSize: "13px", fontWeight: 700, letterSpacing: "0.03em" }}
+                    aria-label={`Copy the code ${active.code}`}
+                  >
+                    {active.code}
+                    {copied ? <Check className="h-3.5 w-3.5" aria-hidden /> : <Copy className="h-3.5 w-3.5" aria-hidden />}
+                  </button>
+                  <p className="text-[#a89cc8]" style={{ ...SANS, fontSize: "11.5px", lineHeight: 1.4 }} aria-live="polite">
+                    {copied ? "Copied" : `Already applied at checkout${openCohorts.length > 1 ? " · valid on both dates" : ""} · until ${active.endsLabel}`}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -169,7 +219,7 @@ export function RegisterSheet() {
               </p>
 
               <p className={`mt-3 text-[#a89cc8] ${PRETTY}`} style={{ ...SANS, fontSize: "12px", lineHeight: 1.5 }}>
-                Stripe asks for your name, email, country and, if you'd like an invoice, your NIF or VAT number. Email me and
+                At checkout you choose your dates. Stripe also asks for your name, email, country and, if you'd like an invoice, your NIF or VAT number. Email me and
                 I'll send you the official Portuguese invoice (recibo verde). {workshop.refundPolicy} By booking you agree to the{" "}
                 <Link to={TERMS_PATH} target="_blank" className="text-[#ede0a8] underline underline-offset-2">
                   workshop terms
@@ -180,11 +230,11 @@ export function RegisterSheet() {
           ) : (
             <div className="mt-5 rounded-lg border border-[#b08828]/30 bg-[#b08828]/10 p-4">
               <p className="text-[#ede0a8]" style={{ ...SANS, fontSize: "15px", fontWeight: 600 }}>
-                {state === "soldOut" ? "This cohort is full" : "Registration opens soon"}
+                {state === "soldOut" ? "This workshop is full" : "Registration opens soon"}
               </p>
               <p className={`mt-1 text-white/85 ${PRETTY}`} style={{ ...SANS, fontSize: "14px", lineHeight: 1.5 }}>
                 {state === "soldOut"
-                  ? "Join the waitlist and you'll be the first to know when a seat frees up or the next cohort opens."
+                  ? "Join the waitlist and you'll be the first to know when a seat frees up or new dates open."
                   : "Registration opens here soon. Message me and I'll let you know first."}
               </p>
             </div>

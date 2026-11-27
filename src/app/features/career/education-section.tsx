@@ -2,7 +2,7 @@ import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { ScrollReveal } from "@/app/components/scroll-reveal";
 import { Link } from "react-router";
 import { educationOfferings, type ContentItem } from "@/app/data/content-items";
-import { WORKSHOP_PATH, workshop } from "@/app/data/workshop-data";
+import { getDatesLabel, WORKSHOP_PATH, workshop } from "@/app/data/workshop-data";
 import { FloatingShapesStyles, STARS, type StarName } from "@/app/features/workshop/floating-shapes";
 
 const LIVE_COHORT_BADGE =
@@ -137,7 +137,7 @@ function WorkshopFeature() {
       <div className="relative z-[1] flex min-w-0 flex-1 flex-col px-4 pb-4 md:p-8">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <span className={LIVE_COHORT_BADGE} style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}>
-            New · {workshop.dates}
+            New · {getDatesLabel()}
           </span>
           <span className={LANG_BADGE} style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}>
             Intensive online · {workshop.hours} h

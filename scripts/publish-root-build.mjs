@@ -29,7 +29,7 @@ const ROUTE_PAGES = [
     route: "workshop",
     title: "AI for designers: from prompt to product · Workshop by Raquel Pereira",
     description:
-      "A live online workshop for junior and mid-level designers. 11–13 Dec, 10 hours: go from your first prompt to vibe coding real screens from a component library with Claude and Figma, published on GitHub.",
+      "A live online workshop for junior and mid-level designers. New dates 29–31 Jan, also 11–13 Dec. 10 hours: go from your first prompt to vibe coding real screens from a component library with Claude and Figma. Black Friday: 20% off with BLACKFRIDAY until 31 Dec.",
     image: WORKSHOP_CARD,
   },
   {

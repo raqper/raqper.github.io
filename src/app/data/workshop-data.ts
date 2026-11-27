@@ -1,26 +1,32 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // workshop-data.ts
-// Single source of truth for the /workshop page (December 2026 edition).
+// Single source of truth for the /workshop page (December 2026 and January 2027 dates).
 // Course content mirrors "Course Plan v5 | December edition" in Notion, but the
 // public agenda is kept deliberately high level.
 //
-// Registration runs on a Stripe Payment Link (registrationUrl). Every "Get your
-// ticket" button opens the in-page register sheet first (schedule, price, EU
-// country select, readiness checkbox), and the sheet opens Stripe Checkout in a
-// new tab. Raquel then emails the welcome note, the prep guide and the Meet link.
+// Registration runs on ONE Stripe Payment Link (registrationUrl) for every date.
+// Every "Get your ticket" button opens the in-page register sheet first (dates,
+// price, promo code), and the sheet opens Stripe Checkout in a new tab, where
+// people choose their dates. Raquel then emails the welcome note, the prep guide
+// and the Meet link.
 //
 // Stripe Payment Link settings to keep in sync with this page (plink_1UcrrzEOBeFxHGnF…):
+//   - Required dropdown "Your dates" (key `dates`), one option per open cohort
+//     (values jan2027 / dec2026). Remove a cohort's option once it starts or fills up.
 //   - Required dropdown "Country of residence (EU only)" with EU_COUNTRIES
-//   - Quantity 1, limit 15 completed checkouts (raise it by hand after a refund)
+//   - Quantity 1, limit 40 completed checkouts shared by all dates (raise it by hand after a refund)
+//   - Promotion codes allowed. BLACKFRIDAY = 20% off, ends 31 Dec 2026 23:59 (see `promo`).
 //   - Automatic tax off: €275 is the final price (VAT-exempt, art. 53 CIVA)
-//   - Required terms checkbox linking to /workshop/terms
+//   - No terms checkbox (removed 21 Nov). To unset it, consent_collection[terms_of_service]
+//     and custom_text[terms_of_service_acceptance] must change in the same call, and the
+//     empty unset only works via the Stripe CLI (the Dashboard and MCP tool refuse it).
 //
 // Legal pages: /workshop/terms (data/workshop-terms.ts) and /privacy (data/privacy.ts).
 // Seller identity lives in `seller` below and feeds both.
 //
-// Recordings are temporary: the sessions are recorded on a Google Workspace
-// Business Standard trial (started Fri 11 Dec) and shared until `recordingsUntil`,
-// then deleted when the trial ends. Change the date in one place.
+// Recordings: sessions are recorded and shared with attendees. Raquel decided
+// (27 Nov 2026) not to publish an availability period on the public pages; the
+// privacy policy keeps a retention criterion, and attendees get the date by email.
 // The certificate is a personal thank-you from Raquel, not an accredited
 // qualification: never call it "verified", "official" or "accredited".
 //
@@ -91,41 +97,119 @@ export const workshop = {
   /** Hero lead on /workshop. */
   heroLead:
     "Three live sessions to go from your first prompt to vibe coding real screens from a component library with Claude and Figma, and publishing them on GitHub. Made for junior and mid-level designers.",
-  dates: "11–13 December 2026",
-  shortDates: "11–13 Dec",
-  schedule: [
-    { day: "Fri 11 Dec", time: "18:00–21:00" },
-    { day: "Sat 12 Dec", time: "09:00–12:30" },
-    { day: "Sun 13 Dec", time: "09:00–12:30" },
-  ] as { day: string; time: string; note?: string }[],
-  timezone: "Lisbon time (WET)",
+  timezone: "GMT (Lisbon time)",
   format: "live online on Google Meet",
   language: "English",
   hours: 10,
   sessions: 3,
   /** Not shown on the site. Stripe stops selling after this many checkouts. */
   seats: 20,
-  /** Price in euros, one price for everyone. null hides the price. */
+  /** Full price in euros, one price for everyone. null hides the price. The promo price comes from `promo`. */
   price: 275 as number | null,
   currency: "EUR",
   /** Final price wording. Raquel is VAT-exempt (art. 53 CIVA), so no VAT is charged: never say "VAT included". */
   priceNote: "Final price, no VAT added",
   vatNote: "No VAT is charged: I'm exempt under article 53 of the Portuguese VAT Code (CIVA).",
-  /** Stripe Payment Link. null shows "Registration opens soon". */
+  /** Stripe Payment Link, shared by every date. null shows "Registration opens soon". */
   registrationUrl: "https://book.stripe.com/eVq00jffK5MLgHkgnpgIo01" as string | null,
-  /** Last day of the free-cancellation window (3 days before the first session). */
-  refundUntil: "Tue 8 Dec, 18:00 Lisbon time",
   refundPolicy:
-    "Full refund if you cancel by Tue 8 Dec, or within 14 days of booking if that's later. After that, you can pass your seat to someone else.",
-  /** Last day the session recordings can be watched (the Workspace trial, started Fri 11 Dec, ends the day after). */
-  recordingsUntil: "Thu 24 Dec",
-  /** Set to true when Stripe stops selling (15 checkouts): the sheet then offers the waitlist. */
+    "Full refund if you cancel up to 3 days before your first session, or within 14 days of booking if that's later. After that, you can pass your seat to someone else.",
+  /** Set to true when Stripe stops selling (40 checkouts): the sheet then offers the waitlist. */
   soldOut: false,
   tools: ["Claude", "Figma", "Code"],
 } as const;
 
 /** Hero eyebrow on /workshop. */
 export const heroEyebrow = "Intensive online workshop";
+
+export type Cohort = {
+  id: string;
+  /** Long form, used in the terms. */
+  dates: string;
+  /** Short form, used in chips and facts. */
+  shortDates: string;
+  schedule: { day: string; time: string }[];
+  /** First session start (Lisbon time = UTC in winter). The cohort disappears from the page after this. */
+  startsAt: string;
+  /** Last day of the free-cancellation window (3 days before the first session). */
+  refundUntil: string;
+  prepOpens: string;
+  /** Shown as a small "New" tag in the register sheet. */
+  isNew?: boolean;
+};
+
+/** Every date on sale, in the order the register sheet shows them (newest first). */
+export const cohorts: Cohort[] = [
+  {
+    id: "jan2027",
+    dates: "29–31 January 2027",
+    shortDates: "29–31 Jan",
+    schedule: [
+      { day: "Fri 29 Jan", time: "18:00–21:00" },
+      { day: "Sat 30 Jan", time: "09:00–12:30" },
+      { day: "Sun 31 Jan", time: "09:00–12:30" },
+    ],
+    startsAt: "2027-01-29T18:00:00Z",
+    refundUntil: "Tue 26 Jan, 18:00 Lisbon time",
+    prepOpens: "Fri 22 Jan",
+    isNew: true,
+  },
+  {
+    id: "dec2026",
+    dates: "11–13 December 2026",
+    shortDates: "11–13 Dec",
+    schedule: [
+      { day: "Fri 11 Dec", time: "18:00–21:00" },
+      { day: "Sat 12 Dec", time: "09:00–12:30" },
+      { day: "Sun 13 Dec", time: "09:00–12:30" },
+    ],
+    startsAt: "2026-12-11T18:00:00Z",
+    refundUntil: "Tue 8 Dec, 18:00 Lisbon time",
+    prepOpens: "Fri 4 Dec",
+  },
+];
+
+/** Dates still on sale: a cohort drops off the page by itself once its first session starts. */
+export function getOpenCohorts(now: Date = new Date()): Cohort[] {
+  return cohorts.filter((c) => now < new Date(c.startsAt));
+}
+
+/** Open dates in calendar order, joined for chips and facts, e.g. "11–13 Dec · 29–31 Jan". */
+export function getDatesLabel(format: "short" | "long" = "short", now: Date = new Date()): string {
+  const open = [...getOpenCohorts(now)].sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  const list = open.length ? open : cohorts.slice(0, 1);
+  return list.map((c) => (format === "short" ? c.shortDates : c.dates)).join(format === "short" ? " · " : " or ");
+}
+
+/**
+ * Black Friday campaign. The code lives in Stripe (promo_1UgM2dEOBeFxHGnF…, coupon RMIUXH3E,
+ * 20% off, no redemption limit, expires 31 Dec 2026 23:59). After `endsAt` every promo element hides itself.
+ * €275 is the lowest price of the 30 days before the offer (EU price-reduction rules): never show a higher "was" price.
+ */
+export const promo = {
+  name: "Black Friday",
+  code: "BLACKFRIDAY",
+  percentOff: 20,
+  endsAt: "2026-12-31T23:59:00Z",
+  endsLabel: "31 Dec",
+};
+
+export function getActivePromo(now: Date = new Date()): typeof promo | null {
+  return now < new Date(promo.endsAt) ? promo : null;
+}
+
+/** Price after the active promo, or null when there's no promo or no price. */
+export function getPromoPrice(now: Date = new Date()): number | null {
+  if (workshop.price === null || !getActivePromo(now)) return null;
+  return Math.round(workshop.price * (1 - promo.percentOff / 100));
+}
+
+/** The Stripe link, with the promo code already applied while the offer runs. */
+export function getCheckoutUrl(now: Date = new Date()): string | null {
+  if (!workshop.registrationUrl) return null;
+  const active = getActivePromo(now);
+  return active ? `${workshop.registrationUrl}?prefilled_promo_code=${encodeURIComponent(active.code)}` : workshop.registrationUrl;
+}
 
 export function formatPrice(price: number | null): string | null {
   if (price === null) return null;
@@ -139,7 +223,7 @@ export function formatPrice(price: number | null): string | null {
 export type RegisterState = "open" | "soon" | "soldOut";
 
 export function getRegisterState(): RegisterState {
-  if (!workshop.registrationUrl) return "soon";
+  if (!workshop.registrationUrl || getOpenCohorts().length === 0) return "soon";
   if (workshop.soldOut) return "soldOut";
   return "open";
 }
@@ -160,7 +244,7 @@ export function getRegisterLabel(): string {
 export function getRegisterNote(): string | null {
   switch (getRegisterState()) {
     case "soldOut":
-      return "This cohort is full. Message me to join the waitlist.";
+      return "This workshop is full. Message me to join the waitlist.";
     case "open":
       return null;
     default:
@@ -169,15 +253,17 @@ export function getRegisterNote(): string | null {
 }
 
 /** Paid plans people buy themselves. Shown with an asterisk wherever tools are listed. */
-export const toolsNote = `*Figma Professional and Claude Pro are paid plans, bought separately and not included in the ${
-  formatPrice(workshop.price) ?? "workshop"
-} price.`;
+export const toolsNote = "*Figma Professional and Claude Pro are paid plans, bought separately and not included in the workshop price.";
 
-/** Short facts shown as a strip under the hero. */
-export const facts = [
-  { label: "Dates", value: workshop.shortDates },
+/**
+ * Short facts shown as a strip under the hero. The dates have their own tiles (see the hero),
+ * and during a promo the price lives in the hero price block, so the strip leaves both out.
+ */
+export const facts: { label: string; value: string }[] = [
   { label: "Format", value: `${workshop.sessions} sessions · ${workshop.hours} h` },
-  { label: "Price", value: workshop.price !== null ? `${formatPrice(workshop.price)} · no VAT added` : "Announced soon" },
+  ...(getPromoPrice() !== null
+    ? []
+    : [{ label: "Price", value: workshop.price !== null ? `${formatPrice(workshop.price)} · no VAT added` : "Announced soon" }]),
   { label: "Tools", value: "Figma Pro, Claude Pro and GitHub*" },
   { label: "Open to", value: "EU residents" },
 ];
@@ -235,7 +321,7 @@ export const outcomes = [
 /** Attendee-only extras, listed in the register sheet. */
 export const extras = [
   "Pre-workshop prep, a week before",
-  `Session recordings, available until ${workshop.recordingsUntil}`,
+  "Session recordings",
   "A personal certificate of participation",
 ];
 
@@ -243,8 +329,8 @@ export const extras = [
 export const prep = {
   label: "Before day 1",
   title: "Pre-workshop prep",
-  when: "Available from Fri 4 Dec",
-  body: "A self-paced setup guide that opens at least a week before the first session, so you have time to install and connect everything calmly.",
+  when: "A week before day 1",
+  body: "A self-paced setup guide that opens a week before your first session, so you have time to install and connect everything calmly.",
   bullets: [
     "Set up your accounts and tools",
     "Connect Claude to Figma and GitHub",
@@ -259,7 +345,7 @@ export const days: Day[] = [
     id: "day-1",
     label: "01",
     title: "Welcome and the AI basics",
-    when: "Fri 11 Dec · 18:00–21:00",
+    when: "Friday · 18:00–21:00",
     bullets: [
       "Introductions and what you want to get out of it",
       "The vocabulary you'll use all weekend, in plain English",
@@ -270,14 +356,14 @@ export const days: Day[] = [
     id: "day-2",
     label: "02",
     title: "From Figma to code",
-    when: "Sat 12 Dec · 09:00–12:30",
+    when: "Saturday · 09:00–12:30",
     bullets: ["Working with Claude on components and documentation", "Bringing your library into code"],
   },
   {
     id: "day-3",
     label: "03",
     title: "Ship it and vibe code",
-    when: "Sun 13 Dec · 09:00–12:30",
+    when: "Sunday · 09:00–12:30",
     bullets: ["Reviewing and publishing your project on GitHub", "Generating screens from your library"],
   },
 ];
@@ -286,7 +372,7 @@ export const days: Day[] = [
 export const formatNotes = [
   "Live on Google Meet",
   "Q&A in every session",
-  `Recordings until ${workshop.recordingsUntil}`,
+  "Session recordings for attendees",
 ];
 
 export const instructor = {
@@ -302,23 +388,23 @@ export const faq = [
   },
   {
     q: "What do I need before the first session?",
-    a: "Figma Professional and Claude Pro are paid plans you buy yourself (prices vary by country, and you can cancel after the workshop). They aren't included in the workshop price. You also need a free GitHub account and a laptop where you can install software. The pre-workshop prep opens at least a week before, by Fri 4 Dec, and setting everything up before day 1 is your responsibility.",
+    a: "Figma Professional and Claude Pro are paid plans you buy yourself (prices vary by country, and you can cancel after the workshop). They aren't included in the workshop price. You also need a free GitHub account and a laptop where you can install software. The pre-workshop prep opens a week before your first session, and setting everything up before day 1 is your responsibility.",
   },
   {
     q: "How do the sessions work?",
-    a: "Three live sessions on Google Meet: Friday evening, then Saturday and Sunday morning, with short breaks. Each one mixes short demos with practice and has time for Q&A. I email you the Meet link on Fri 11 Dec, and it's the same link for every session.",
+    a: "Three live sessions on Google Meet: Friday evening, then Saturday and Sunday morning, with short breaks. Each one mixes short demos with practice and has time for Q&A. I email you the Meet link on the Friday of your dates, and it's the same link for every session.",
   },
   {
     q: "What happens after I register?",
-    a: `Stripe emails your receipt straight away, and I send you a welcome email within 24 hours. The pre-workshop prep opens by Fri 4 Dec, so you have a week to set up calmly. On Fri 11 Dec, by 12:00 Lisbon time, I email you the Google Meet link (the same link for all three sessions). After the workshop you get the session recordings until ${workshop.recordingsUntil}, and your certificate of participation.`,
+    a: "Stripe emails your receipt straight away, and I send you a welcome email within 24 hours. The pre-workshop prep opens a week before your first session, so you have time to set up calmly. On the Friday of your dates, by 12:00 Lisbon time, I email you the Google Meet link (the same link for all three sessions). After the workshop you get the session recordings and your certificate of participation.",
   },
   {
     q: "Are the sessions recorded?",
-    a: `Yes, for a short time. I record each session on Google Meet and share the recordings with attendees until ${workshop.recordingsUntil}, then they're deleted. Your camera is optional. They're there to help you revisit a step, not to replace joining live: the workshop is hands-on, so plan to join all three sessions.`,
+    a: "Yes. I record each session on Google Meet and share the recordings with attendees. Your camera is optional. They're there to help you revisit a step, not to replace joining live: the workshop is hands-on, so plan to join all three sessions.",
   },
   {
     q: "What if I miss a session or fall behind?",
-    a: `If you miss part of a session, the recording helps you catch up until ${workshop.recordingsUntil}, and you can bring your questions to the start of the next session.`,
+    a: "If you miss part of a session, the recording helps you catch up, and you can bring your questions to the start of the next session.",
   },
   {
     q: "Can I use a company laptop or Windows?",
@@ -328,6 +414,17 @@ export const faq = [
     q: "Who can join?",
     a: "This edition is open to adults living in the European Union. If you live outside the EU, message me and I'll let you know about future editions.",
   },
+  // Only while the offer runs.
+  ...(getActivePromo()
+    ? [
+        {
+          q: "Is there a discount?",
+          a: `Until ${promo.endsLabel}, the code ${promo.code} takes ${promo.percentOff}% off: ${formatPrice(workshop.price)} becomes ${formatPrice(
+            getPromoPrice(),
+          )}. It works on both dates, and it's already applied when you book from this page. If you open the checkout another way, type it in the promotion code field.`,
+        },
+      ]
+    : []),
   {
     q: "How do I pay, and do I get an invoice?",
     a: `Payment runs on secure Stripe checkout (card, Apple Pay or Google Pay). ${formatPrice(workshop.price) ?? "The price"} is the final price: ${workshop.vatNote.charAt(0).toLowerCase()}${workshop.vatNote.slice(1)} Every booking gets an official Portuguese invoice (recibo verde): add your NIF or VAT number at checkout and email me when you'd like it.`,

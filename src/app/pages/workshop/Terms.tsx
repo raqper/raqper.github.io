@@ -1,18 +1,20 @@
 import { LegalPage, type LegalSection } from "@/app/features/legal/legal-page";
 import {
+  cohorts,
   formatPrice,
+  getDatesLabel,
   PRIVACY_PATH,
   seller,
   WORKSHOP_PATH,
   workshop,
 } from "@/app/data/workshop-data";
 
-// Terms for the December 2026 workshop. Written to EU/Portuguese consumer rules
+// Terms for the December 2026 and January 2027 dates. Written to EU/Portuguese consumer rules
 // (Directive 2011/83/EU and Decreto-Lei 24/2014 on distance contracts,
 // Lei 144/2015 on consumer dispute resolution, DL 156/2005 on the complaints book).
 // Change the date in UPDATED whenever the wording changes.
 
-const UPDATED = "20 November 2026";
+const UPDATED = "27 November 2026";
 const price = formatPrice(workshop.price) ?? "the advertised price";
 const email = <a href={`mailto:${seller.email}`}>{seller.email}</a>;
 
@@ -44,18 +46,26 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          One seat at the live online workshop <strong>{workshop.title}</strong>, held in {workshop.language} on Google Meet:
+          One seat at the live online workshop <strong>{workshop.title}</strong>, held in {workshop.language} on Google Meet,
+          on the dates you choose at checkout. All times are {workshop.timezone}.
         </p>
-        <ul>
-          {workshop.schedule.map((s) => (
-            <li key={s.day}>
-              {s.day}, {s.time}, {workshop.timezone}
-            </li>
-          ))}
-        </ul>
+        {cohorts.map((c) => (
+          <div key={c.id}>
+            <p>
+              <strong>{c.dates}</strong>
+            </p>
+            <ul>
+              {c.schedule.map((s) => (
+                <li key={s.day}>
+                  {s.day}, {s.time}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
         <p>
-          Your seat includes the three live sessions, the pre-workshop prep (available from Fri 4 Dec), the session
-          recordings until {workshop.recordingsUntil} and a personal certificate of participation. The full description is on the <a href={WORKSHOP_PATH}>workshop page</a>.
+          Your seat includes the three live sessions, the pre-workshop prep (available a week before your first session),
+          the session recordings and a personal certificate of participation. The full description is on the <a href={WORKSHOP_PATH}>workshop page</a>.
         </p>
         <p>
           <strong>Not included:</strong> the paid tools you need (Figma Professional and Claude Pro), which you buy from
@@ -91,6 +101,10 @@ const sections: LegalSection[] = [
           The price is <strong>{price}</strong>. It's the final price, with no fees added. {workshop.vatNote}
         </p>
         <p>
+          From time to time I offer promotional codes. A code only works when you enter it at checkout (or when it's already
+          applied through a link on the workshop page) while it's valid. It can't be applied to bookings already made.
+        </p>
+        <p>
           You pay in full when you book, through Stripe's secure checkout. The contract starts when your payment is
           confirmed and Stripe emails your receipt. I issue an official Portuguese invoice (recibo verde) for every booking
           and email it to you when you ask for it ({email}). Add your NIF, or your company's VAT number, in the optional field at
@@ -105,7 +119,15 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          <strong>Full refund if you cancel by {workshop.refundUntil}, or within 14 days of booking if that's later.</strong>{" "}
+          <strong>Full refund if you cancel up to 3 days before your first session, or within 14 days of booking if that's later.</strong>{" "}
+          That's by{" "}
+          {cohorts.map((c, i) => (
+            <span key={c.id}>
+              {i > 0 && (i === cohorts.length - 1 ? ", and by " : ", by ")}
+              {c.refundUntil} for {c.shortDates}
+            </span>
+          ))}
+          .{" "}
           No reason needed. If your 14 days run into the workshop, cancelling after it starts gets you back the part for the
           sessions you haven't had yet. Once all three sessions have happened, you can no longer cancel.
         </p>
@@ -138,8 +160,8 @@ const sections: LegalSection[] = [
     content: (
       <p>
         I record the sessions on Google Meet and say so at the start of each one. Your camera is optional, and you can
-        use a display name. I share the recordings with registered attendees until {workshop.recordingsUntil}, then I
-        delete them. They're for your personal use: please don't download, share or publish them. See the{" "}
+        use a display name. I share the recordings with registered attendees of your dates, and I email you how long
+        they stay available. They're for your personal use: please don't download, share or publish them. See the{" "}
         <a href={PRIVACY_PATH}>privacy policy</a> for how recordings are handled.
       </p>
     ),
@@ -239,7 +261,7 @@ const legalDetails = (
       </p>
       <p>
         I hereby give notice that I withdraw from my contract for the provision of the following service: {workshop.title}{" "}
-        ({workshop.dates}).
+        (the dates I booked: …).
       </p>
       <ul>
         <li>Booked on:</li>
@@ -274,7 +296,7 @@ export default function WorkshopTerms() {
       back={{ to: WORKSHOP_PATH, label: "Back to the workshop" }}
       intro={
         <p>
-          These are the terms for booking the live online workshop <strong>{workshop.title}</strong> ({workshop.dates}).
+          These are the terms for booking the live online workshop <strong>{workshop.title}</strong> ({getDatesLabel("long")}).
           You accept them when you book. They're written in plain English. If anything is unclear, email me before you
           book.
         </p>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { workshop } from "@/app/data/workshop-data";
+import { getDatesLabel, workshop } from "@/app/data/workshop-data";
 import { RegisterButton } from "./register-button";
 
 /** Mobile-only bottom bar with the Register button, shown between the hero and the final CTA. */
@@ -41,7 +41,7 @@ export function StickyRegisterBar() {
             {workshop.shortTitle}
           </p>
           <p className="truncate text-[#a89cc8]" style={{ fontFamily: "var(--font-sans)", fontSize: "12px" }}>
-            {workshop.shortDates} · {workshop.sessions} live sessions
+            {getDatesLabel()}
           </p>
         </div>
         <RegisterButton size="sm" />

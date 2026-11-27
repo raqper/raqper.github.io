@@ -101,3 +101,18 @@
 .marquee-tools-wrap:hover .marquee-tools-track {
   animation-play-state: paused;
 }
+
+/* Workshop promo ticker: very slow, like a market ticker. Pauses on hover, static for reduced motion. */
+.marquee-promo-track {
+  animation: marquee-tools 70s linear infinite;
+}
+
+.marquee-promo-wrap:hover .marquee-promo-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-promo-track {
+    animation: none;
+  }
+}

@@ -1,11 +1,11 @@
 import { LegalPage, type LegalSection } from "@/app/features/legal/legal-page";
-import { seller, TERMS_PATH, workshop } from "@/app/data/workshop-data";
+import { seller, TERMS_PATH } from "@/app/data/workshop-data";
 
 // Site-wide privacy policy (GDPR, Regulation (EU) 2016/679).
 // Keep it in sync with what the site and the workshop actually collect.
 // This site sets no cookies and runs no analytics: if that changes, update section 6.
 
-const UPDATED = "20 November 2026";
+const UPDATED = "27 November 2026";
 const email = <a href={`mailto:${seller.email}`}>{seller.email}</a>;
 
 const sections: LegalSection[] = [
@@ -33,8 +33,8 @@ const sections: LegalSection[] = [
         </p>
         <p>
           <strong>During the workshop.</strong> Sessions run on Google Meet and are recorded. Recordings include the image
-          (if your camera is on), voice, name and chat messages of the people taking part. I keep them until{" "}
-          {workshop.recordingsUntil} so attendees can catch up, then delete them. Legal basis: my legitimate interest in
+          (if your camera is on), voice, name and chat messages of the people taking part. I keep them only while attendees
+          of those dates need them to catch up, then delete them. I email attendees the deletion date. Legal basis: my legitimate interest in
           giving attendees a way to catch up. You can keep your camera off and use a display name.
         </p>
         <p>
@@ -82,7 +82,7 @@ const sections: LegalSection[] = [
     content: (
       <ul>
         <li>Invoices and payment records: 10 years, as Portuguese tax law requires.</li>
-        <li>Recordings: until {workshop.recordingsUntil}.</li>
+        <li>Recordings: only while attendees of those dates need them to catch up, then deleted (attendees get the date by email).</li>
         <li>Booking details and emails: up to 2 years after the workshop, unless you ask me to delete them sooner.</li>
         <li>Published certificates and testimonials: until you withdraw your consent.</li>
       </ul>
