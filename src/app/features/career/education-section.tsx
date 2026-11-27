@@ -2,8 +2,8 @@ import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { ScrollReveal } from "@/app/components/scroll-reveal";
 import { Link } from "react-router";
 import { educationOfferings, type ContentItem } from "@/app/data/content-items";
-import { getDatesLabel, WORKSHOP_PATH, workshop } from "@/app/data/workshop-data";
-import { FloatingShapesStyles, STARS, type StarName } from "@/app/features/workshop/floating-shapes";
+import { getActivePromo, getDatesLabel, getOpenCohorts, WORKSHOP_PATH, workshop } from "@/app/data/workshop-data";
+import { STARS } from "@/app/features/workshop/floating-shapes";
 
 const LIVE_COHORT_BADGE =
   "inline-flex items-center rounded-full border border-[#b08828]/30 bg-[#b08828]/15 px-1.5 py-0.5 text-[9px] font-semibold text-[#d4a848] md:px-2.5 md:py-1 md:text-[11px]";
@@ -86,81 +86,29 @@ function EducationCard({ item }: { item: ContentItem }) {
   );
 }
 
-type CardStar = { name: StarName; className: string; drift: string; delay: string; rotate?: number };
-
-// Same set as the Luma thumbnail: glass star, gold sparkle, pink sparkle and the fluffy star.
-const CARD_STARS_DESKTOP: CardStar[] = [
-  { name: "glassStar", className: "right-[-14px] top-[-22px] w-[200px] lg:w-[220px]", drift: "14s", delay: "0s", rotate: -8 },
-  { name: "goldSparkle", className: "left-[34px] top-[18px] w-[64px]", drift: "10s", delay: "-3s", rotate: 12 },
-  { name: "fluffyStar", className: "left-[6px] bottom-[-26px] w-[130px] lg:w-[146px]", drift: "12s", delay: "-5s", rotate: 10 },
-  { name: "sparkle", className: "right-[44px] bottom-[-18px] w-[120px] lg:w-[132px]", drift: "11s", delay: "-7s" },
-];
-
-const CARD_STARS_MOBILE: CardStar[] = [
-  { name: "glassStar", className: "right-[-10px] top-[-18px] w-[132px]", drift: "14s", delay: "0s", rotate: -8 },
-  { name: "goldSparkle", className: "right-[150px] top-[10px] w-[40px]", drift: "10s", delay: "-3s", rotate: 12 },
-  { name: "sparkle", className: "right-[112px] top-[46px] w-[78px]", drift: "11s", delay: "-7s" },
-  { name: "fluffyStar", className: "left-[-14px] top-[18px] w-[92px]", drift: "12s", delay: "-5s", rotate: 10 },
-];
-
-function CardStars({ stars, className }: { stars: CardStar[]; className: string }) {
-  return (
-    <div className={`pointer-events-none relative ${className}`} aria-hidden>
-      <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:-translate-y-1 group-hover:rotate-2">
-        {stars.map((star) => (
-          <img
-            key={star.name}
-            src={STARS[star.name]}
-            alt=""
-            loading="lazy"
-            draggable={false}
-            className={`workshop-star workshop-drift absolute h-auto ${star.className}`}
-            style={{ ["--drift" as string]: star.drift, ["--delay" as string]: star.delay, rotate: `${star.rotate ?? 0}deg` }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** Featured link to the upcoming /workshop page. */
+/** Slim link to /workshop. The full highlight lives near the top of the page (WorkshopHighlight). */
 function WorkshopFeature() {
+  if (getOpenCohorts().length === 0) return null;
+  const active = getActivePromo();
   return (
     <Link
       to={WORKSHOP_PATH}
-      className="group relative mb-2 flex flex-col overflow-hidden rounded-xl border border-[#b08828]/40 bg-[#1c0048] transition-all duration-300 hover:border-[#b08828]/70 hover:shadow-[0_8px_40px_rgba(176,136,40,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0028] sm:mb-3 md:mb-6 md:flex-row md:items-stretch lg:mb-8"
-      style={{ background: "radial-gradient(120% 140% at 85% 30%, #2a0a5e 0%, #1c0048 45%, #14003a 100%)" }}
+      className="group mb-2 flex items-center gap-3 rounded-xl border border-[#b08828]/40 px-4 py-3 transition-all duration-300 hover:border-[#b08828]/70 hover:shadow-[0_8px_40px_rgba(176,136,40,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ede0a8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0028] sm:mb-3 md:mb-6 lg:mb-8"
+      style={{ background: "radial-gradient(120% 220% at 85% 30%, #2a0a5e 0%, #1c0048 45%, #14003a 100%)", fontFamily: "var(--font-sans)" }}
     >
-      <FloatingShapesStyles />
-      {/* Mobile: a band of stars above the text. */}
-      <CardStars stars={CARD_STARS_MOBILE} className="h-[118px] md:hidden" />
-      <div className="relative z-[1] flex min-w-0 flex-1 flex-col px-4 pb-4 md:p-8">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <span className={LIVE_COHORT_BADGE} style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}>
-            New · {getDatesLabel()}
+      <img src={STARS.goldSparkle} alt="" aria-hidden draggable={false} className="h-6 w-6 shrink-0" />
+      <span className="min-w-0 flex-1 text-[13px] leading-5 tracking-[-0.01em] text-white md:text-[14px]">
+        <span className="font-semibold text-[#ede0a8]">Live workshop:</span> {workshop.shortTitle} · {getDatesLabel()}
+        {active && (
+          <span className="text-[#d4a848]">
+            {" "}
+            · {active.percentOff}% off until {active.endsLabel}
           </span>
-          <span className={LANG_BADGE} style={{ fontFamily: "var(--font-sans)", letterSpacing: "-0.01em" }}>
-            Intensive online · {workshop.hours} h
-          </span>
-        </div>
-        <h3
-          className="text-[#edeaf5] transition-colors group-hover:text-[#d4c8e8]"
-          style={{ fontFamily: "var(--font-expanded)", fontWeight: 600, letterSpacing: "-0.03em", fontSize: "clamp(18px, 2vw, 26px)", lineHeight: 1.2 }}
-        >
-          {workshop.title}
-        </h3>
-        <p className="mt-2 max-w-[640px] text-[13px] leading-5 tracking-[-0.02em] text-white md:text-[15px] md:leading-6" style={{ fontFamily: "var(--font-sans)" }}>
-          {workshop.promise}
-        </p>
-        <span className="mt-4 inline-flex items-center gap-1 text-[13px] font-semibold tracking-[-0.02em] text-[#d4a848]" style={{ fontFamily: "var(--font-sans)" }}>
-          See the agenda
-          <svg className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-          </svg>
-        </span>
-      </div>
-      {/* Desktop: the cluster sits in its own column on the right, so it never covers the text. */}
-      <CardStars stars={CARD_STARS_DESKTOP} className="hidden md:block md:w-[340px] lg:w-[400px] md:shrink-0" />
+        )}
+      </span>
+      <svg className="h-4 w-4 shrink-0 text-[#d4a848] transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+      </svg>
     </Link>
   );
 }

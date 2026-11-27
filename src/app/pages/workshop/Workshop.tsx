@@ -13,6 +13,7 @@ import { TestimonialsSection } from "@/app/features/workshop/testimonials-sectio
 import { StickyRegisterBar } from "@/app/features/workshop/sticky-register-bar";
 import { WorkshopHero } from "@/app/features/workshop/workshop-hero";
 import { workshop } from "@/app/data/workshop-data";
+import { useScrollToHash } from "@/app/hooks/use-scroll-to-hash";
 
 const PAGE_TITLE = `${workshop.title} · Workshop by Raquel Pereira`;
 const PAGE_DESCRIPTION = `${workshop.promise} A live online workshop for junior and mid-level designers.`;
@@ -34,6 +35,7 @@ function usePageMeta() {
 
 export default function Workshop() {
   usePageMeta();
+  useScrollToHash();
 
   return (
     <main id="main-content" className="w-full min-h-screen overflow-x-hidden pb-20 md:pb-0" style={{ background: "var(--p-bg-base)" }}>

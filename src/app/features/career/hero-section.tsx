@@ -30,10 +30,12 @@ export function HeroSection() {
     }, drawerOpen ? 300 : 0);
   };
 
+  // Shorter than the viewport so the workshop highlight below shows without scrolling:
+  // the ticker band on phones (52px), the band plus the compact card from md up (280px).
   return (
     <section
       id="about"
-      className="relative min-h-screen overflow-hidden"
+      className="relative min-h-[calc(100svh-52px)] md:min-h-[calc(100svh-280px)] overflow-hidden"
       style={{ background: "rgb(5 0 14)" }}
     >
       {/* Navigation */}
@@ -168,7 +170,7 @@ export function HeroSection() {
       </AnimatePresence>
 
       <motion.div
-        className="relative min-h-screen flex flex-col"
+        className="relative min-h-[calc(100svh-52px)] md:min-h-[calc(100svh-280px)] flex flex-col"
         initial={{ opacity: 0, filter: "blur(18px)" }}
         animate={{ opacity: 1, filter: "blur(0px)" }}
         transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
@@ -268,7 +270,7 @@ export function HeroSection() {
           </motion.div>
           {/* Portrait — inside same container so right padding matches left padding of text, desktop only */}
           <div
-            className="hidden md:flex md:flex-1 md:justify-end md:items-center pb-[15vh] pointer-events-none"
+            className="hidden md:flex md:flex-1 md:justify-end md:items-center pb-[4vh] pointer-events-none"
             aria-hidden="true"
           >
             <div className="relative">
@@ -277,7 +279,8 @@ export function HeroSection() {
                 alt=""
                 className="select-none object-contain"
                 style={{
-                  maxHeight: "80vh",
+                  // Leaves room under the hero for the workshop band and card (see the min-height above).
+                  maxHeight: "min(80vh, calc(100svh - 320px))",
                   width: "auto",
                   display: "block",
                 }}
