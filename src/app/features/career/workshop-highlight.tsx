@@ -35,7 +35,7 @@ export function WorkshopHighlight() {
             style={{ background: "radial-gradient(120% 140% at 85% 30%, #2a0a5e 0%, #1c0048 45%, #14003a 100%)" }}
           >
             {/* Decorative corner stars, desktop only so they never sit on the text. */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[260px] lg:block" aria-hidden>
+            <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[260px] xl:block" aria-hidden>
               {CORNER_STARS.map((star) => (
                 <img
                   key={star.name}
@@ -49,9 +49,10 @@ export function WorkshopHighlight() {
               ))}
             </div>
 
-            <div className="relative z-[1] flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-8 lg:pr-[200px]">
+            {/* One row from xl (1280px). Below that: text on top, then price, dates and CTAs in one row from md. */}
+            <div className="relative z-[1] flex flex-col gap-5 xl:flex-row xl:items-center xl:gap-8 xl:pr-[160px]">
               {/* Text */}
-              <div className="min-w-0 lg:flex-1">
+              <div className="min-w-0 xl:flex-1">
                 <p className="text-[#d4a848]" style={{ fontFamily: "var(--font-sans)", fontSize: "12px", lineHeight: "16px", fontWeight: 600 }}>
                   Live intensive workshop
                 </p>
@@ -71,14 +72,15 @@ export function WorkshopHighlight() {
                 </p>
               </div>
 
+              <div className="flex flex-col gap-5 md:flex-row md:items-center md:gap-8 xl:shrink-0">
               {/* Price + dates, exactly as on /workshop */}
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch lg:shrink-0">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
                 <PriceOffer />
                 <DateTiles />
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-row items-center gap-4 lg:shrink-0 lg:flex-col lg:items-start lg:gap-2">
+              <div className="flex flex-row items-center gap-4 md:flex-col md:items-start md:gap-2">
                 <Link
                   to={WORKSHOP_PATH}
                   className={`group inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#ede0a8] bg-[#ede0a8] px-5 py-2.5 text-[#0c0024] transition-all duration-300 hover:bg-transparent hover:text-[#ede0a8] ${FOCUS}`}
@@ -96,6 +98,7 @@ export function WorkshopHighlight() {
                 >
                   See the agenda
                 </Link>
+              </div>
               </div>
             </div>
           </div>
